@@ -1,0 +1,42 @@
+@CHARSET "ISO-8859-1";
+
+body {
+	background-image: url("/imgs/lower_background.png");
+	background-repeat: repeat-x;
+	background-position: bottom;
+	background-color: #7FC9FF;
+	margin: 0;
+}
+
+html, body {
+	height: 100%;
+}
+
+ul.menu {
+	list-style-type: none;
+	position: fixed;
+	bottom: 10px;
+	text-align: center;
+	display: block;
+	width: 100%;
+	padding: 0;
+}
+
+ul.menu li {
+	display: inline-block;
+	padding-left: 20px;
+	text-align: center;
+	position: relative;
+	top: 40px;
+	vertical-align: bottom;
+}
+
+ul.menu li a {
+	font-size: 24px;
+	text-decoration: none;
+}
+
+ul.menu li a:hover {
+	text-decoration: none;
+	
+}
