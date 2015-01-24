@@ -1,0 +1,24 @@
+{
+  "name": "last_hope_enterprises",
+  "version": "0.0.0",
+  "description": "Home page for Last Hope Enterprises.",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "^1.4.3",
+    "express": "^4.4.5"
+  },
+  "devDependencies": {
+  	"gulp": "^3.8.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "react",
+    "tutorial",
+    "comment",
+    "example"
+  ],
+  "author": "davidvedvick"
+ }
