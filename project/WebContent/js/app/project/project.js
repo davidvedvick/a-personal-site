@@ -1,9 +1,12 @@
 var Project = React.createClass({
 	displayName: "Project",
 	render: function() {
-		return dom.div(
-			{ className: "project" },
-			title()
+		return (
+			<div className="project">
+				<Title />
+			</div>
 		);
 	}
 });
+
+module.exports = Project;

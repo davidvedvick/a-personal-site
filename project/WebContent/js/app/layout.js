@@ -1,11 +1,15 @@
-const header = require("header")
+var Header = require("./header.js");
+var Project = require("./project/project.js");
 
 var Layout = React.createClass({
 	displayName: "Layout",
 	render: function() {
-		return dom.div(
-			{ className: "layout" },
-			Header()
-		)
+		return (
+			<div className="layout">
+				<Header />
+			</div>
+		);
 	}
 });
+
+module.exports = Layout;
