@@ -3,8 +3,8 @@ var Header = React.createClass({
 	render: function() {
 		return (
 			<div className="header">
-				<h1>Last Hope Enterprises</h1>
-				<h2>When you know you're fucked, turn here</h2>
+				<h1>Last Hope Software</h1>
+				<h2>Software that fills your hopes</h2>
 			</div>
 		);
 	}
