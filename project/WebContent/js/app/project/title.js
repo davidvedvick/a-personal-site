@@ -7,3 +7,5 @@ var Title = React.createClass({
 		);
 	}
 });
+
+module.exports = Title;

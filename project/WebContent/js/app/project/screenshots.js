@@ -14,3 +14,5 @@ var Screenshots = React.createClass({
 		);
 	}
 });
+
+Module.exports = Screenshots;
