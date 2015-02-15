@@ -1,3 +1,4 @@
+var React = require("react");
 require("screenshot.js")
 
 var Screenshots = React.createClass({

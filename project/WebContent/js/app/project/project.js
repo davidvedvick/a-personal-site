@@ -1,3 +1,5 @@
+var React = require("react");
+
 var Project = React.createClass({
 	displayName: "Project",
 	render: function() {
