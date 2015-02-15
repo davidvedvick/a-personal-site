@@ -10,7 +10,7 @@ var Screenshots = React.createClass({
 
 		return (
 			<div className="screenshots">
-					{screenshotNodes}
+				{screenshotNodes}
 			</div>
 		);
 	}

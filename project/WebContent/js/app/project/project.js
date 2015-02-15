@@ -5,7 +5,7 @@ var Project = React.createClass({
 	render: function() {
 		return (
 			<div className="project">
-				<Title />
+				<Title title="{this.project.name}" />
 			</div>
 		);
 	}

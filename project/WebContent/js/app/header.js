@@ -6,7 +6,7 @@ var Header = React.createClass({
 		return (
 			<div className="header">
 				<h1>Last Hope Software</h1>
-				<h2>Software that fills your hopes</h2>
+				<h2>Software that KILLS YOU</h2>
 			</div>
 		);
 	}

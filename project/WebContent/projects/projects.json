@@ -1,0 +1,10 @@
+[
+	{
+		name: "Media Center task bar",
+		description: "It does stuff"
+	},
+	{
+		name: "Clearstream",
+		description: "Clearly, it streams"
+	}
+]
