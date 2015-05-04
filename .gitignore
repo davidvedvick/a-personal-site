@@ -1,2 +1,4 @@
 .settings
 .metadata
+/node_modules/
+/npm-debug.log

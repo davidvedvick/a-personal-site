@@ -1,5 +1,5 @@
 var React = require("react");
-var Screenshots = require("./screenshots.js");
+var Screenshots = require("./screenshots");
 
 var Title = React.createClass({
 	render: function() {
