@@ -4,9 +4,9 @@ var Screenshot = React.createClass({
         displayName: "Screenshot",
         render: function() {
 	        return (
-	                <img src="{this.props.src}" />
+                <img src={this.props.url} />
 	        );
         }
 });
 
-Module.exports = Screenshot;
+module.exports = Screenshot;

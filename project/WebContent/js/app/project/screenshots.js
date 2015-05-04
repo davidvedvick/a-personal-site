@@ -1,11 +1,11 @@
 var React = require("react");
-require("screenshot.js")
+var Screenshot = require("./screenshot.js");
 
 var Screenshots = React.createClass({
 	displayName: "Screenshots",
 	render: function() {
-		var screenshotNodes = this.props.screenshotUrls.map(function (url) {
-			return (<Screenshot url={url} />);
+		var screenshotNodes = this.props.images.map(function (image) {
+			return (<Screenshot url={image.url} />);
 		});
 
 		return (
@@ -16,4 +16,4 @@ var Screenshots = React.createClass({
 	}
 });
 
-Module.exports = Screenshots;
+module.exports = Screenshots;
