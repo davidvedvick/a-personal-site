@@ -6,7 +6,7 @@ var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
 var app = express();
 
-// app.use('/', express.static(path.join(__dirname, '../WebContent')));
+app.use('/', express.static(__dirname));
 app.use(bodyParser.json());
 // app.use(favIcon());
 // app.use(express.logger('dev'));

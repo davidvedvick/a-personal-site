@@ -38,5 +38,9 @@ ul.menu li a {
 
 ul.menu li a:hover {
 	text-decoration: none;
-	
+
+}
+
+h1 {
+	color: #fff
 }
