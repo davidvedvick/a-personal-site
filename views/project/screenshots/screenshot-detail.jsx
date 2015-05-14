@@ -1,7 +1,7 @@
 var React = require("react");
 
-var Screenshot = React.createClass({
-        displayName: "Screenshot",
+var ScreenshotDetail = React.createClass({
+        displayName: "ScreenshotDetail",
         render: function() {
 	        return (
                 <img src={this.props.url} />
@@ -9,4 +9,4 @@ var Screenshot = React.createClass({
         }
 });
 
-module.exports = Screenshot;
+module.exports = ScreenshotDetail;

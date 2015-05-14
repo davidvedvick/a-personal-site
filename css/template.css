@@ -1,10 +1,7 @@
 @CHARSET "ISO-8859-1";
 
 body {
-	background-image: url("/imgs/lower_background.png");
-	background-repeat: repeat-x;
-	background-position: bottom;
-	background-color: #7FC9FF;
+	color: #000;
 	margin: 0;
 }
 
@@ -42,5 +39,5 @@ ul.menu li a:hover {
 }
 
 h1 {
-	color: #fff
+
 }

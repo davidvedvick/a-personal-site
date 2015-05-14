@@ -1,5 +1,5 @@
 var React = require("react");
-var Screenshots = require("./screenshots");
+var ScreenshotList = require("./screenshots/screenshot-list");
 
 var Title = React.createClass({
 	render: function() {
@@ -24,7 +24,7 @@ var Project = React.createClass({
 			<div className="project">
 				<Title title={this.props.project.name} />
 				<Description description={this.props.project.description} />
-				<Screenshots images={this.props.project.images} />
+				<ScreenshotList images={this.props.project.images} />
 			</div>
 		);
 	}
