@@ -1,5 +1,6 @@
 var React = require("react");
 var ScreenshotList = require("./screenshots/screenshot-list");
+var FeatureList = require("./features/feature-list");
 
 var Title = React.createClass({
 	render: function() {
@@ -17,17 +18,18 @@ var Description = React.createClass({
 	}
 })
 
-var Project = React.createClass({
-	displayName: "Project",
+var ProjectDetails = React.createClass({
+	displayName: "ProjectDetails",
 	render: function() {
 		return (
 			<div className="project">
 				<Title title={this.props.project.name} />
 				<Description description={this.props.project.description} />
 				<ScreenshotList images={this.props.project.images} />
+				<FeatureList features={this.props.project.features} />
 			</div>
 		);
 	}
 });
 
-module.exports = Project;
+module.exports = ProjectDetails;
