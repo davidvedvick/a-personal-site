@@ -1,7 +1,7 @@
 [
 	{
 		"name": "Clearstream",
-		"description": "Clearstream is an streaming music client for JRiver Media Center (http://jriver.com/).",
+		"description": "Clearstream is a streaming music client for JRiver Media Center (http://jriver.com/).",
 		"images": [],
 		"features": [
 			{"feature": "Reliable streaming from your home server running JRiver Media Center"},
