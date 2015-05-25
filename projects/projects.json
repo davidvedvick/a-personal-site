@@ -1,8 +1,18 @@
 [
 	{
-		"name": "Clearstream",
-		"description": "Clearstream is a streaming music client for JRiver Media Center (http://jriver.com/).",
-		"images": [],
+		"name": "audiocanoe",
+		"description": "audiocanoe is a streaming music client for JRiver Media Center (http://jriver.com/).",
+		"headlineImage":
+		{
+			"url": "/projects/audiocanoe/imgs/clearstream_logo.png",
+			"description": "audiocanoe logo"
+		},
+		"images":
+		[
+			{
+
+			}
+		],
 		"features": [
 			{"feature": "Reliable streaming from your home server running JRiver Media Center"},
 			{"feature": "Play local files when present and metadata match"},
@@ -13,6 +23,7 @@
 	{
 		"name": "Media Center task bar",
 		"description": "It does stuff",
+		"headlineImage": "",
 		"images":
 		[
 			{
