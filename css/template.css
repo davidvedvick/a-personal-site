@@ -41,3 +41,15 @@ ul.menu li a:hover {
 h1 {
 
 }
+
+div.project {
+	-moz-box-shadow:    5px 5px 5px #666;
+	-webkit-box-shadow: 5px 5px 5px #666;
+	box-shadow:         5px 5px 5px #666;
+	margin-left: 10px;
+	margin-right: 15px;
+	margin-bottom: 25px;
+	padding: 5px;
+	padding-top: 0;
+	background-color: lime;
+}
