@@ -56,20 +56,19 @@ div.project {
 	margin-bottom: 25px;
 	padding: 5px;
 	padding-top: 0;
-	background-image: url('../imgs/wooden-panels.jpg');
-	color: #CC0000;
+	background-size: 300px;
+	background-position: -75px center;
+	background-color: #fff;
+	background-repeat: no-repeat;
+	color: #000;
 	overflow: auto;
 }
 
-div.project > h2 {
+/*div.project > h2 {
 	font-family: 'Carnevalee Freakshow';
 	text-shadow: #666 0.1em 0.1em 0.1em;
 	font-size: 3em;
-}
-
-div.project > h2::after {
-	content: '!';
-}
+}*/
 
 div.project > img.headline-image {
 	width: 250px;

@@ -21,17 +21,18 @@ var Description = React.createClass({
 var Logo = React.createClass({
 	render: function() {
 		return (<img className="headline-image" src={this.props.image ? this.props.image.url : "blah.jpg"} />);
-		//return this.props.image ? (<img className="headline-image" src={this.props.image ? this.props.image.url : "blah.jpg"} />) : (<img className="headline-image" src="blah.jpg" />);
 	}
 });
 
 var ProjectDetails = React.createClass({
 	displayName: "ProjectDetails",
 	render: function() {
+		var headerBackgroundStyle = {
+			backgroundImage: "url('" + this.props.project.headlineImage.url + "')"
+		};
 		return (
-			<div className="project">
-				<Logo image={this.props.project.headlineImage} />
-				<Title title={this.props.project.name} />				
+			<div className="project" style={headerBackgroundStyle}>
+				<Title title={this.props.project.name} />
 				<Description description={this.props.project.description} />
 				<ScreenshotList images={this.props.project.images} />
 				<FeatureList features={this.props.project.features} />
