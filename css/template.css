@@ -8,6 +8,7 @@
 body {
 	color: #000;
 	margin: 0;
+	background-color: #fff;
 }
 
 html, body {
@@ -62,12 +63,6 @@ div.project {
 	color: #000;
 	overflow: auto;
 }
-
-/*div.project > h2 {
-	font-family: 'Carnevalee Freakshow';
-	text-shadow: #666 0.1em 0.1em 0.1em;
-	font-size: 3em;
-}*/
 
 div.project > img.headline-image {
 	width: 250px;
