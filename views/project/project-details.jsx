@@ -28,7 +28,14 @@ var ProjectDetails = React.createClass({
 	displayName: "ProjectDetails",
 	render: function() {
 		var headerBackgroundStyle = {
-			backgroundImage: "url('" + this.props.project.headlineImage.url + "')"
+			backgroundImage: [
+				"url('/imgs/transparent-bg-pixel.png')",
+				"url('" + this.props.project.headlineImage.url + "')"
+			],
+			backgroundRepeat: [
+				"repeat",
+				"no-repeat"
+			]
 		};
 		return (
 			<div className="project" style={headerBackgroundStyle}>

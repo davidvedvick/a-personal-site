@@ -58,8 +58,7 @@ div.project {
 	padding-top: 0;
 	background-size: 300px;
 	background-position: -75px center;
-	background-color: #fff;
-	background-repeat: no-repeat;
+	background-color: #F0F0F0;
 	color: #000;
 	overflow: auto;
 }
