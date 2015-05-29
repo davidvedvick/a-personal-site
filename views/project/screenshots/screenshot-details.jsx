@@ -4,7 +4,7 @@ var ScreenshotDetails = React.createClass({
         displayName: "ScreenshotDetails",
         render: function() {
 	        return (
-                <img src={this.props.url} />
+                <img src={this.props.url} className="screenshot-details" />
 	        );
         }
 });
