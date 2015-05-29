@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
+var less = require('less');
 var app = express();
 
 app.use('/', express.static(__dirname));
@@ -23,8 +24,16 @@ if ('development' == app.get('env')) {
 }
 
 app.use('/', function(req, res) {
-    var _projects = JSON.parse(fs.readFileSync('projects/projects.json'));
-    res.render('index', { projects: _projects });
+    var projectData = JSON.parse(fs.readFileSync('projects/projects.json'));
+    less.render(fs.readFileSync('views/index.less').toString())
+        .then(function(output) {
+            fs.writeFileSync('css/layout.css', output.css);
+            res.render('index', { projects: projectData });
+        },
+        function(error) {
+            console.log(error);
+            res.render('index', { projects: projectData });
+        });
 });
 
 app.listen(3000);

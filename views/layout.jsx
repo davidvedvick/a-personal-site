@@ -7,8 +7,8 @@ var Layout = React.createClass({
 		return (
 			<html>
 			<head>
-				<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-				<link href="/css/template.css" type="text/css" rel="stylesheet" />
+				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+				<link href="/css/layout.css" type="text/css" rel="stylesheet" />
 
 				<title>Last Hope Software - Your Last Hope for Quality Software</title>
 			</head>
