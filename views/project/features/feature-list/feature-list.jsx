@@ -1,5 +1,5 @@
 var React = require("react");
-var FeatureDetails = require("./feature-details");
+var FeatureDetails = require("./../feature-details/feature-details");
 
 var FeatureList = React.createClass({
     displayName: "FeatureList",
@@ -9,7 +9,7 @@ var FeatureList = React.createClass({
         });
 
         return (
-            <ul class="feature-list">{featureNodes}</ul>
+            <ul className="feature-list">{featureNodes}</ul>
         );
     }
 });
