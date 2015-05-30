@@ -24,10 +24,14 @@ if ('development' == app.get('env')) {
 }
 
 app.use('/', function(req, res) {
+
     var projectData = JSON.parse(fs.readFileSync('projects/projects.json'));
-    less.render(fs.readFileSync('views/index.less').toString())
+    // set filename so that relative imports are handled
+    less.render(fs.readFileSync('views/index.less').toString(), { filename: 'views/index.less'})
         .then(function(output) {
             fs.writeFileSync('css/layout.css', output.css);
+
+
             res.render('index', { projects: projectData });
         },
         function(error) {
