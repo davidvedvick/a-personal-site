@@ -50,7 +50,7 @@ div.project {
   color: #000;
   overflow: auto;
 }
-div.project > img.headline-image {
+div.project img.headline-image {
   width: 250px;
   height: 250px;
   float: left;
@@ -58,6 +58,8 @@ div.project > img.headline-image {
 div.project > div.screenshots {
   overflow: hidden;
   max-height: 300px;
+  max-width: 550px;
+  display: inline-block;
 }
 div.project > div.screenshots > img.screenshot-details {
   height: 300px;

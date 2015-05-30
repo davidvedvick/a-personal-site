@@ -1,5 +1,5 @@
 var React = require("react");
-var ScreenshotList = require("./screenshots/screenshot-list");
+var ScreenshotList = require("./screenshots/screenshot-list/screenshot-list");
 var FeatureList = require("./features/feature-list");
 
 var Title = React.createClass({

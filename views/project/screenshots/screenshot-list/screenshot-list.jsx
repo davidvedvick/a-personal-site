@@ -1,5 +1,5 @@
 var React = require("react");
-var ScreenshotDetails = require("./screenshot-details");
+var ScreenshotDetails = require("./../screenshot-details/screenshot-details");
 
 var ScreenshotList = React.createClass({
 	displayName: "ScreenshotList",
