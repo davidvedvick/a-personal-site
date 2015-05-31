@@ -25,20 +25,32 @@ if ('development' == app.get('env')) {
 
 app.use('/', function(req, res) {
 
-    var projectData = JSON.parse(fs.readFileSync('projects/projects.json'));
     // set filename so that relative imports are handled
-    less.render(fs.readFileSync('views/index.less').toString(), { filename: 'views/index.less'})
-        .then(function(output) {
-            try {
-                res.render('index', { style: output.css, projects: projectData });
-            } catch (exception) {
-                console.log(exception);
-            }
-        },
-        function(error) {
+    fs.readFile('views/index.less', function(error, data) {
+        if (error) {
             console.log(error);
-            res.render('index', { projects: projectData });
-        });
+            return;
+        }
+
+        less.render(data.toString(), { filename: 'views/index.less'})
+            .then(function(lessOutput) {
+                fs.readFile('projects/projects.json', function(error, rawProjectData) {
+                    if (error) {
+                        console.log(error);
+                        return;
+                    }
+
+                    try {
+                        res.render('index', { style: lessOutput.css, projects: JSON.parse(rawProjectData) });
+                    } catch (exception) {
+                        console.log(exception);
+                    }
+                });
+            },
+            function(error) {
+                console.log(error);
+            });
+    });
 });
 
 app.listen(3000);
