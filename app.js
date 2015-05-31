@@ -29,10 +29,11 @@ app.use('/', function(req, res) {
     // set filename so that relative imports are handled
     less.render(fs.readFileSync('views/index.less').toString(), { filename: 'views/index.less'})
         .then(function(output) {
-            fs.writeFileSync('css/layout.css', output.css);
-
-
-            res.render('index', { projects: projectData });
+            try {
+                res.render('index', { style: output.css, projects: projectData });
+            } catch (exception) {
+                console.log(exception);
+            }
         },
         function(error) {
             console.log(error);

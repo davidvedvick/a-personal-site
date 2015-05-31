@@ -10,7 +10,7 @@ var Index = React.createClass({
 		});
 
 		return (
-			<Layout>
+			<Layout style={this.props.style}>
 				<div className="layout">
 					<Header />
 					{projectNodes}
