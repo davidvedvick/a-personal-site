@@ -9,7 +9,7 @@ var Layout = React.createClass({
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 				<style type="text/css">
-					{this.props.style}
+					{{__html: this.props.style}}
 				</style>
 				<title>Last Hope Software - Your Last Hope for Quality Software</title>
 			</head>
