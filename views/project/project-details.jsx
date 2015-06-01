@@ -41,8 +41,8 @@ var ProjectDetails = React.createClass({
 			<div className="project" style={headerBackgroundStyle}>
 				<Title title={this.props.project.name} />
 				<Description description={this.props.project.description} />
-				<ScreenshotList images={this.props.project.images} />
 				<FeatureList features={this.props.project.features} />
+				<ScreenshotList images={this.props.project.images} />
 			</div>
 		);
 	}
