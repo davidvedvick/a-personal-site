@@ -1,11 +1,9 @@
-@font-face {
-  font-family: "Carnevalee Freakshow";
-  src: url("../fonts/carnevalee-freakshow.ttf");
-}
+@import url(http://fonts.googleapis.com/css?family=Noto+Sans);
 body {
   color: #000;
   margin: 0;
   background-color: #eee;
+  font-family: 'Noto Sans', sans-serif;
 }
 html,
 body {
@@ -59,11 +57,11 @@ div.project div.screenshots {
   overflow: hidden;
   max-height: 300px;
   max-width: 550px;
-  display: inline-block;
+  padding-left: 20px;
+  float: right;
 }
 div.project div.screenshots img.screenshot-details {
   height: 300px;
-  padding-right: 20px;
 }
 div.project ul.feature-list {
   display: inline-block;

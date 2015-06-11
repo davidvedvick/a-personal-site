@@ -8,9 +8,7 @@ var Layout = React.createClass({
 			<html>
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-				<style type="text/css">
-					{{__html: this.props.style}}
-				</style>
+				<link href="/css/layout.css" type="text/css" rel="stylesheet" />
 				<title>Last Hope Software - Your Last Hope for Quality Software</title>
 			</head>
 			<body>

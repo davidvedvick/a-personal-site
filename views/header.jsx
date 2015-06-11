@@ -5,8 +5,8 @@ var Header = React.createClass({
 	render: function() {
 		return (
 			<div className="header">
-				<h1>Last Hope Software</h1>
-				<h2>Your Last Hope for <em>Quality</em> Software</h2>
+				<h1>David Vedvick</h1>
+				<h2>It's been coded</h2>
 			</div>
 		);
 	}

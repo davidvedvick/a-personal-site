@@ -40,11 +40,13 @@ app.use('/', function(req, res) {
                         return;
                     }
 
-                    try {
-                        res.render('index', { style: lessOutput.css, projects: JSON.parse(rawProjectData) });
-                    } catch (exception) {
-                        console.log(exception);
-                    }
+                    fs.writeFile('./css/layout.css', lessOutput.css, function(error) {
+                        try {
+                            res.render('index', { projects: JSON.parse(rawProjectData) });
+                        } catch (exception) {
+                            console.log(exception);
+                        }
+                    });
                 });
             },
             function(error) {
