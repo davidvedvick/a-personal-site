@@ -4,7 +4,7 @@ var MenuItem = require("./menu-item");
 var Menu = React.createClass({
 	displayName: "Menu",
 	render: function() {
-		var menuItems = [
+		var menuNodes = [
 			{
 				"caption": "Home",
 				"link": "/"
@@ -13,13 +13,15 @@ var Menu = React.createClass({
 				"link": "/blog",
 				"caption": "Blog"
 			},
-		]
-
-		var menuNodes = menuItems.map(function(menuItem) {
+			{
+				"link": "/resume",
+				"caption": "Curriculum Vitae"
+			}
+		].map(function(menuItem) {
 			return (<MenuItem menuItem={menuItem} />);
 		});
 
-		return (<ul>{menuNodes}</ul>);
+		return (<ul className="menu-list">{menuNodes}</ul>);
 	}
 });
 

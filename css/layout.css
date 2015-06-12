@@ -67,3 +67,15 @@ div.project ul.feature-list {
   display: inline-block;
   vertical-align: top;
 }
+ul.menu-list {
+  list-style: none;
+  display: -webkit-flex;
+  display: flex;
+}
+ul.menu-list li.menu-item {
+  display: inline;
+  flex: 1;
+  padding-left: 20px;
+  padding-right: 20px;
+  text-align: center;
+}
