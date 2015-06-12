@@ -4,16 +4,18 @@ var MenuItem = require("./menu-item");
 var Menu = React.createClass({
 	displayName: "Menu",
 	render: function() {
-		var menuNodes = [
+		var menuItems = [
 			{
-				"caption": "Home"
+				"caption": "Home",
 				"link": "/"
 			},
 			{
 				"link": "/blog",
 				"caption": "Blog"
-			}
-		].map(function(menuItem) {
+			},
+		]
+
+		var menuNodes = menuItems.map(function(menuItem) {
 			return (<MenuItem menuItem={menuItem} />);
 		});
 
