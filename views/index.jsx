@@ -13,6 +13,7 @@ var Index = React.createClass({
 			<Layout style={this.props.style}>
 				<div className="layout">
 					<Header />
+
 					{projectNodes}
 				</div>
 			</Layout>

@@ -18,10 +18,8 @@ app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
 
 // development only
-if ('development' == app.get('env')) {
-    var errorHandler = require('errorhandler');
-    app.use(errorHandler());
-}
+if ('development' == app.get('env'))
+    app.use(require('errorhandler')());
 
 app.use('/', function(req, res) {
 
@@ -41,6 +39,11 @@ app.use('/', function(req, res) {
                     }
 
                     fs.writeFile('./css/layout.css', lessOutput.css, function(error) {
+                        if (error) {
+                            console.log(error);
+                            return;
+                        }
+
                         try {
                             res.render('index', { projects: JSON.parse(rawProjectData) });
                         } catch (exception) {
