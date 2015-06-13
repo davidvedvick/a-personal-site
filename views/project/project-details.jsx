@@ -1,6 +1,9 @@
 var React = require("react");
 var ScreenshotList = require("./screenshots/screenshot-list/screenshot-list");
-var FeatureList = require("./features/feature-list/feature-list");
+var marked = require("marked");
+// var FeatureList = require("./features/feature-list/feature-list");
+
+
 
 var Title = React.createClass({
 	render: function() {
@@ -24,6 +27,12 @@ var Logo = React.createClass({
 	}
 });
 
+var Features = React.createClass({
+	render: function() {
+		return (<div className="features" dangerouslySetInnerHTML={{__html: marked(this.props.features.toString(), {sanitize: true})}} />)
+	}
+});
+
 var ProjectDetails = React.createClass({
 	displayName: "ProjectDetails",
 	render: function() {
@@ -41,7 +50,7 @@ var ProjectDetails = React.createClass({
 			<div className="project" style={headerBackgroundStyle}>
 				<Title title={this.props.project.name} />
 				<Description description={this.props.project.description} />
-				<FeatureList features={this.props.project.features} />
+				<Features features={this.props.project.features} />
 				<ScreenshotList images={this.props.project.images} />
 			</div>
 		);

@@ -34,12 +34,7 @@
 				"description": "File details on a 10\" tablet"
 			}
 		],
-		"features": [
-			{"feature": "Reliable streaming from your home server running JRiver Media Center"},
-			{"feature": "Play local files when present and metadata match"},
-			{"feature": "Intuitive layout"},
-			{"feature": "Modern Design"}
-		]
+		"features": "* Reliable streaming from your home server running JRiver Media Center\n* Play local files when present and metadata match\n* Intuitive layout\n* Modern Design"
 	},
 	{
 		"name": "Media Center task bar",
