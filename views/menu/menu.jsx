@@ -14,7 +14,7 @@ var Menu = React.createClass({
 				"caption": "Blog"
 			},
 			{
-				"link": "/resume",
+				"link": "/cv",
 				"caption": "Curriculum Vitae"
 			}
 		].map(function(menuItem) {
