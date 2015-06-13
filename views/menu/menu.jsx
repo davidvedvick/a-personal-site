@@ -6,12 +6,12 @@ var Menu = React.createClass({
 	render: function() {
 		var menuNodes = [
 			{
-				"caption": "Home",
+				"caption": "Projects",
 				"link": "/"
 			},
 			{
-				"link": "/blog",
-				"caption": "Blog"
+				"link": "/notes",
+				"caption": "Notes"
 			},
 			{
 				"link": "/cv",
