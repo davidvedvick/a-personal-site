@@ -63,7 +63,7 @@ div.project div.screenshots {
 div.project div.screenshots img.screenshot-details {
   height: 300px;
 }
-div.project ul.feature-list {
+div.project div.features {
   display: inline-block;
   vertical-align: top;
 }
