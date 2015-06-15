@@ -10,7 +10,13 @@ var ScreenshotList = React.createClass({
 
 		return (
 			<div className="screenshots">
+				<div className="prev-screenshot nav-buttons">
+
+				</div>
 				{screenshotNodes}
+				<div className="prev-screenshot nav-buttons">
+
+				</div>
 			</div>
 		);
 	}
