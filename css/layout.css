@@ -53,14 +53,20 @@ div.project img.headline-image {
   height: 250px;
   float: left;
 }
-div.project div.screenshots {
+div.project div.screenshots-container {
   overflow: hidden;
   max-height: 300px;
-  max-width: 550px;
-  padding-left: 20px;
+  max-width: 700px;
   float: right;
 }
-div.project div.screenshots img.screenshot-details {
+div.project div.screenshots-container div.screenshots {
+  overflow: hidden;
+  max-width: 550px;
+}
+div.project div.screenshots-container .nav-section {
+  display: inline;
+}
+div.project div.screenshots-container img.screenshot-details {
   height: 300px;
 }
 div.project div.features {
