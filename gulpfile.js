@@ -22,19 +22,14 @@ const outputDir = './js';
 
 
 function bundle() {
-//	del([outputDir], { force: true },
-//		function(err) {
-//			if (err) return;
-			return bundler.bundle()
-				// log errors if they happen
-				.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-				.pipe(source('client.js'))
-				// optional, remove if you dont want sourcemaps
-				  .pipe(buffer())
-				  .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-				  .pipe(sourcemaps.write('./')) // writes .map file
-				//
-				.pipe(gulp.dest(outputDir));
-//		}
-//	);
+
+	return bundler.bundle()
+		// log errors if they happen
+		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.pipe(source('client.js'))
+		// optional, remove if you dont want sourcemaps
+		.pipe(buffer())
+		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+		.pipe(sourcemaps.write('./')) // writes .map file
+		.pipe(gulp.dest(outputDir));
 }
