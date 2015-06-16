@@ -6,6 +6,7 @@ var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
 var less = require('less');
 var browserifyFactory = require('browserify');
+var isNode = true;
 
 var app = express();
 app.use('/', express.static(__dirname));
@@ -19,7 +20,7 @@ app.set('view engine', 'jsx');
 app.engine('jsx', require('express-react-views').createEngine());
 
 // development only
-if ('development' == app.get('env'))
+if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
 app.use('/', function(req, res) {
