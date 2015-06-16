@@ -1,7 +1,7 @@
 var React = require("react");
-var ScreenshotList = require("./screenshots/screenshot-list/screenshot-list");
 var marked = require("marked");
 var Features = require("./features/features");
+var ScreenshotList = require("./screenshots/screenshot-list/screenshot-list");
 
 var Title = React.createClass({
 	render: function() {
@@ -16,12 +16,6 @@ var Description = React.createClass({
 		return (
 			<h3 className="description">{this.props.description}</h3>
 		)
-	}
-});
-
-var Logo = React.createClass({
-	render: function() {
-		return (<img className="headline-image" src={this.props.image ? this.props.image.url : "blah.jpg"} />);
 	}
 });
 

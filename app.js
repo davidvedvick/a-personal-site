@@ -5,8 +5,9 @@ var bodyParser = require('body-parser');
 var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
 var less = require('less');
-var app = express();
+var browserifyFactory = require('browserify');
 
+var app = express();
 app.use('/', express.static(__dirname));
 app.use(bodyParser.json());
 // app.use(favIcon());

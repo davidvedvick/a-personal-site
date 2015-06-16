@@ -9,17 +9,7 @@ var ScreenshotList = React.createClass({
 		});
 
 		return (
-			<div className="screenshots-container">
-				<div className="prev-screenshot nav-section">
-					<img src="./imgs/chevron_left.png" />
-				</div>
-				<div className="nav-section screenshots">
-					{screenshotNodes}
-				</div>
-				<div className="next-screenshot nav-section">
-					<img src="./imgs/chevron_right.png" />
-				</div>
-			</div>
+			<div className="screenshots-container">{screenshotNodes}</div>
 		);
 	}
 });
