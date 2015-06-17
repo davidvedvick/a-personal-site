@@ -36,10 +36,18 @@ function bundleJs() {
 // 	bundleJs();
 // }); // on any dep update, runs the bundler
 
+gulp.task('clean-js', ['clean-js'], function(cb) {
+	del(['./public/js'], cb);
+});
+
 gulp.task('react', bundleJs); // so you can run `gulp js` to build the file
 
+gulp.task('clean-css', function(cb) {
+	del(['./public/css'], cb);
+});
+
 // Bundle LESS
-gulp.task('less', function () {
+gulp.task('less', ['clean-css'], function () {
   return gulp.src('./views/index.less')
 	.pipe(less())
 	// this (and everything else publicly served) should be changed to "public"
@@ -49,11 +57,19 @@ gulp.task('less', function () {
     .pipe(gulp.dest('./public/css'));
 });
 
-gulp.task('clean', function(cb) {
-	del(['./css','./js', './public'], cb);
+gulp.task('clean-images', function(cb) {
+	del(['./public/images'], cb);
 });
 
-gulp.task('watch', ['clean', 'less', 'react'], function() {
+gulp.task('images', ['clean-images'], function () {
+	// Just copy images for now, may compress/resize later
+	return gulp.src('./imgs/*')
+		.pipe(gulp.dest('public/imgs'));
+});
+
+gulp.task('watch', ['images', 'less', 'react'], function() {
+	gulp.watch('./imgs/*', ['images']);
+
 	gulp.watch('./views/**/*.less', ['less']);
 
 	gulp.watch('./views/**/*.jsx', ['react']);
