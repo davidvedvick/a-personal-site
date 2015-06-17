@@ -30,7 +30,7 @@ app.use('/projects', function(req, res) {
         }
 
         try {
-            res.render('index', { projects: JSON.parse(rawProjectData) });
+            res.render('project/project-list', { projects: JSON.parse(rawProjectData) });
         } catch (exception) {
             console.log(exception);
         }

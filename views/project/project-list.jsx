@@ -1,6 +1,6 @@
 var React = require("react");
-var ProjectDetails = require("./project/project-details");
-var Layout = require("./layout");
+var ProjectDetails = require("./project-details/project-details");
+var Layout = require("../layout");
 
 var Index = React.createClass({
 	render: function() {

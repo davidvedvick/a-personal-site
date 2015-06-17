@@ -7,7 +7,7 @@ var Menu = React.createClass({
 		var menuNodes = [
 			{
 				"link": "/projects",
-				"caption": "Projects"
+				"caption": "Side Projects"
 			},
 			{
 				"link": "/notes",

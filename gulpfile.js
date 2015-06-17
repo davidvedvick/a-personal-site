@@ -14,7 +14,7 @@ var del = require('del');
 var concat = require('gulp-concat');
 
 // Bundle JS/JSX
-var jsBundler = watchify(browserify('./views/index.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
+var jsBundler = watchify(browserify('./views/project/project-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
 // add any other browserify options or transforms here
 jsBundler
 	.transform(reactify)
@@ -54,7 +54,7 @@ gulp.task('slick-blobs', ['clean-css'], function() {
 
 // Bundle LESS
 gulp.task('less', ['clean-css'], function () {
-  return gulp.src('./views/index.less')
+  return gulp.src('./views/layout.less')
 	.pipe(less({ paths: ["./node_modules"] }))
 	// .pipe(minifyCss())
     .pipe(gulp.dest('./public/css'));

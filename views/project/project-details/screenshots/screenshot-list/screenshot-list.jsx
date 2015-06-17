@@ -38,9 +38,13 @@ if (process.browser) {
 			$(".screenshots-container").slick({
 				dots: true,
 				infinite: true,
-				speed: 500,
+				speed: 1000,
 				slidesToShow: 1,
 				slidesToScroll: 1,
+				// fade: true,
+				// autoplay: true,
+				// autoplaySpeed: 6000,
+				// cssEase: 'linear'
 			});
 		});
 	})(require("jquery"));
