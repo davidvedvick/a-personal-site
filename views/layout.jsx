@@ -18,14 +18,13 @@ var Layout = React.createClass({
 					<Header />
 					<Menu />
 					{this.props.children}
+
+					<script type="text/javascript" src="/js/client.js" />
 				</div>
-				<script type="text/javascript" src="/js/client.js" />
 			</body>
 			</html>
 		);
 	}
-
-	//<link href="/libs/slick-carousel/slick/slick.css" type="text/css" rel="stylesheet" />
 });
 
 module.exports = Layout;

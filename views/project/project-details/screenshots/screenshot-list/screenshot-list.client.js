@@ -1,9 +1,17 @@
-require("jquery");
-require("bootstrap");
+(function ($) {
+	$(function() {
+		var slick = require("slick-carousel");
 
-(function() {
-	var jQuery = require("jquery")();
-	var bootstrap = require("bootstrap");
-
-	$(".screenshots-container").carousel();
-})();
+		$(".screenshots-container").slick({
+			dots: true,
+			infinite: true,
+			speed: 1000,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			// fade: true,
+			// autoplay: true,
+			// autoplaySpeed: 6000,
+			// cssEase: 'linear'
+		});
+	});
+})(require("jquery"));

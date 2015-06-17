@@ -23,7 +23,7 @@ if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
 app.use('/projects', function(req, res) {
-    fs.readFile('projects/projects.json', function(error, rawProjectData) {
+    fs.readFile('content/projects/projects.json', function(error, rawProjectData) {
         if (error) {
             console.log(error);
             return;
@@ -31,6 +31,21 @@ app.use('/projects', function(req, res) {
 
         try {
             res.render('project/project-list', { projects: JSON.parse(rawProjectData) });
+        } catch (exception) {
+            console.log(exception);
+        }
+    });
+});
+
+app.use('/resume', function(req, res) {
+    fs.readFile('content/resume.md', function(error, resumeMarkdown) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        try {
+            res.render('resume/resume', { resume: resumeMarkdown });
         } catch (exception) {
             console.log(exception);
         }

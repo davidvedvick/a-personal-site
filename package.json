@@ -13,7 +13,8 @@
     "gulp-minify-css": "^1.1.6",
     "gulp-watch": "^4.2.4",
     "method-override": "^2.3.2",
-    "serve-favicon": "^2.2.0"
+    "serve-favicon": "^2.2.0",
+    "vinyl-transform": "^1.0.0"
   },
   "devDependencies": {
     "bootstrap": "^3.3.4",

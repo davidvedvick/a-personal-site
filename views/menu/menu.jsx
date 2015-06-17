@@ -10,12 +10,12 @@ var Menu = React.createClass({
 				"caption": "Side Projects"
 			},
 			{
-				"link": "/notes",
-				"caption": "Notes"
-			},
-			{
 				"link": "/resume",
 				"caption": "Resume"
+			},
+			{
+				"link": "/notes",
+				"caption": "Notes"
 			}
 		].map(function(menuItem) {
 			return (<MenuItem menuItem={menuItem} />);
