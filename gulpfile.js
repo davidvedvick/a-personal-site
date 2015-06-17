@@ -28,7 +28,7 @@ function bundleJs() {
 		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
 		.pipe(uglify())
 		.pipe(sourcemaps.write('./')) // writes .map file
-		.pipe(gulp.dest('./js'));
+		.pipe(gulp.dest('./public/js'));
 }
 //
 // jsBundler.on('update', function() {
@@ -46,11 +46,11 @@ gulp.task('less', function () {
 	// in the future
 	// .pipe(source('layout.css'))
 	.pipe(minifyCss())
-    .pipe(gulp.dest('./css'));
+    .pipe(gulp.dest('./public/css'));
 });
 
 gulp.task('clean', function(cb) {
-	del(['./css','./js'], cb);
+	del(['./css','./js', './public'], cb);
 });
 
 gulp.task('watch', ['clean', 'less', 'react'], function() {

@@ -7,7 +7,7 @@ var methodOverride = require('method-override');
 var less = require('less');
 
 var app = express();
-app.use('/', express.static(__dirname));
+app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 // app.use(favIcon());
 // app.use(express.logger('dev'));
@@ -21,7 +21,7 @@ app.engine('jsx', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-app.use('/', function(req, res) {
+app.use('/projects', function(req, res) {
     fs.readFile('projects/projects.json', function(error, rawProjectData) {
         if (error) {
             console.log(error);
