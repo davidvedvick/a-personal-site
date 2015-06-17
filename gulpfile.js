@@ -15,7 +15,12 @@ var del = require('del');
 // Bundle JS/JSX
 var jsBundler = watchify(browserify('./views/index.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
 // add any other browserify options or transforms here
-jsBundler.transform(reactify);
+jsBundler
+	.transform(reactify)
+	.on('update', function() {
+		console.log('Build updated!');
+		bundleJs();
+	}); // on any dep update, runs the bundler
 
 function bundleJs() {
 
@@ -30,11 +35,6 @@ function bundleJs() {
 		.pipe(sourcemaps.write('./')) // writes .map file
 		.pipe(gulp.dest('./public/js'));
 }
-
-jsBundler.on('update', function() {
-	console.log('Build updated!');
-	bundleJs();
-}); // on any dep update, runs the bundler
 
 gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
