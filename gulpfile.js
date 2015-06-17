@@ -43,13 +43,9 @@ gulp.task('clean-js', function(cb) {
 
 gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
 
-gulp.task('clean-lib-styles', function(cb) {
-	del(['./public/libs'], cb);
-});
-
-// copy component stuff (stylesheets etc.)
-gulp.task('lib-styles', ['clean-lib-styles'], function() {
-	return gulp.src(['./node_modules/**/*.{woff,tff,css,gif,jpg,png}', '!**/node_modules/**']).pipe(gulp.dest('./public/libs'));
+// copy slick carousel blobs
+gulp.task('slick-blobs', ['clean-css'], function() {
+	return gulp.src(['./node_modules/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}']).pipe(gulp.dest('./public/css'));
 });
 
 gulp.task('clean-css', function(cb) {
@@ -79,7 +75,7 @@ gulp.task('project-images', function () {
 			.pipe(gulp.dest('./public/imgs/projects'));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'react'/*, 'lib-styles'*/]);
+gulp.task('build', ['images', 'project-images', 'less', 'react', 'slick-blobs']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./imgs/**/*', ['images']);
