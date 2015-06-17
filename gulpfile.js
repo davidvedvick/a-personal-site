@@ -19,7 +19,7 @@ var jsBundler = watchify(browserify('./views/index.jsx', { cache: {}, packageCac
 jsBundler
 	.transform(reactify)
 	.on('update', function() {
-		console.log('Build updated!');
+		gutil.log('React build updated');
 		bundleJs();
 	}); // on any dep update, runs the bundler
 

@@ -4,9 +4,6 @@ var path = require("path");
 
 var ScreenshotList = React.createClass({
 	displayName: "ScreenshotList",
-	componentDidMount: function() {
-
-	},
 	render: function() {
 		const screenShotsContainer = "screenshots-container";
 		const screenShotsContainerId = "#" + screenShotsContainer;
@@ -30,9 +27,6 @@ var ScreenshotList = React.createClass({
 				{screenshotNodes}
 			</div>
 		);
-
-		//<div>test slide 1</div>
-		//<div>test slide 2</div>
 	}
 });
 
