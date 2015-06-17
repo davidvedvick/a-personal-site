@@ -43,13 +43,13 @@ gulp.task('clean-js', function(cb) {
 
 gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
 
+gulp.task('clean-css', function(cb) {
+	del(['./public/css'], cb);
+});
+
 // copy slick carousel blobs
 gulp.task('slick-blobs', ['clean-css'], function() {
 	return gulp.src(['./node_modules/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}']).pipe(gulp.dest('./public/css'));
-});
-
-gulp.task('clean-css', function(cb) {
-	del(['./public/css'], cb);
 });
 
 // Bundle LESS
