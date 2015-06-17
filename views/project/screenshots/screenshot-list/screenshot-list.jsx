@@ -4,6 +4,9 @@ var path = require("path");
 
 var ScreenshotList = React.createClass({
 	displayName: "ScreenshotList",
+	componentDidMount: function() {
+
+	},
 	render: function() {
 		const screenShotsContainer = "screenshots-container";
 		const screenShotsContainerId = "#" + screenShotsContainer;
@@ -14,24 +17,40 @@ var ScreenshotList = React.createClass({
 			return (<ScreenshotDetails url={imagePath} />);
 		});
 
+		var sliderSettings = {
+	      dots: true,
+	      infinite: true,
+	      speed: 500,
+	      slidesToShow: 1,
+	      slidesToScroll: 1
+	    };
+
 		return (
-			<div id={screenShotsContainer} className="screenshots-container">
-
-				<div className="carousel-container">
-					{screenshotNodes}
-				</div>
-
-				<a className="left carousel-control" href={screenShotsContainerId} role="button" data-slide="prev">
-				    <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-				    <span className="sr-only">Previous</span>
-				</a>
-				<a className="right carousel-control" href={screenShotsContainerId} role="button" data-slide="next">
-					<span className="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-					<span className="sr-only">Next</span>
-		  		</a>
+			<div className="screenshots-container">
+				{screenshotNodes}
 			</div>
 		);
+
+		//<div>test slide 1</div>
+		//<div>test slide 2</div>
 	}
 });
+
+if (process.browser) {
+	var jQuery = require("jquery");
+
+	(function ($) {
+		$(function() {
+			var slick = require("slick-carousel");
+			$(".screenshots-container").slick({
+				dots: true,
+				infinite: true,
+				speed: 500,
+				slidesToShow: 1,
+				slidesToScroll: 1
+			});
+		});
+	})(jQuery);
+}
 
 module.exports = ScreenshotList;

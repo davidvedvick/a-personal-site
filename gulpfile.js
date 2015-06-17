@@ -11,6 +11,7 @@ var less = require('gulp-less');
 var minifyCss = require('gulp-minify-css');
 var watch = require('gulp-watch');
 var del = require('del');
+var concat = require('gulp-concat');
 
 // Bundle JS/JSX
 var jsBundler = watchify(browserify('./views/index.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
@@ -42,6 +43,15 @@ gulp.task('clean-js', function(cb) {
 
 gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
 
+gulp.task('clean-libs', function(cb) {
+	del(['./public/libs'], cb);
+});
+
+// copy component stuff (stylesheets etc.)
+gulp.task('libs', ['clean-libs'], function() {
+	return gulp.src('./bower_components/**/*.{woff,tff,css,gif,jpg,png}').pipe(gulp.dest('./public/libs'));
+});
+
 gulp.task('clean-css', function(cb) {
 	del(['./public/css'], cb);
 });
@@ -50,9 +60,6 @@ gulp.task('clean-css', function(cb) {
 gulp.task('less', ['clean-css'], function () {
   return gulp.src('./views/index.less')
 	.pipe(less())
-	// this (and everything else publicly served) should be changed to "public"
-	// in the future
-	// .pipe(source('layout.css'))
 	.pipe(minifyCss())
     .pipe(gulp.dest('./public/css'));
 });
@@ -66,13 +73,13 @@ gulp.task('images', ['clean-images'], function () {
 	return gulp.src('./imgs/*').pipe(gulp.dest('./public/imgs'));
 });
 
-gulp.task('project-images', ['clean-images'], function () {
+gulp.task('project-images', function () {
 	// Just copy images for now, may compress/resize later
 	return gulp.src('./projects/**/imgs/*')
 			.pipe(gulp.dest('./public/imgs/projects'));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'react']);
+gulp.task('build', ['images', 'project-images', 'less', 'react', 'libs']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./imgs/**/*', ['images']);
