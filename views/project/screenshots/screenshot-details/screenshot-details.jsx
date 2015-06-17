@@ -1,20 +1,15 @@
 var React = require("react");
+var path = require("path");
 
 var ScreenshotDetails = React.createClass({
-        displayName: "ScreenshotDetails",
-        render: function() {
-            var itemClassName = "item"
-            if (this.props.isActive)
-                itemClassName += " active";
-
-	        return (
-                <div className="carousel-inner">
-                    <div className={itemClassName}>
-                        <img src={this.props.url} className="screenshot-details" />
-                    </div>
-                </div>
-	        );
-        }
+    displayName: "ScreenshotDetails",
+    render: function() {
+        return (
+            <div className="screenshot-container">
+                <img src={this.props.url} className="screenshot-details" />
+            </div>
+        );
+    }
 });
 
 module.exports = ScreenshotDetails;
