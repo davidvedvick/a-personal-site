@@ -1,12 +1,11 @@
 var React = require("react");
 var path = require("path");
-var Slider = require('react-slick');
 
 var ScreenshotDetails = React.createClass({
     displayName: "ScreenshotDetails",
     render: function() {
         return (
-            <div>
+            <div className="screenshot-details-container">
                 <img src={this.props.url} className="screenshot-details" />
             </div>
         );

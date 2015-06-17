@@ -37,20 +37,19 @@ var ScreenshotList = React.createClass({
 });
 
 if (process.browser) {
-	var jQuery = require("jquery");
-
 	(function ($) {
 		$(function() {
 			var slick = require("slick-carousel");
+
 			$(".screenshots-container").slick({
 				dots: true,
 				infinite: true,
 				speed: 500,
 				slidesToShow: 1,
-				slidesToScroll: 1
+				slidesToScroll: 1,
 			});
 		});
-	})(jQuery);
+	})(require("jquery"));
 }
 
 module.exports = ScreenshotList;

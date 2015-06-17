@@ -27,7 +27,6 @@
     "less": "^2.5.1",
     "marked": "^0.3.3",
     "react": "^0.13.3",
-    "react-carousel": "^2.0.0",
     "reactify": "^1.1.1",
     "slick-carousel": "^1.5.5",
     "uglify": "^0.1.5",

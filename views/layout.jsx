@@ -10,9 +10,8 @@ var Layout = React.createClass({
 			<html>
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-				<link href="/css/index.css" type="text/css" rel="stylesheet" />
-				<link href="/libs/slick-carousel/slick/slick.css" type="text/css" rel="stylesheet" />
 				<link href="/libs/slick-carousel/slick/slick-theme.css" type="text/css" rel="stylesheet" />
+				<link href="/css/index.css" type="text/css" rel="stylesheet" />
 				<script type="text/javascript" src="/js/client.js" />
 				<title>David Vedvick (It's been coded)</title>
 			</head>
@@ -26,6 +25,8 @@ var Layout = React.createClass({
 			</html>
 		);
 	}
+
+	//<link href="/libs/slick-carousel/slick/slick.css" type="text/css" rel="stylesheet" />
 });
 
 module.exports = Layout;

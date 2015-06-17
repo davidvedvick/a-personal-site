@@ -43,13 +43,13 @@ gulp.task('clean-js', function(cb) {
 
 gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
 
-gulp.task('clean-libs', function(cb) {
+gulp.task('clean-lib-styles', function(cb) {
 	del(['./public/libs'], cb);
 });
 
 // copy component stuff (stylesheets etc.)
-gulp.task('libs', ['clean-libs'], function() {
-	return gulp.src('./bower_components/**/*.{woff,tff,css,gif,jpg,png}').pipe(gulp.dest('./public/libs'));
+gulp.task('lib-styles', ['clean-lib-styles'], function() {
+	return gulp.src(['./node_modules/**/*.{woff,tff,css,gif,jpg,png}', '!**/node_modules/**']).pipe(gulp.dest('./public/libs'));
 });
 
 gulp.task('clean-css', function(cb) {
@@ -59,8 +59,8 @@ gulp.task('clean-css', function(cb) {
 // Bundle LESS
 gulp.task('less', ['clean-css'], function () {
   return gulp.src('./views/index.less')
-	.pipe(less())
-	.pipe(minifyCss())
+	.pipe(less({ paths: ["./node_modules"] }))
+	// .pipe(minifyCss())
     .pipe(gulp.dest('./public/css'));
 });
 
@@ -79,7 +79,7 @@ gulp.task('project-images', function () {
 			.pipe(gulp.dest('./public/imgs/projects'));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'react', 'libs']);
+gulp.task('build', ['images', 'project-images', 'less', 'react'/*, 'lib-styles'*/]);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./imgs/**/*', ['images']);
