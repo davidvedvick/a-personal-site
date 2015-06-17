@@ -63,14 +63,19 @@ gulp.task('clean-images', function(cb) {
 
 gulp.task('images', ['clean-images'], function () {
 	// Just copy images for now, may compress/resize later
-	return gulp.src('./imgs/*')
-		.pipe(gulp.dest('public/imgs'));
+	return gulp.src('./imgs/*').pipe(gulp.dest('./public/imgs'));
 });
 
-gulp.task('build', ['images', 'less', 'react']);
+gulp.task('project-images', ['clean-images'], function () {
+	// Just copy images for now, may compress/resize later
+	return gulp.src('./projects/**/imgs/*')
+			.pipe(gulp.dest('./public/imgs/projects'));
+});
+
+gulp.task('build', ['images', 'project-images', 'less', 'react']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./imgs/**/*', ['images']);
-
+	gulp.watch('./projects/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.less', ['less']);
 });

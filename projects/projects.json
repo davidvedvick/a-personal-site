@@ -4,33 +4,33 @@
 		"description": "audiocanoe is a streaming music client for JRiver Media Center (http://jriver.com/)",
 		"headlineImage":
 		{
-			"url": "/projects/audiocanoe/imgs/clearstream_logo.png",
+			"path": "clearstream_logo.png",
 			"description": "audiocanoe logo"
 		},
 		"images":
 		[
 			{
-				"url": "/projects/audiocanoe/imgs/nexus_5_landscape.png",
+				"path": "nexus_5_landscape.png",
 				"description": "Landscape view"
 			},
 			{
-				"url": "/projects/audiocanoe/imgs/nexus_5_now_playing.png",
+				"path": "nexus_5_now_playing.png",
 				"description": "Now Playing View"
 			},
 			{
-				"url": "/projects/audiocanoe/imgs/nexus_5_portrait.png",
+				"path": "nexus_5_portrait.png",
 				"description": "Portrait View"
 			},
 			{
-				"url": "/projects/audiocanoe/imgs/seven_inch_now_playing.png",
+				"path": "seven_inch_now_playing.png",
 				"description": "Now Playing View on a 7\" tablet"
 			},
 			{
-				"url": "/projects/audiocanoe/imgs/seven_inch_portrait.png",
+				"path": "seven_inch_portrait.png",
 				"description": "Portrait View on a 7\" tablet"
 			},
 			{
-				"url": "/projects/audiocanoe/imgs/ten_inch_tablet_file_details.png",
+				"path": "ten_inch_tablet_file_details.png",
 				"description": "File details on a 10\" tablet"
 			}
 		],
@@ -43,7 +43,7 @@
 		"images":
 		[
 			{
-				"url": "blah.jpg",
+				"path": "blah.jpg",
 				"description": "I got your description right here!"
 			}
 		],
