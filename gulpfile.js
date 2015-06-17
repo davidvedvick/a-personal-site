@@ -13,7 +13,7 @@ var watch = require('gulp-watch');
 var del = require('del');
 
 // Bundle JS/JSX
-var jsBundler = browserify('./views/index.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" });
+var jsBundler = watchify(browserify('./views/index.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
 // add any other browserify options or transforms here
 jsBundler.transform(reactify);
 
@@ -30,17 +30,17 @@ function bundleJs() {
 		.pipe(sourcemaps.write('./')) // writes .map file
 		.pipe(gulp.dest('./public/js'));
 }
-//
-// jsBundler.on('update', function() {
-// 	console.log('Build updated!');
-// 	bundleJs();
-// }); // on any dep update, runs the bundler
 
-gulp.task('clean-js', ['clean-js'], function(cb) {
+jsBundler.on('update', function() {
+	console.log('Build updated!');
+	bundleJs();
+}); // on any dep update, runs the bundler
+
+gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
 });
 
-gulp.task('react', bundleJs); // so you can run `gulp js` to build the file
+gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
 
 gulp.task('clean-css', function(cb) {
 	del(['./public/css'], cb);
@@ -67,10 +67,10 @@ gulp.task('images', ['clean-images'], function () {
 		.pipe(gulp.dest('public/imgs'));
 });
 
-gulp.task('watch', ['images', 'less', 'react'], function() {
-	gulp.watch('./imgs/*', ['images']);
+gulp.task('build', ['images', 'less', 'react']);
+
+gulp.task('watch', ['build'], function() {
+	gulp.watch('./imgs/**/*', ['images']);
 
 	gulp.watch('./views/**/*.less', ['less']);
-
-	gulp.watch('./views/**/*.jsx', ['react']);
 });

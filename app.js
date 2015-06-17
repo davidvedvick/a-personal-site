@@ -8,6 +8,7 @@ var less = require('less');
 
 var app = express();
 app.use('/', express.static(path.join(__dirname, 'public')));
+
 app.use(bodyParser.json());
 // app.use(favIcon());
 // app.use(express.logger('dev'));
