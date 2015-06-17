@@ -22,39 +22,17 @@ if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
 app.use('/', function(req, res) {
-
-    // set filename so that relative imports are handled
-    fs.readFile('views/index.less', function(error, data) {
+    fs.readFile('projects/projects.json', function(error, rawProjectData) {
         if (error) {
             console.log(error);
             return;
         }
 
-        less.render(data.toString(), { filename: 'views/index.less'})
-            .then(function(lessOutput) {
-                fs.readFile('projects/projects.json', function(error, rawProjectData) {
-                    if (error) {
-                        console.log(error);
-                        return;
-                    }
-
-                    fs.writeFile('./css/layout.css', lessOutput.css, function(error) {
-                        if (error) {
-                            console.log(error);
-                            return;
-                        }
-
-                        try {
-                            res.render('index', { projects: JSON.parse(rawProjectData) });
-                        } catch (exception) {
-                            console.log(exception);
-                        }
-                    });
-                });
-            },
-            function(error) {
-                console.log(error);
-            });
+        try {
+            res.render('index', { projects: JSON.parse(rawProjectData) });
+        } catch (exception) {
+            console.log(exception);
+        }
     });
 });
 
