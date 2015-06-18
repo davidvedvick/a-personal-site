@@ -38,7 +38,7 @@ var ProjectDetails = React.createClass({
 
 		return (
 			<div className="project" style={headerBackgroundStyle}>
-				<Title title={this.props.project.name} />
+				<Title title={this.props.project.prettyName || this.props.project.name} />
 				<Description description={this.props.project.description} />
 				<Features features={this.props.project.features} />
 				<ScreenshotList images={this.props.project.images} base={baseImgPath} />

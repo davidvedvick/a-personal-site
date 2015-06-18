@@ -5,6 +5,8 @@ var bodyParser = require('body-parser');
 var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
 var less = require('less');
+var path = require('path');
+var async = require('async');
 
 var app = express();
 app.use('/', express.static(path.join(__dirname, 'public')));
@@ -29,11 +31,40 @@ app.use('/projects', function(req, res) {
             return;
         }
 
-        try {
-            res.render('project/project-list', { projects: JSON.parse(rawProjectData) });
-        } catch (exception) {
-            console.log(exception);
-        }
+        var projects = JSON.parse(rawProjectData);
+
+        async.forEachOf(
+            projects,
+            function (project, key, callback) {
+                var filePath = path.join('content', 'projects', project.name, 'features.md');
+                fs.exists(filePath, function(exists) {
+                    if (!exists) {
+                        callback();
+                        return;
+                    }
+
+                    fs.readFile(filePath, "utf8", function(err, data) {
+                        if (err) return callback(err);
+
+                        project.features = data;
+                        callback();
+                    });
+                });
+
+            },
+            function(err, results) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+
+                try {
+                    res.render('project/project-list', { projects: projects });
+                } catch (exception) {
+                    console.log(exception);
+                }
+            }
+        );
     });
 });
 

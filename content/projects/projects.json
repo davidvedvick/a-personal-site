@@ -33,12 +33,12 @@
 				"path": "ten_inch_tablet_file_details.png",
 				"description": "File details on a 10\" tablet"
 			}
-		],
-		"features": "* Reliable streaming from your home server running JRiver Media Center\n* Play local files when present and metadata match\n* Intuitive layout\n* Modern Design"
+		]
 	},
 	{
-		"name": "Media Center task bar",
-		"description": "It does stuff",
+		"name": "media-center-task-bar",
+		"prettyName": "Media Center task bar",
+		"description": "Integrates such Windows 7 features as progress state (either currently playing track or progress in playlist) and Cover Art in the thumbnail preview into the excellent JRiver Media Center application. ",
 		"headlineImage": "",
 		"images":
 		[
@@ -46,7 +46,12 @@
 				"path": "blah.jpg",
 				"description": "I got your description right here!"
 			}
-		],
-		"features": []
+		]
+	},
+	{
+		"name": "deliciouspc",
+		"description": "Design your own PC website",
+		"headlineImage": "",
+		"images": []
 	}
 ]

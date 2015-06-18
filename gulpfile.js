@@ -17,6 +17,10 @@ var globby = require('globby');
 var through2 = require('through2');
 var streamify = require('gulp-streamify');
 var rename = require('gulp-rename');
+var parallel = require('concurrent-transform');
+var changed = require('gulp-changed');
+var imageResize = require('gulp-image-resize');
+var os = require('os');
 
 // Bundle JS/JSX
 // var jsBundler = watchify(browserify('./views/project/project-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
@@ -53,18 +57,20 @@ gulp.task('clean-js', function(cb) {
 });
 
 gulp.task('client-js', ['clean-js'], function () {
+	const destDir = './public/js';
 	return gulp.src("./views/*/*.client.js")
-	   .pipe(through2.obj(function (file, enc, next){
-            browserify(file.path)
-                .bundle(function(err, res){
-                    // assumes file.contents is a Buffer
-                    file.contents = res;
-                    next(null, file);
-                });
-        }))
-	   .pipe(uglify())
-	   .pipe(rename({ dirname: "" }))
-	   .pipe(gulp.dest("./public/js"));
+		.pipe(changed(destDir))
+		.pipe(through2.obj(function (file, enc, next){
+			browserify(file.path)
+				.bundle(function(err, res){
+				// assumes file.contents is a Buffer
+				file.contents = res;
+				next(null, file);
+			});
+		}))
+		.pipe(uglify())
+		.pipe(rename({ dirname: "" }))
+		.pipe(gulp.dest(destDir));
 });
 
 // gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
@@ -96,9 +102,14 @@ gulp.task('images', ['clean-images'], function () {
 });
 
 gulp.task('project-images', function () {
-	// Just copy images for now, may compress/resize later
+	const destDir = './public/imgs/projects';
 	return gulp.src('./content/projects/**/imgs/*')
-			.pipe(gulp.dest('./public/imgs/projects'));
+			.pipe(changed(destDir))
+			.pipe(parallel(
+				imageResize({ height: 300 }),
+				os.cpus().length
+			))
+			.pipe(gulp.dest(destDir));
 });
 
 gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs']);
