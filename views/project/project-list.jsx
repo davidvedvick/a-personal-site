@@ -11,6 +11,8 @@ var Index = React.createClass({
 		return (
 			<Layout>
 				{projectNodes}
+
+				<script type="text/javascript" src="/js/project.client.js" />
 			</Layout>
 		);
 	}

@@ -18,8 +18,6 @@ var Layout = React.createClass({
 					<Header />
 					<Menu />
 					{this.props.children}
-
-					<script type="text/javascript" src="/js/client.js" />
 				</div>
 			</body>
 			</html>
