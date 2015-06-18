@@ -6,7 +6,7 @@
 body {
 	color: #000;
 	margin: 0;
-	background-color: #eee;
+	background-color: #FFF;
     font-family: 'Noto Sans', sans-serif;
 	padding: 5px;
 }
@@ -41,11 +41,36 @@ ul.menu li a {
 
 ul.menu li a:hover {
 	text-decoration: none;
-
 }
 
 h1 {
 
+}
+
+div.content {
+	margin-left: 5px;
+	margin-right: 15px;
+	margin-bottom: 25px;
+	margin-top: 5px;
+	padding: 5px;
+	padding-top: 0;
+	background-size: 300px;
+	background-position: -75px center;
+	// background-color: #F4F4F4;
+	color: #000;
+	overflow: auto;
+
+	+ div.content {
+		&:before {
+			content: "";
+			display: block !important;
+			height  : 1px;
+			max-width   : 300px;
+			margin-left: auto;
+			margin-right: auto;
+			border-bottom:5px solid #666;
+		}
+	}
 }
 
 @import "./project/project-details/project-details";

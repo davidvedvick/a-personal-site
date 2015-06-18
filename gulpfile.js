@@ -104,6 +104,7 @@ gulp.task('project-images', function () {
 gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs']);
 
 gulp.task('watch', ['build'], function() {
+	gulp.watch('./views/**/*.less', ['less']);
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch('./projects/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.client.js', ['client-js']);
