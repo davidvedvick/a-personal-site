@@ -6,7 +6,7 @@ var Header = React.createClass({
 		return (
 			<div className="header">
 				<h1>David Vedvick</h1>
-				<h2>It's been coded</h2>
+				<h2>{this.props.subheader}</h2>
 			</div>
 		);
 	}

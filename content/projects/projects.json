@@ -39,12 +39,15 @@
 		"name": "media-center-task-bar",
 		"prettyName": "Media Center task bar",
 		"description": "Integrates such Windows 7 features as progress state (either currently playing track or progress in playlist) and Cover Art in the thumbnail preview into the excellent JRiver Media Center application. ",
-		"headlineImage": "",
+		"headlineImage": {
+			"path": "progressbar_thumb.png",
+			"description": "Progress bar thumbnail"
+		},
 		"images":
 		[
 			{
-				"path": "blah.jpg",
-				"description": "I got your description right here!"
+				"path": "progressbar.png",
+				"description": "Progress Bar in action"
 			}
 		]
 	},

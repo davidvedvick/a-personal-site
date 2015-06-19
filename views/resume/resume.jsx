@@ -5,7 +5,7 @@ var marked = require("marked");
 var Resume = React.createClass({
 	render: function() {
 		return (
-			<Layout>
+			<Layout subheader="Resume">
 				<div className="content" dangerouslySetInnerHTML={{__html: marked((this.props.resume || "").toString(), {sanitize: true})}} />
 			</Layout>
 		);
