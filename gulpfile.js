@@ -58,14 +58,15 @@ gulp.task('clean-js', function(cb) {
 
 gulp.task('client-js', ['clean-js'], function () {
 	const destDir = './public/js';
-	return gulp.src("./views/*/*.client.js")
+	return gulp.src("./views/*/*.client.{js,jsx}")
 		.pipe(changed(destDir))
 		.pipe(through2.obj(function (file, enc, next){
 			browserify(file.path)
+				.transform(reactify)
 				.bundle(function(err, res){
-				// assumes file.contents is a Buffer
-				file.contents = res;
-				next(null, file);
+					// assumes file.contents is a Buffer
+					file.contents = res;
+					next(null, file);
 			});
 		}))
 		.pipe(uglify())
