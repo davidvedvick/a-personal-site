@@ -1,5 +1,11 @@
 div.project:extend(div.content all) {
 
+	div.project-details-container {
+		display: -webkit-flex;
+	  	display: flex;
+		flex-flow: row wrap;
+	}
+
 	@import "screenshots/screenshot-list/screenshot-list";
 	@import "features/features";
 }
