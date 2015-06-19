@@ -6,7 +6,7 @@ var Resume = React.createClass({
 	render: function() {
 		return (
 			<Layout subheader="Resume">
-				<div className="content" dangerouslySetInnerHTML={{__html: marked((this.props.resume || "").toString(), {sanitize: true})}} />
+				<div className="resume" dangerouslySetInnerHTML={{__html: marked((this.props.resume || "").toString(), {sanitize: true})}} />
 			</Layout>
 		);
 	}
