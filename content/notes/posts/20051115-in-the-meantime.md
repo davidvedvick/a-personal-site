@@ -1,0 +1,20 @@
+title: In the meantime
+link: http://davidvedvick.info/2005/11/15/personal/in-the-meantime/
+author: vedvick
+description: 
+post_id: 141
+created: 2005/11/15 22:41:00
+created_gmt: 2005/11/16 06:41:00
+comment_status: open
+post_name: in-the-meantime
+status: private
+post_type: post
+
+# In the meantime
+
+_Listening to: 'Untitled 2' from 'The Peel Sessions' by 'Sigur Ros' on Media Center 11_ I walked in the snowy sleet today, with my feet scuffling along a bed of frozen beads of snow on top of frozen cement slabs. The cold weather brought my mood down, but only marginally. In general, I was still really happy as I oddly have been for awhile. I really have no explanation for this large amount of happines. You know what sucks? Turning up your music to drown out your roommate's guitar playing. It's not that he's bad, in fact he's really good, it's just that it interferes with my music listening, which I consider much more important than him increasing his musical abilities. I don't mean that! So it's time for me talk about annoying qualities in the people around me. Funny thing is, I probably exhibit some of these qualities from time to time, but in general I think I'm pretty good about these things. The worst thing is people who feel the need to exhibit no original thought. Not saying that they don't have original thoughts, it's just they for some reason feel that others' thoughts will get along better than theirs. In history, this is probably true. However, those people must not know the satisfaction that comes along with exposing your original thought to the unthinking world and watching it blossom and take shape. This truly is one of the great things of this world. To feel the master of your social being is great and at least makes my ego larger than a planet of medium density. For those of you experiencing a serious lack in ability to express unique ideas, I recommend the following: first, don't worry about what other people think, chances are they've had thoughts just as stupid as yours and were just too big of pussies to let it out; secondly, awkward moments pass; thirdly-ish, when your thought does hit big people love it and other people (that are as unoriginal as you used to be) will copy it, which is extremely satisfying. The next annoying quality in people is competitiveness. I'm not saying that competitiveness is bad in all situations, in fact in most situations it's good. But when you seem to feel the need to prove you are always better than someone (usually me, I think), then I can just tell you this: seriously, step off your pedestal. If you are like most docile human beings, you should realize that we all have our shining moments and qualities, and we all have our down times. Just because I don't do as good as you in one thing doesn't really mean anything, and the fact that I don't say anything about it probably means I DON'T REALLY CARE. Other than the fact that you're annoying me by always proving to the ones around you that you're better than me. The last and latest aspect of certain humans that happens to annoy me is the ability to act like a sophomore in high school when you're a sophomore in college (or for that matter, anything out of the tenth grade). For real though, some people seem to have a tough job letting go of that social period in their lives. It is not necessary to push people out of a social group just because they "upset" your percieved balance of things. Invite them, reset the balance. You'll be happier for it most times. Most of the fixes to these qualities I have learned from my friends who I must give large thanks to. Without them, I could have and probably would have been one of these people. It seems to run in my family so I'm happy I could expel it from my system for the most part. I will always do my best to avoid these things, however they are natural at certain times. The true fix for all these ailments of the human social being is this: humility.
+
+## Comments
+
+**[Anonymous](#56 "2005-11-16 15:40:00"):** YEAH THAT'S GREAT BUT WHERE'S THE NAKED PICTURES OF ENGEL LOL JUST KIDDING GOOD POST
+

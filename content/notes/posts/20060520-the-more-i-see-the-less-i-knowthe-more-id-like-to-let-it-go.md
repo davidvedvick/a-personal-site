@@ -1,0 +1,15 @@
+title: The more I see the less I know/The more I'd like to let it go
+link: http://davidvedvick.info/2006/05/20/personal/the-more-i-see-the-less-i-knowthe-more-id-like-to-let-it-go/
+author: vedvick
+description: 
+post_id: 173
+created: 2006/05/20 02:24:00
+created_gmt: 2006/05/20 10:24:00
+comment_status: open
+post_name: the-more-i-see-the-less-i-knowthe-more-id-like-to-let-it-go
+status: private
+post_type: post
+
+# The more I see the less I know/The more I'd like to let it go
+
+On the topic of Bismarck You know, when I was growing up, my world consisted of one place, and one place only: Bismarck. Sadly, Bismarck is losing that place. It is being replaced with this acknowledgement that the world consists of this giant globe, this universe, that we call the Earth. In fact, since my physics classes I have come to consider the universe as the actual Universe. Sound redundant? Maybe I deserve a "duh?" Well, here's the thing about that. The universe to many people is the social net of people around them and the geological locations of those people. People think about the world in relation to those factors. However, I like to think that I've gotten some awareness these days that I'm just this little dude floatin' around on a big rock that's floating (unexplainably, past the obvious argument of gravity, but then where does gravity come from?) around a giant burning fireball of energy, thats floating around a really tiny, super powerful black hole with a whole other bunch of giant rocks and fireballs. Crazy shit, I know. Anyways, I kind of went off on a tangent there. What I'm getting at is that Bismarck isn't my whole life anymore. There's so much more to it. And the problem with that is that when this happens to you in your life (as it most likely will, if it doesn't I mourn your loss), you will come to the realization that the period in your life when your little town or big city was the focus of your entire being was a special period, however it's a period in your life that you can't go back to. And that's why I'm running away from it, and getting a job in Fargo. I just can't stand it anymore. I don't want to be in this sphere, this inexplicable section of the universe that is impervious to the normal rules of space and time and seems to stay stuck in 2004 and completely unaffected by the ever changing world around it. I love it for what it is to me, but that is all it is: an object of my mind, where I go into this state of complete ignoration of the larger world around me. It's like this dream world, this calm center that I like to visit in my imagination, but that is it. And what I really hate is the thought of ruining that perfect place with my newly formed perceptions of the world. Bismarck can't change, but I can. Those are the rules. And I tend to think that I think like everyone else, so everyone can probably identify with me. Home is the center of your soul. And that's why I can't be here another three months. I don't want to ruin this beautiful city. It's too wonderful in my heart to do something like that to it. David.

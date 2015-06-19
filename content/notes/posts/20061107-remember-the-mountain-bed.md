@@ -1,0 +1,15 @@
+title: Remember the Mountain Bed
+link: http://davidvedvick.info/2006/11/07/non-prose/remember-the-mountain-bed/
+author: vedvick
+description: 
+post_id: 199
+created: 2006/11/07 09:10:41
+created_gmt: 2006/11/07 14:10:41
+comment_status: open
+post_name: remember-the-mountain-bed
+status: private
+post_type: post
+
+# Remember the Mountain Bed
+
+_**Do you still sing of the mountain bed we made of limbs and leaves: Do you still sigh there near the sky where the holly berry bleeds: You laughed as I covered you over with leaves, face, breast, hips and thighs. You smiled when I said the leaves were just the color of your eyes.**_ _**Rosin smells and turpentine smells from eucalyptus and pine Bitter tastes of twigs we chewed where tangled woodvines twine Trees held us in on all four sides so thick we could not see I could not see any wrong in you, and you saw none in me.**_ _**Your arm was brown against the ground, your cheeks part of the sky. As your fingers played with grassy moss, and limber you did lie: Your stomach moved beneath your shirt and your knees were in the air Your feet played games with mountain roots, as you lay thinking there.**_ _**Below us the trees grew clumps of trees, raised families of trees, and they As proud as we tossed their heads in the wind and flung good seeds away: The sun was hot and the sun was bright down in the valley below Where people starved and hungry for life so empty come and go.**_ _**There in the shade and hid from the sun we freed our minds and learned. Our greatest reason for being here, our bodies moved and burned There on our mountain bed of leaves we learned lifeâ€™s reason why The People laugh and love and dream, they fight, they hate to die.**_ _**The smell of your hair I know is still there, if most of our leaves are blown, Our words still ring in the brush and the trees were singing seeds are sown Your shape and form is dim, but plain, there on our mountain bed I see my life was brightest where you laughed and laid your headâ€¦**_ _**I learned the reason why man must work and how to dream big dreams, To conquer time and space and fight the rivers and the seas I stand here filled with my emptiness now and look at city and land And I know why farms and cities are built by hot, warm, nervous hands.**_ _**I crossed many states just to stand here now, my face all hot with tears, I crossed city, and valley, desert, and stream, to bring my body here: My history and future blaze bright in me and all my joy and pain Go through my head on our mountain bed where I smell your hair again.**_ _**All this day long I linger here and on in through the night My greeds, desires, my cravings, hopes, my dreams inside me fight: My loneliness healed my emptiness filled, I walk above all pain Back to the breast of my woman and child to scatter my seeds again.**_ Thank you, Woody Guthrie.

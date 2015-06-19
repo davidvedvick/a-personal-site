@@ -33,6 +33,7 @@ app.use('/projects', function(req, res) {
 
         var projects = JSON.parse(rawProjectData);
 
+        // inject the features markdown text into the project objects
         async.forEachOf(
             projects,
             function (project, key, callback) {

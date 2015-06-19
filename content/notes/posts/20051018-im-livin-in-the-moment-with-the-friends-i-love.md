@@ -1,0 +1,15 @@
+title: I'm livin in the moment with the friends I love
+link: http://davidvedvick.info/2005/10/18/personal/im-livin-in-the-moment-with-the-friends-i-love/
+author: vedvick
+description: 
+post_id: 132
+created: 2005/10/18 01:20:00
+created_gmt: 2005/10/18 09:20:00
+comment_status: open
+post_name: im-livin-in-the-moment-with-the-friends-i-love
+status: private
+post_type: post
+
+# I'm livin in the moment with the friends I love
+
+_Listening to: 'Living In The Moment' from 'Century Spring' by 'Mason Jennings' on Media Center 11_ Wow can anyone believe it's October 18th? Seriously, this year is flying by. Seems like only yesterday that I was moving the rest of my junk into my apartment and getting set up to have a great year. Ok. I guess I should seriously start out my blog by apologizing. I promised an update today, but it turns out life had other plans for me. I spent a good amount of time studying for a terrorism test that I have tomorrow so I guess I was kind of busy. All apologies milkmaster. I had my "Discrete Mathematics" test today and right now I just really have no idea how I did. It's such a wierd class (mostly because it's completely based in logic, which in some instances is subjective), and so my test could really go anywhere. If I did well, then that is good. If I did poorly, that is really, really bad. Why? Ladies and gentlemen, this class is the extreme example of college academics: my two tests constitute 92% of my final grade. Right now, I pray I did well. I studied the best I could (I couldn't find the practice test those fucking bastards of fate). Now all I can know is I did my best. You know that's kind of been the story this year. Considering how my life has been pretty hectic, I really do feel like I've given all I could. However, I think a direct corrolation could be drawn between my upgrade in fun (thank you Grand Forks), and my downgrade in grades. It's just to hard to buckle down when I got best friends around wanting to party with me I guess. Last weekend was a blast. My buddy Muffin came up and we partied it up in the G-town and got all crunk and all that stuff. I think this is the first genuine party I've ever been to. I mean I've been to loads of "parties" where everybody's hangin out and chilling and drinking and having a good time. In other words, a North Dakota party. But this party was a genuine, honest to god, Van Wilder party. For example, there was a guy running around on top of a counter holding a beer bong making everybody and their grandmother's bong beers. It was great. Anyways, I'm sad to say that my less drinking plan isn't holding up very well. I had planned to take last weekend off and go home and stuff and chill out, but that didn't pan out unfortunately. Dear god I hope it didn't backfire. Guess all I can do is just live life. At some point soon though, I'm going to have to lay down boundaries. Sooner rather than later.

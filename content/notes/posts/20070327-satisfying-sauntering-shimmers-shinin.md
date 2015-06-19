@@ -1,0 +1,15 @@
+title: Satisfying Sauntering Shimmers Shinin'
+link: http://davidvedvick.info/2007/03/27/non-sense/satisfying-sauntering-shimmers-shinin/
+author: vedvick
+description: 
+post_id: 231
+created: 2007/03/27 00:52:55
+created_gmt: 2007/03/27 06:52:55
+comment_status: open
+post_name: satisfying-sauntering-shimmers-shinin
+status: private
+post_type: post
+
+# Satisfying Sauntering Shimmers Shinin'
+
+In the world of the Shimmers, one often finds themselves a bit confused and a bit ran around like a wild duck in the middle of the summer heat. It is often incredibly hard to come by any means through which to grasp reason, or at a reason in general, but if you find one, you will most likely be the most confused of the one of you there. Often, when one becomes hurt by a Shimmer, they remark about the strange pain it endures upon them. For indeed, although the Shimmers by no means mean any harm, they often by ways of their Shimmerin' feed their pain down upon the plebian masses whom they mean to help. Of course, the plebians don't recognize that they aren't the only ones bein' shined by the Shimmers, but at any rate it shouldn't hurt the indegineous population of the area too much - in fact, it will hurt those who come after, if briefly or forever. One of my friends, Jonathen Wilcox, has often told me of his encounters with Shimmers, of which he has fought many times. His description came in scarily, it crept up my spine and into my brain where it laid bare its wonderful nest of promises unfulfilled, left to rot in the deep history of the Shimmer's past. So Jonathen told me this: _"Watch for the Shimmers, for in their company you will find yourself at once the happiest to stride this great Earth and at last the first to feel the worst pain deep within and beneath your stomach, where it will rot forever more, and yet never again."_ It was after these contradicting descriptions of the Shimmers that I realized one thing I supposed dear Wilcox had not: the Shimmers greatest pain that can be inflicted is the absence of the joyous feeling they disposed upon you prior to your visiting of the sauntering shinin' plazas. _Author's note: I am really sorry for making you read that. I just believe that I may have gone crazy somewhere between the end of the first last time I tried to write something halfway serious. So letting the right side of the brain or the left it doesn't really matter decide what is best, and indeed just letting the unconcious exercise itself a bit has hopefully helped me so I can continue my paper for a deathly serious writing class that has yet to breathe any life into my creative bones. Love, David Vedvick_ <strike>**_Author's other note: It may have been the Pink Floyd that's too blame but I wouldn't pay too much attention to their influence God knows they've been blamed for too much of not enough._**</strike>

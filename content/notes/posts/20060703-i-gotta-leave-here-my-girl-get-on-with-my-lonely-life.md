@@ -1,0 +1,15 @@
+title: I gotta leave here my girl, get on with my lonely life
+link: http://davidvedvick.info/2006/07/03/personal/i-gotta-leave-here-my-girl-get-on-with-my-lonely-life/
+author: vedvick
+description: 
+post_id: 179
+created: 2006/07/03 00:02:00
+created_gmt: 2006/07/03 08:02:00
+comment_status: open
+post_name: i-gotta-leave-here-my-girl-get-on-with-my-lonely-life
+status: private
+post_type: post
+
+# I gotta leave here my girl, get on with my lonely life
+
+The past week and a half have been a rush, a blur of pure excitement and dead-tired exhaustion. It started with a little tradition I like to call "Whiskey Wednesday," otherwise known as the greatest night of every week. But only when whiskey is introduced. Anyways, that was a week and a half ago today, and that was the start of my trouble-causin' ways. Thursday, I drank with my roommie because she had just finished her classes or she had taken some tests or something. At any rate, she left me for the bars, which is cool and all until you consider that it was 11 PM and I was drunk with no where good to go. Friday, my real roommate Paul came into town (and one of the Vipers, Jon, came as well), and we got sloshed again. Nothing interesting to point out there other than that I got to bond with friends. Saturday, I came home from a long day of work and these guys were drinking on the porch, so I started as well. Passed out around seven, got up and drove to GF. Needless to say, we got drunk. At any rate, I could continue for a few more pages, but I'll stop all this talk of drinking here. The highlights of my week last week were going to Tom Petty and Pearl Jam, and eating at B-Dubs with my coworkers. First, TP and PJ (ever notice how both bands abreviations are also abreviations for common products?): in a word, phenomenal. Was it equivalent to the thirty minutes of guitar thrashing glory that made up the Foo Fighters concert? No. Was it something different, that reached its own heights undefinable by human words? In a word, yes. Guitar solos rocked, singing rocked, and that old man rocks (Tom Petty, not Eddie Vetter of course). My best buds, part of the Hillside crew and Chainsaw, came up from the Bizzonian this weekend, but we didn't get too drunk. Just seeing them made me happy enough anyways. David. Hold on, I just had a thought. You know how supposedly we've been transmitting our TV to the cosmos for nearly 60 years? Well, this may be true, but how are alien civilizations supposed to even know what these wierd radio signals mean? I mean for real, they probably just will end up thinking it's static or something. Sometimes I worry we'll never expand our reach beyond Earth. It's so sad. History and evolution have proved that the only thing that can truly kill a species is its inability to move beyond its own bounds when it finds its comfortable niche and that niche is disrupted.

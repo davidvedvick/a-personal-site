@@ -3,15 +3,14 @@ David Vedvick - Computer Engineer
 
 Technical Skills
 ----------------
-Android, XAML, Silverlight, .Net, C#, Java, ASP.Net, Javascript, ReactJS, Entity Framework, nHibernate, MVC, WinForms, Delphi, PHP, C++, C, HTML, MySQL, PL/SQL, Oracle, SQL Server, Solr, Lucene, IBM DB2, MySQL, SQLite, OpenSUSE, Ubuntu/Debian  Linux, Windows (Server 2003, 2008, 7, 10) 
+Android, XAML, Silverlight, .Net, C#, Java, ASP.Net, Javascript, ReactJS, Entity Framework, nHibernate, MVC, WinForms, Delphi, PHP, C++, C, HTML, MySQL, PL/SQL, Oracle, SQL Server, Solr, Lucene, IBM DB2, MySQL, SQLite, OpenSUSE, Ubuntu/Debian  Linux, Windows (Server 2003, 2008, 7, 10)
 
 
 Experience
 ==========
 
-Rosemount (Emerson Process Management)
+Rosemount (Emerson Process Management) - June 2014 – June 2015
 --------------------------------------
-June 2014 – June 2015
 Software Engineer
 
 1. Maintained a click-once application to track and run hundreds of hardware tests on Rosemount pressure products
@@ -26,9 +25,8 @@ Software Engineer
 	3. Streamlined and improved Job search functionality
 	4. Improved load times in multiple areas of the application
 
-QuadraMed
+QuadraMed - March 2012 – June 2014
 ---------
-March 2012 – June 2014
 Software Engineer
 
 1. Maintained a Hospital scheduling application with 20 years of history, used by dozens of hospitals
@@ -43,9 +41,8 @@ Software Engineer
 	2. Searches recursively through sub-documents
 	3. Coded in Delphi since the Crystal Reports library that QuadraMed owned did not natively support C#
 
-Meridian Technologies
+Meridian Technologies - January 2010 – March 2012
 ---------------------
-January 2010 – March 2012
 Software Developer/Consultant
 
 Wells Fargo Custom Docs
@@ -57,17 +54,14 @@ Wells Fargo Custom Docs
 6. Rendered Loan Agreements were then editable in a WYSIWYG editor (TinyMCE) and also printable via iTextSharp.
 7. Numerous improvements were made in the iTextSharp source code to improve compatibility with the HTML specifications.
 
-Emerson Process Management Co-op
+Emerson Process Management Co-op - May 2008 – December 2008
 --------------------------------
-May 2008 – December 2008
 Software Testing intern
 
 1. Developed Software Verification and Test Documents and executed test Cases
 
-
-Undergraduate Experience
+Undergraduate Experience - August 2004 – December 2009
 ------------------------
-August 2004 – December 2009
 1. Developed Digital Systems Testing projects in C++
 2. Developed applications for embedded processors in C and VHDL
 3. Experience with Microsoft Assembler

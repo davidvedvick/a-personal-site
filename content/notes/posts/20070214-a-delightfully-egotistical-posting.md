@@ -1,0 +1,15 @@
+title: A delightfully egotistical posting
+link: http://davidvedvick.info/2007/02/14/personal/a-delightfully-egotistical-posting/
+author: vedvick
+description: 
+post_id: 223
+created: 2007/02/14 19:39:41
+created_gmt: 2007/02/15 01:39:41
+comment_status: open
+post_name: a-delightfully-egotistical-posting
+status: private
+post_type: post
+
+# A delightfully egotistical posting
+
+So my Intro to Writing Studies teacher was blastin' my writing style a little bit the other day. Not really hardcore or anything like that, you know I wouldn't want to make him look bad, he was just pointing out some discrepancies in my writing. Anyways, I'm not pissed at him or anything, he probably said what he's supposed to say or what he was taught to say or what he thought even whatever it doesn't matter. The thing is, is it got me thinking. Because I really liked my five lil' poems I gave him. You know, it's like some people talk with a style but me I write with a style. Maybe talking's not an art form to me like it is to some but maybe writing is. Like this shit flows. People who see me in class doodling weird curly things all over the damn place, that's what this blog is about. It's about fucking creation in the process. That's the way I try to be all the time, I know it's gotta throw people off. I once told somebody that I'm always changin', well there's why. I just can't stop. I gotta be doing something new something to like change my fucking world and try to make it more beautiful or something. Make people happy maybe or maybe that's bullshit and I'm just trying to make myself happier. Anyways, don't let this post make you all sentimental and start crying or something because of my bitching and moaning and squawking. Shakira's hot. I don't really care too much that Anna Nicole Smith died... is that bad? You know, I care. It really bothers me that anybody has to die. But people do. Some die because of themselves, and others die because of their bodies, and still others die because of others. It happens. At this moment, and at this next moment, and right here too, somebody's dying. Deal with it. Sad. Makes me want to fucking cry sometimes. Makes me fucking scared a lot more of the times. And it makes me enjoy the shit I enjoy a lot more just because of it. Once again hold, back those tears darlins. Yeah life is decent right now I'm liking it being out on my own doing all this crazy stuff that I get to do. Who knows where I'll be next or when I'll show up at a door or when I'll walk into somebody's life but you gotta just not expect it and then I'll be there. Fuckin' drunk or caffeinated outta my brains or maybe on the rare occasion stoned (that's what all the rockstars say so I got to say that too), and there I'll be raisin' my hands like I'm the king. I'll be back on here don't worry too much. Worry a little bit though, it makes me feel good to know people care.

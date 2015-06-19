@@ -1,0 +1,15 @@
+title: Rasterbatin' up the walls
+link: http://davidvedvick.info/2006/04/17/personal/rasterbatin-up-the-walls/
+author: vedvick
+description: 
+post_id: 166
+created: 2006/04/17 00:28:00
+created_gmt: 2006/04/17 08:28:00
+comment_status: open
+post_name: rasterbatin-up-the-walls
+status: private
+post_type: post
+
+# Rasterbatin' up the walls
+
+_Listening to: 'Better' from 'Hoobastank' by 'Hoobastank' on Media Center 11_ It has been a long time. In fact, to say long time is to understating exactly how long it's been since I've put up a real post here. To tell the truth, it's probably been so long that I don't have any readers anymore. Now that I've guilt-tripped all of you foolish readers into reading this thing for life (and possibly re-reading if you find yourself bored one summer), I'm going to do a boring post and just tell you what the hell I've been doing. For one, I've been going to school. I got over being sick by going to the doctor and saying "Hey I'm fucked up and I have been for the past month," (granted, I could hardly talk at this point). She replied by saying "Here's a drug go home." Guess what? The drug worked! Fuck yeah. Why can't some online doctor do this for me? That would be really nice and allow for some cool illegal things to go on. Now I'll probably make myself sick again by smoking cigarettes. I'm not trying to get addicted but judging by the way I've been smoking them while drunk lately you'd think I was. And judging by the way I've been drinking lately it's almost inevitable I'm going to become a nicotine addict. Smells Like Teen Spirit just came on. Talk about nostalgia. Anyways, back to my life. Very important stuff. Well, to put it simply, beyond getting healthy, I've been working out more, eating less (well, trying to), and generally trying to live healthy for a 20 year old low life. So yeah healthy. Also I've been doing this really cool thing called [rasterbating](http://homokaasu.org/rasterbator/) (click on the link to get in on it). What it basically allows me to do is to blow up a picture so that it's printed out on multiple sheets of paper and make it look good. Really. Here's a picture of the one I made of my favorite anime: ![](http://photos1.blogger.com/blogger/6155/868/400/Pix007.jpg)That is seriously really close to how good it looks. And that was taken with my phone's camera. I have another two of those and I can confidently say that my walls are very occupied now. So how does it do it you ask? Well, you could go to the website and try it out, but I'll explain it to you: basically it uploads your image, turns it into dots in either basic colors or the color you want it in. The dots are rather large, and in order to trick the eye into thinking lighter shades, it makes some dots smaller. That's a really stupid explanation I know. You have to see it for yourself. Or look at some of the pictures in the website's gallery. Anyways, going to Jack's Mannequin next weekend. It's going to be so awesome. I'll probably die of ecstasy. Peace and good luck.

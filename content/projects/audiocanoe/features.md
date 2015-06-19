@@ -6,4 +6,6 @@
 * Intuitive layout
 * Modern Design
 
+*Requires [JRiver Media Center](http://jriver.com/) running on your home server*
+
 *Become a beta tester at https://plus.google.com/communities/116136407897208577626*
