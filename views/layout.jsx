@@ -6,16 +6,17 @@ var Header = require("./header");
 var Layout = React.createClass({
 	displayName: "Layout",
 	render: function() {
+		var subheader = this.props.subheader || "It's been coded";
 		return (
 			<html>
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 				<link href="/css/layout.css" type="text/css" rel="stylesheet" />
-				<title>David Vedvick (It's been coded)</title>
+				<title>David Vedvick ({this.props.subheader})</title>
 			</head>
 			<body>
 				<div className="layout">
-					<Header />
+					<Header subheader={this.props.subheader} />
 					<Menu />
 					{this.props.children}
 				</div>

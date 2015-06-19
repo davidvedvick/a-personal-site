@@ -43,8 +43,12 @@
 		"images":
 		[
 			{
-				"path": "blah.jpg",
-				"description": "I got your description right here!"
+				"path": "progressbar.png",
+				"description": "Progress Bar in action"
+			},
+			{
+				"path": "progressbar_thumb.png",
+				"description": "Progress bar thumbnail"
 			}
 		]
 	},
