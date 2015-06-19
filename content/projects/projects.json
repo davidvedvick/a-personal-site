@@ -55,7 +55,11 @@
 	{
 		"name": "deliciouspc",
 		"description": "Design your own PC website",
-		"headlineImage": "",
+		"headlineImage":
+		{
+			"path": "deliciousPCLogoNew.png",
+			"description": "deliciouspc logo"	
+		},
 		"images": []
 	}
 ]

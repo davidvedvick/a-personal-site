@@ -5,3 +5,5 @@
 * Interfaces with apps that implement the Scrobble Droid interface (Simple Last.fm Scrobbler is my scrobbler of choice) for scrobbling to Last.fm or Libre.fm
 * Intuitive layout
 * Modern Design
+
+*Become a beta tester at https://plus.google.com/communities/116136407897208577626*
