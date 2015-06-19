@@ -37,18 +37,13 @@ app.use('/projects', function(req, res) {
             projects,
             function (project, key, callback) {
                 var filePath = path.join('content', 'projects', project.name, 'features.md');
-                fs.exists(filePath, function(exists) {
-                    if (!exists) {
-                        callback();
-                        return;
-                    }
 
-                    fs.readFile(filePath, "utf8", function(err, data) {
-                        if (err) return callback(err);
 
+                fs.readFile(filePath, 'utf8', function(err, data) {
+                    if (!err)
                         project.features = data;
-                        callback();
-                    });
+
+                    callback();
                 });
 
             },
