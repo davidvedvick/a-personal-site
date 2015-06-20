@@ -24,7 +24,7 @@ app.engine('jsx', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-app.use('/projects', function(req, res) {
+app.get('/projects', function(req, res) {
     fs.readFile('content/projects/projects.json', function(error, rawProjectData) {
         if (error) {
             console.log(error);
@@ -64,7 +64,7 @@ app.use('/projects', function(req, res) {
     });
 });
 
-app.use('/resume', function(req, res) {
+app.get('/resume', function(req, res) {
     fs.readFile('content/resume.md', function(error, resumeMarkdown) {
         if (error) {
             console.log(error);
@@ -76,6 +76,75 @@ app.use('/resume', function(req, res) {
         } catch (exception) {
             console.log(exception);
         }
+    });
+});
+
+app.get('/notes', function(req, res) {
+    const notePath = 'content/notes/posts';
+    fs.readdir(notePath, function(err, files) {
+        if (err) {
+            console.log(err);
+            res.render(err);
+            return;
+        }
+
+        // really hacky way to pull files back for now
+        // need to filter out (or just delete) private files in the future
+        var filesToRead = files
+                            .sort()
+                            .reverse()
+                            .slice(0, 10);
+
+        var parsedNotes = [];
+
+        async.forEachOf(
+            filesToRead,
+            function(file, key, callback) {
+                fs.readFile(path.join(notePath, file), 'utf8', function(err, data) {
+                    if (err) {
+                        callback();
+                        return;
+                    }
+
+                    var newNote = {
+                        "date": new Date(file.substring(0, 4), file.substring(4,5), file.substring(6,7)),
+                        "text": ""
+                    };
+
+                    data.split('\n')
+                        .slice(12)
+                        .forEach(function(line) {
+                            newNote.text += line.trim() + '\n';
+                        });
+
+                    parsedNotes.push(newNote);
+                    callback();
+                });
+            },
+            function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+
+                parsedNotes =
+                    parsedNotes
+                        .sort(function(a, b) {
+                            return (
+                                isFinite(a) &&
+                                isFinite(b) ?
+                                (a>b)-(a<b) :
+                                NaN
+                            );
+                        });
+
+                try {
+                    res.render('notes/notes-list', { notes: parsedNotes });
+                } catch (exception) {
+                    console.log(exception);
+                }
+            }
+        )
     });
 });
 
