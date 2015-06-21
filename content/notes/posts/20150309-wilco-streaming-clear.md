@@ -1,7 +1,7 @@
 title: Wilco streaming clear
 link: http://davidvedvick.info/2015/03/09/random-thoughts/wilco-streaming-clear/
 author: vedvick
-description: 
+description:
 post_id: 1397
 created: 2015/03/09 22:22:36
 created_gmt: 2015/03/10 04:22:36
