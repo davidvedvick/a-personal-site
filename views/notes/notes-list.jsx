@@ -27,7 +27,6 @@ var NotesList = React.createClass({
 	render: function() {
 		// notes objects should look like "{title, date, text}". don't include private
 		// ones
-
 		var noteNodes = (this.state.notes || []).map(function(note) {
 			return (<Note note={note} />);
 		});
@@ -35,6 +34,7 @@ var NotesList = React.createClass({
 		return (
 			<div id="notes-container">
 				{noteNodes}
+				<a href="#more" id="more-notes" onClick={this.onMoreNotesClick}>More!</a>
 			</div>
 		);
 	}

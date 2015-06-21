@@ -73,8 +73,13 @@ gulp.task('client-js', ['clean-js'], function () {
 			})),
 			os.cpus().length
 		)
-		.pipe(uglify())
-		.pipe(rename({ dirname: "" }))
+		.pipe(rename({
+			dirname: '',
+			extname: '.js'
+		}))
+		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+		.pipe(parallel(uglify(), os.cpus().length))
+		.pipe(sourcemaps.write('./')) // writes .map file
 		.pipe(gulp.dest(destDir));
 });
 

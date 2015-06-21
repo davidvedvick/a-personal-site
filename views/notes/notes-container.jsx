@@ -8,8 +8,7 @@ var NotesContainer = React.createClass({
 			<Layout subheader="Notes">
 				<NotesList notes={this.props.notes} />
 
-				<a href="#more" id="more-notes">More!</a>
-				<script type="text/javascript" src="/notes.client.js" />
+				<script type="text/javascript" src="/js/notes.client.js" />
 			</Layout>
 		);
 	}

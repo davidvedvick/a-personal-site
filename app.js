@@ -154,6 +154,87 @@ app.get('/notes', function(req, res) {
     });
 });
 
+app.get(/^\/notes\/([0-9]*)/, function(req, res) {
+    var page = req.params[0];
+    if (!page) {
+        res.json([]);
+        return;
+    }
+
+    const notePath = 'content/notes/posts';
+    fs.readdir(notePath, function(err, files) {
+        if (err) {
+            console.log(err);
+            res.render(err);
+            return;
+        }
+
+        // really hacky way to pull files back for now
+        // need to filter out (or just delete) private files in the future
+        var filesToRead = files
+                            .sort()
+                            .reverse()
+                            .slice(page, page + 20);
+
+        var parsedNotes = [];
+
+        async.forEachOf(
+            filesToRead,
+            function(file, key, callback) {
+                fs.readFile(path.join(notePath, file), 'utf8', function(err, data) {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+
+                    var newNote = {
+                        "date": new Date(file.substring(0, 4), file.substring(4, 5), file.substring(6, 7))
+                    };
+
+                    var textLines = data.split('\n');
+
+                    // Convention: treat first headline as start of note
+                    for (var i = 0; i < textLines.length; i++) {
+                        if (textLines[i].trim()[0] !== '#') continue;
+
+                        newNote.text = textLines
+                                            .slice(i)
+                                            // trim any other text
+                                            .map(function(line) {
+                                                return line.trim();
+                                            })
+                                            // add back in the line returns
+                                            .join('\n');
+
+                        break;
+                    }
+
+                    parsedNotes.push(newNote);
+                    callback();
+                });
+            },
+            function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+
+                parsedNotes =
+                    parsedNotes
+                        .sort(function(a, b) {
+                            return isFinite(a) && isFinite(b) ? (a>b)-(a<b) : NaN;
+                        });
+
+                try {
+                    res.json(parsedNotes);
+                } catch (exception) {
+                    console.log(exception);
+                }
+            }
+        )
+    });
+});
+
 app.listen(3000);
 
 console.log('Server started: http://localhost:3000/');
