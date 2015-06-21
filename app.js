@@ -93,7 +93,7 @@ app.get('/notes', function(req, res) {
         var filesToRead = files
                             .sort()
                             .reverse()
-                            .slice(0, 10);
+                            .slice(0, 20);
 
         var parsedNotes = [];
 
@@ -107,8 +107,7 @@ app.get('/notes', function(req, res) {
                     }
 
                     var newNote = {
-                        "date": new Date(file.substring(0, 4), file.substring(4,5), file.substring(6,7)),
-                        "text": ""
+                        "date": new Date(file.substring(0, 4), file.substring(4, 5), file.substring(6, 7))
                     };
 
                     var textLines = data.split('\n');
@@ -142,12 +141,7 @@ app.get('/notes', function(req, res) {
                 parsedNotes =
                     parsedNotes
                         .sort(function(a, b) {
-                            return (
-                                isFinite(a) &&
-                                isFinite(b) ?
-                                (a>b)-(a<b) :
-                                NaN
-                            );
+                            return isFinite(a) && isFinite(b) ? (a>b)-(a<b) : NaN;
                         });
 
                 try {
