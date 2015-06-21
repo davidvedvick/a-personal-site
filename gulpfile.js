@@ -22,51 +22,57 @@ var changed = require('gulp-changed');
 var imageResize = require('gulp-image-resize');
 var os = require('os');
 
-// Bundle JS/JSX
-var notesJsxBundler = watchify(browserify('./views/notes/notes-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
-// add any other browserify options or transforms here
-notesJsxBundler
-	.transform(reactify)
-	.on('update', function() {
-		gutil.log('Notes JSX build updated');
-		notesJsxClient();
-	}); // on any dep update, runs the bundler
+// // Bundle JS/JSX
+// var notesJsxBundler = watchify(browserify('./views/notes/notes-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
+// // add any other browserify options or transforms here
+// notesJsxBundler
+// 	.transform(reactify)
+// 	.on('update', function() {
+// 		gutil.log('Notes JSX build updated');
+// 		notesJsxClient();
+// 	}); // on any dep update, runs the bundler
+//
+// function notesJsxClient() {
+//
+// 	return notesJsxBundler
+// 		.bundle()
+// 		// log errors if they happen
+// 		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+// 		.pipe(source('notes.client.js'))
+// 		// optional, remove if you dont want sourcemaps
+// 		.pipe(buffer())
+// 		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+// 		.pipe(uglify())
+// 		.pipe(sourcemaps.write('./')) // writes .map file
+// 		.pipe(gulp.dest('./public/js'));
+// }
 
-function notesJsxClient() {
-
-	return notesJsxBundler
-		.bundle()
-		// log errors if they happen
-		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-		.pipe(source('notes.client.js'))
-		// optional, remove if you dont want sourcemaps
-		.pipe(buffer())
-		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-		.pipe(uglify())
-		.pipe(sourcemaps.write('./')) // writes .map file
-		.pipe(gulp.dest('./public/js'));
-}
-
+// gulp.task('notes-jsx-client', ['clean-js'], notesJsxClient);
 
 gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
 });
 
-gulp.task('notes-jsx-client', ['clean-js'], notesJsxClient);
 
 gulp.task('client-js', ['clean-js'], function () {
 	const destDir = './public/js';
-	return gulp.src("./views/*/*.client.{js,jsx}")
-		.pipe(changed(destDir))
-		.pipe(through2.obj(function (file, enc, next){
-			browserify(file.path)
-				.transform(reactify)
-				.bundle(function(err, res){
-					// assumes file.contents is a Buffer
-					file.contents = res;
-					next(null, file);
-			});
-		}))
+	return gulp.src('./views/*/*.client.{js,jsx}')
+		.pipe(parallel(
+			through2.obj(function (file, enc, next) {
+				browserify(file.path, { extensions: '.jsx' })
+					.transform(reactify)
+					.bundle(function(err, res){
+						if (err)
+							console.log(err);
+						// assumes file.contents is a Buffer
+						else
+							file.contents = res;
+
+						next(null, file);
+					});
+			})),
+			os.cpus().length
+		)
 		.pipe(uglify())
 		.pipe(rename({ dirname: "" }))
 		.pipe(gulp.dest(destDir));
@@ -109,7 +115,7 @@ gulp.task('project-images', function () {
 			.pipe(gulp.dest(destDir));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs', 'notes-jsx-client']);
+gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);

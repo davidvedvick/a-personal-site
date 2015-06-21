@@ -145,7 +145,7 @@ app.get('/notes', function(req, res) {
                         });
 
                 try {
-                    res.render('notes/notes-list', { notes: parsedNotes });
+                    res.render('notes/notes-container', { notes: parsedNotes });
                 } catch (exception) {
                     console.log(exception);
                 }
