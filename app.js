@@ -102,7 +102,7 @@ app.get('/notes', function(req, res) {
             function(file, key, callback) {
                 fs.readFile(path.join(notePath, file), 'utf8', function(err, data) {
                     if (err) {
-                        callback();
+                        callback(err);
                         return;
                     }
 
@@ -111,11 +111,23 @@ app.get('/notes', function(req, res) {
                         "text": ""
                     };
 
-                    data.split('\n')
-                        .slice(12)
-                        .forEach(function(line) {
-                            newNote.text += line.trim() + '\n';
-                        });
+                    var textLines = data.split('\n');
+
+                    // Convention: treat first headline as start of note
+                    for (var i = 0; i < textLines.length; i++) {
+                        if (textLines[i].trim()[0] !== '#') continue;
+
+                        newNote.text = textLines
+                                            .slice(i)
+                                            // trim any other text
+                                            .map(function(line) {
+                                                return line.trim();
+                                            })
+                                            // add back in the line returns
+                                            .join('\n');
+
+                        break;
+                    }
 
                     parsedNotes.push(newNote);
                     callback();
