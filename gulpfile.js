@@ -23,38 +23,36 @@ var imageResize = require('gulp-image-resize');
 var os = require('os');
 
 // Bundle JS/JSX
-// var jsBundler = watchify(browserify('./views/project/project-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
-// // add any other browserify options or transforms here
-// jsBundler
-// 	.transform(reactify)
-// 	.on('update', function() {
-// 		gutil.log('React build updated');
-// 		bundleJs();
-// 	}); // on any dep update, runs the bundler
-//
-// jsBundler
-// 	.on('update', function() {
-// 		gutil.log('Client JS build updated');
-// 		bundleJs();
-// 	}); // on any dep update, runs the bundler
-//
-// function bundleJs() {
-//
-// 	return jsBundler.bundle()
-// 		// log errors if they happen
-// 		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-// 		.pipe(source('client.js'))
-// 		// optional, remove if you dont want sourcemaps
-// 		.pipe(buffer())
-// 		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-// 		.pipe(uglify())
-// 		.pipe(sourcemaps.write('./')) // writes .map file
-// 		.pipe(gulp.dest('./public/js'));
-// }
+var notesJsxBundler = watchify(browserify('./views/notes/notes-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
+// add any other browserify options or transforms here
+notesJsxBundler
+	.transform(reactify)
+	.on('update', function() {
+		gutil.log('Notes JSX build updated');
+		notesJsxClient();
+	}); // on any dep update, runs the bundler
+
+function notesJsxClient() {
+
+	return notesJsxBundler
+		.bundle()
+		// log errors if they happen
+		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
+		.pipe(source('notes.client.js'))
+		// optional, remove if you dont want sourcemaps
+		.pipe(buffer())
+		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+		.pipe(uglify())
+		.pipe(sourcemaps.write('./')) // writes .map file
+		.pipe(gulp.dest('./public/js'));
+}
+
 
 gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
 });
+
+gulp.task('notes-jsx-client', ['clean-js'], notesJsxClient);
 
 gulp.task('client-js', ['clean-js'], function () {
 	const destDir = './public/js';
@@ -73,8 +71,6 @@ gulp.task('client-js', ['clean-js'], function () {
 		.pipe(rename({ dirname: "" }))
 		.pipe(gulp.dest(destDir));
 });
-
-// gulp.task('react', ['clean-js'], bundleJs); // so you can run `gulp js` to build the file
 
 gulp.task('clean-css', function(cb) {
 	del(['./public/css'], cb);
@@ -113,7 +109,7 @@ gulp.task('project-images', function () {
 			.pipe(gulp.dest(destDir));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs']);
+gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs', 'notes-jsx-client']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);

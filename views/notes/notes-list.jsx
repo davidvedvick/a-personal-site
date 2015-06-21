@@ -12,10 +12,11 @@ var NotesList = React.createClass({
 		});
 
 		return (
-			<Layout subheader="Notes">
+			<Layout subheader="Notes" className="notes-container">
 				{noteNodes}
 			</Layout>
 		);
+		// Use react.render to replace notes container
 	}
 });
 
