@@ -12,7 +12,7 @@ post_type: post
 
 # Version 0.9.4 of Windows 7/8 J. River Integration Media Center Plug-in
 
-After a long wait, a new version of the Media Center plug-in is out! [It can be downloaded here](https://code.google.com/p/j-river-media-center-windows-7-shell-integration/downloads/list) and as you can see, I've added basic Jumplist support for Playlists:   ![Playlist Jumplist](/wp-content/uploads/2013/09/mc_aero_jumplist.png)   ![Added configuration for adding playlists to jumplist](http://davidvedvick.info/wp-content/uploads/2013/09/mc_config-1024x506.jpg)   Here's the official changelist: New: 
+After a long wait, a new version of the Media Center plug-in is out! [It can be downloaded here](https://code.google.com/p/j-river-media-center-windows-7-shell-integration/downloads/list) and as you can see, I've added basic Jumplist support for Playlists:   ![Playlist Jumplist](http://davidvedvick.info/wp-content/uploads/2013/09/mc_aero_jumplist.png)   ![Added configuration for adding playlists to jumplist](http://davidvedvick.info/wp-content/uploads/2013/09/mc_config-1024x506.jpg)   Here's the official changelist: New: 
 
   * Playlists can be pinned in the jumplist
 Bug fixes: 

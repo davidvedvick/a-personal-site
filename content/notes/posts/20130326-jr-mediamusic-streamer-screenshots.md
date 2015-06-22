@@ -12,7 +12,7 @@ post_type: post
 
 # "JR Media/Music Streamer" screenshots...
 
-Some work in progress screenshots....![device-2013-03-26-220857](/wp-content/uploads/2013/03/device-2013-03-26-220857-576x1024.png)   ![device-2013-03-26-220654](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220654-576x1024.png) ![device-2013-03-26-220731](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220731-576x1024.png) ![device-2013-03-26-220753](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220753-576x1024.png) ![device-2013-03-26-220808](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220808-576x1024.png)Todo: 
+Some work in progress screenshots....![device-2013-03-26-220857](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220857-576x1024.png)   ![device-2013-03-26-220654](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220654-576x1024.png) ![device-2013-03-26-220731](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220731-576x1024.png) ![device-2013-03-26-220753](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220753-576x1024.png) ![device-2013-03-26-220808](http://davidvedvick.info/wp-content/uploads/2013/03/device-2013-03-26-220808-576x1024.png)Todo: 
 
   * Add a button to go to "Now Playing" when it's not playing but is paused
   * Save the state of the app to local (NAND) memory when the music is paused and the garbage collector comes around

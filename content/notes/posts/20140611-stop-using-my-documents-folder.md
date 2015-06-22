@@ -22,4 +22,4 @@ Game developers, please stop using my "Documents" folder to preserve the state o
       * And if I do, and I already know how to use a back-up service, I will configure it do that myself!
   * It puts a bunch of folders in _my_ documents folder referencing gaming companies. I don't see you putting your video games in my filing cabinet, WHY IN THE HELL IS IT IN MY DOCUMENTS FOLDER?!
   * Finally, usually the data isn't even frickin' documents! Take a look at Sid Meier's Civilization 5:
-[caption id="attachment_1295" align="aligncenter" width="300"]![Civ 5 Cache](/wp-content/uploads/2014/06/civ5-300x204.png) Civilization 5 Cache is somehow in my Documents folder[/caption] Note above how the _cache_ is stored in my documents folder. Do you think a _cache_ is something I would store in my documents, Sid?
+[caption id="attachment_1295" align="aligncenter" width="300"]![Civ 5 Cache](http://davidvedvick.info/wp-content/uploads/2014/06/civ5-300x204.png) Civilization 5 Cache is somehow in my Documents folder[/caption] Note above how the _cache_ is stored in my documents folder. Do you think a _cache_ is something I would store in my documents, Sid?

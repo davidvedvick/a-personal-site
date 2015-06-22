@@ -12,4 +12,4 @@ post_type: post
 
 # A (color) change is gonna come
 
-![tmp_9802-Screenshot_2014-12-19-22-29-521040253195](/wp-content/uploads/2014/12/tmp_9802-Screenshot_2014-12-19-22-29-521040253195-576x1024.png) Coming even sooner! Without the sepia/night time shading.
+![tmp_9802-Screenshot_2014-12-19-22-29-521040253195](http://davidvedvick.info/wp-content/uploads/2014/12/tmp_9802-Screenshot_2014-12-19-22-29-521040253195-576x1024.png) Coming even sooner! Without the sepia/night time shading.

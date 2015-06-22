@@ -12,4 +12,4 @@ post_type: post
 
 # Clearstream on a Tablet
 
-[caption id="attachment_1345" align="aligncenter" width="640"]![Clearstream on a Nexus 7 \(2012\)](/wp-content/uploads/2015/01/tmp_15489-Screenshot_2015-01-14-17-32-292112591728-640x1024.png) Clearstream on a Nexus 7 (2012)[/caption]
+[caption id="attachment_1345" align="aligncenter" width="640"]![Clearstream on a Nexus 7 \(2012\)](http://davidvedvick.info/wp-content/uploads/2015/01/tmp_15489-Screenshot_2015-01-14-17-32-292112591728-640x1024.png) Clearstream on a Nexus 7 (2012)[/caption]
