@@ -126,5 +126,5 @@ gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch('./content/projects/**/imgs/*', ['project-images']);
-	gulp.watch('./views/**/*.client.js', ['client-js']);
+	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
 });
