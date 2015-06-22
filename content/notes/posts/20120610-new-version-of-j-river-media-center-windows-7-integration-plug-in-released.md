@@ -19,6 +19,7 @@ A new version of my Windows 7 integration plug-in for [J. River Media Center](ht
 
 It can be downloaded from the [Google Code](http://code.google.com/p/j-river-media-center-windows-7-shell-integration/downloads/list) site I set-up for it.
 
-I will detail the memory leak fix in greater detail a little bit later, as it was quite interesting... [caption id="attachment_965" align="aligncenter" width="300" caption="Windows 7 J. River Media Center Integration"]![Windows 7 J. River Media Center Integration](http://machine.devedcomputers.com/wp-content/uploads/2012/06/progressbar-300x187.png)[/caption]    
+I will detail the memory leak fix in greater detail a little bit later, as it was quite interesting... ![Windows 7 J. River Media Center Integration](http://machine.devedcomputers.com/wp-content/uploads/2012/06/progressbar-300x187.png)
+**    
 
   * Download: <http://code.google.com/p/j-river-media-center-windows-7-shell-integration/downloads/list>

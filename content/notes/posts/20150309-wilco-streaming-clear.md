@@ -12,4 +12,5 @@ post_type: post
 
 # Wilco streaming clear
 
-[caption id="attachment_1396" align="aligncenter" width="576"]![Tweedy + clearstream](http://davidvedvick.info/wp-content/uploads/2015/03/tmp_17386-Screenshot_2015-03-09-23-17-49-344938572-576x1024.png) Tweedy + clearstream[/caption]
+![Tweedy + clearstream](http://davidvedvick.info/wp-content/uploads/2015/03/tmp_17386-Screenshot_2015-03-09-23-17-49-344938572-576x1024.png)
+*Tweedy + clearstream*
