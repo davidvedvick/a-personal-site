@@ -3,18 +3,17 @@ var Note = require('./note/note');
 var jQuery = require('jquery');
 
 var NotesList = React.createClass({
+	page: 1,
 	getInitialState: function() {
 		return {
-			notes: this.props.notes || [],
-			page: 1
+			notes: this.props.notes || []
 		};
 	},
 	onMoreNotesClick: function(e) {
 		e.preventDefault();
-		this.setState({page: this.state.page + 1});
-		console.log(this.state.page);
+		console.log(this.page);
 		jQuery.ajax({
-			url: '/notes/' + this.state.page,
+			url: '/notes/' + (++this.page),
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
@@ -25,6 +24,9 @@ var NotesList = React.createClass({
 			}.bind(this)
 		});
 	},
+	handleScroll: function(e) {
+		console.log(e.detail);
+	},
 	render: function() {
 		// notes objects should look like "{title, date, text}". don't include private
 		// ones
@@ -33,7 +35,7 @@ var NotesList = React.createClass({
 		});
 
 		return (
-			<div id="notes-container">
+			<div id="notes-container" onScroll={this.handleScroll}>
 				{noteNodes}
 				<a href="#more" id="more-notes" onClick={this.onMoreNotesClick}>More!</a>
 			</div>
