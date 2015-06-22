@@ -11,7 +11,8 @@ var NotesList = React.createClass({
 	},
 	onMoreNotesClick: function(e) {
 		e.preventDefault();
-		this.setState({page: this.state.page++});
+		this.setState({page: this.state.page + 1});
+		console.log(this.state.page);
 		jQuery.ajax({
 			url: '/notes/' + this.state.page,
 			dataType: 'json',

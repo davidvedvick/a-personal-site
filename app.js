@@ -161,6 +161,7 @@ app.get(/^\/notes\/([0-9]*)/, function(req, res) {
         return;
     }
 
+    const pageSize = 20;
     const notePath = 'content/notes/posts';
     fs.readdir(notePath, function(err, files) {
         if (err) {
@@ -169,12 +170,14 @@ app.get(/^\/notes\/([0-9]*)/, function(req, res) {
             return;
         }
 
+        var startIndex = (page - 1) * pageSize;
+        console.log(page);
         // really hacky way to pull files back for now
         // need to filter out (or just delete) private files in the future
         var filesToRead = files
                             .sort()
                             .reverse()
-                            .slice(page, page + 20);
+                            .slice(startIndex, startIndex + pageSize);
 
         var parsedNotes = [];
 
