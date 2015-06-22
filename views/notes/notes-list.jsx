@@ -24,9 +24,6 @@ var NotesList = React.createClass({
 			}.bind(this)
 		});
 	},
-	handleScroll: function(e) {
-		console.log(e.detail);
-	},
 	render: function() {
 		// notes objects should look like "{title, date, text}". don't include private
 		// ones
@@ -35,7 +32,7 @@ var NotesList = React.createClass({
 		});
 
 		return (
-			<div id="notes-container" onScroll={this.handleScroll}>
+			<div id="notes-container">
 				{noteNodes}
 				<a href="#more" id="more-notes" onClick={this.onMoreNotesClick}>More!</a>
 			</div>

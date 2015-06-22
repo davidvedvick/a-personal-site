@@ -3,7 +3,7 @@ var marked = require("marked");
 
 var Note = React.createClass({
 	render: function() {
-		return (<div className="content" dangerouslySetInnerHTML={{__html: marked(this.props.note.text || "", {sanitize: true})}} />);
+		return (<div className="note" dangerouslySetInnerHTML={{__html: marked(this.props.note.text || "", {sanitize: true})}} />);
 	}
 });
 
