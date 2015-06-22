@@ -82,7 +82,7 @@ app.get('/resume', function(req, res) {
 (function(localApp) {
     var getNotes = function(page, onNotesLoaded) {
         const pageSize = 10;
-        const notePath = 'content/notes/posts';
+        const notePath = 'content/notes';
         fs.readdir(notePath, function(err, files) {
             if (err) {
                 console.log(err);
