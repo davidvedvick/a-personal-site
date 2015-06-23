@@ -5,13 +5,14 @@ var jQuery = require('jquery');
 var NotesList = React.createClass({
 	page: 1,
 	isLoading: false,
+	isMoreData: true,
 	getInitialState: function() {
 		return {
 			notes: this.props.notes || []
 		};
 	},
 	getNotes: function() {
-		if (this.isLoading) return;
+		if (this.isLoading || !this.isMoreData) return;
 
 		this.isLoading = true;
 	 	jQuery.ajax({
@@ -19,6 +20,10 @@ var NotesList = React.createClass({
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
+				if (data.length == 0) {
+					this.isMoreData = false;
+					return;
+				}
 				this.setState({notes: this.state.notes.concat(data)});
 				this.isLoading = false;
 			}.bind(this),
@@ -33,6 +38,7 @@ var NotesList = React.createClass({
 		(function($) {
 			$(function() {
 				$(window).scroll(function(event) {
+					if (!reactObject.isMoreData) return;
 					if ($(window).scrollTop() < $('div.note:nth-last-child(5)').offset().top) return;
 
 					reactObject.getNotes();
