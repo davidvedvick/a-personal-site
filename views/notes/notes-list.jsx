@@ -36,13 +36,19 @@ var NotesList = React.createClass({
 	componentDidMount: function() {
 		var reactObject = this;
 		(function($) {
-			$(function() {
-				$(window).scroll(function(event) {
-					if (!reactObject.isMoreData) return;
-					if ($(window).scrollTop() < $('div.note:nth-last-child(5)').offset().top) return;
+			var scrollHandler = function(event) {
+				if (!reactObject.isMoreData) {
+					$(window).off('scroll', scrollHandler);
+					return;
+				}
 
-					reactObject.getNotes();
-				});
+				if ($(window).scrollTop() < $('div.note:nth-last-child(5)').offset().top) return;
+
+				reactObject.getNotes();
+			};
+
+			$(function() {
+				$(window).on('scroll', scrollHandler);
 			});
 		})(jQuery);
 	},
