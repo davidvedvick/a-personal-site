@@ -123,7 +123,7 @@ app.get('/resume', function(req, res) {
                             });
 
                         var newNote = {
-                            "date": new Date(props.created_gmt)
+                            created: new Date(props.created),
                         };
 
                         // Convention: treat first headline as start of note
@@ -155,8 +155,8 @@ app.get('/resume', function(req, res) {
                     parsedNotes =
                         parsedNotes
                             .sort(function(a, b) {
-                                return isFinite(a.date) && isFinite(b.date) ?
-                                    (a.date > b.date) - (a.date < b.date) :
+                                return isFinite(a.created) && isFinite(b.created) ?
+                                    (a.created > b.created) - (a.created < b.created) :
                                     NaN;
                             })
                             .reverse();
