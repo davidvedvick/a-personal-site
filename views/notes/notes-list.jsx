@@ -4,25 +4,41 @@ var jQuery = require('jquery');
 
 var NotesList = React.createClass({
 	page: 1,
+	isLoading: false,
 	getInitialState: function() {
 		return {
 			notes: this.props.notes || []
 		};
 	},
-	onMoreNotesClick: function(e) {
-		e.preventDefault();
-		console.log(this.page);
-		jQuery.ajax({
+	getNotes: function() {
+		if (this.isLoading) return;
+
+		this.isLoading = true;
+	 	jQuery.ajax({
 			url: '/notes/' + (++this.page),
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
 				this.setState({notes: this.state.notes.concat(data)});
+				this.isLoading = false;
 			}.bind(this),
 			error: function(xhr, status, err) {
-				console.error(this.props.url, status, err.toString());
+				this.isLoading = false;
+				console.error(err.toString());
 			}.bind(this)
 		});
+	},
+	componentDidMount: function() {
+		var reactObject = this;
+		(function($) {
+			$(function() {
+				$(window).scroll(function(event) {
+					if ($(window).scrollTop() < $('div.note:nth-last-child(5)').offset().top) return;
+
+					reactObject.getNotes();
+				});
+			});
+		})(jQuery);
 	},
 	render: function() {
 		// notes objects should look like "{title, date, text}". don't include private
@@ -34,7 +50,6 @@ var NotesList = React.createClass({
 		return (
 			<div id="notes-container">
 				{noteNodes}
-				<a href="#more" id="more-notes" onClick={this.onMoreNotesClick}>More!</a>
 			</div>
 		);
 	}
