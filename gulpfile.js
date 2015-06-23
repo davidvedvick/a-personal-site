@@ -93,7 +93,7 @@ gulp.task('slick-blobs', ['clean-css'], function() {
 });
 
 // Bundle LESS
-gulp.task('less', ['clean-css'], function () {
+gulp.task('less', ['clean-css', 'slick-blobs'], function () {
   return gulp.src('./views/layout.less')
 	.pipe(less({ paths: ["./node_modules"] }))
 	// .pipe(minifyCss())
