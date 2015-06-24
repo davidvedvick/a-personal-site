@@ -24,6 +24,21 @@ app.engine('jsx', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
+app.get('/', function(req, res) {
+    fs.readFile('content/bio.md', function(error, bioMarkdown) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+
+        try {
+            res.render('index/index', { bio: bioMarkdown });
+        } catch (exception) {
+            console.log(exception);
+        }
+    });
+});
+
 app.get('/projects', function(req, res) {
     fs.readFile('content/projects/projects.json', function(error, rawProjectData) {
         if (error) {

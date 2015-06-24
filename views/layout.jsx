@@ -12,11 +12,11 @@ var Layout = React.createClass({
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 				<link href="/css/layout.css" type="text/css" rel="stylesheet" />
-				<title>David Vedvick ({this.props.subheader})</title>
+				<title>David Vedvick ({subheader})</title>
 			</head>
 			<body>
 				<div className="layout">
-					<Header subheader={this.props.subheader} />
+					<Header subheader={subheader} />
 					<Menu />
 					{this.props.children}
 				</div>

@@ -5,7 +5,7 @@ var Header = React.createClass({
 	render: function() {
 		return (
 			<div className="header">
-				<h1>David Vedvick</h1>
+				<h1><a href="/" alt="Bio" title="Bio" className="header-home-link">David Vedvick</a></h1>
 				<h2>{this.props.subheader}</h2>
 			</div>
 		);
