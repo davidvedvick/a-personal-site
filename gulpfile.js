@@ -53,6 +53,9 @@ gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
 });
 
+gulp.task('modernizer-js', ['clean-js'], function() {
+
+});
 
 gulp.task('client-js', ['clean-js'], function () {
 	const destDir = './public/js';
