@@ -21,40 +21,10 @@ var parallel = require('concurrent-transform');
 var changed = require('gulp-changed');
 var imageResize = require('gulp-image-resize');
 var os = require('os');
-
-// // Bundle JS/JSX
-// var notesJsxBundler = watchify(browserify('./views/notes/notes-list.jsx', { cache: {}, packageCache: {}, "extensions": ".jsx" }));
-// // add any other browserify options or transforms here
-// notesJsxBundler
-// 	.transform(reactify)
-// 	.on('update', function() {
-// 		gutil.log('Notes JSX build updated');
-// 		notesJsxClient();
-// 	}); // on any dep update, runs the bundler
-//
-// function notesJsxClient() {
-//
-// 	return notesJsxBundler
-// 		.bundle()
-// 		// log errors if they happen
-// 		.on('error', gutil.log.bind(gutil, 'Browserify Error'))
-// 		.pipe(source('notes.client.js'))
-// 		// optional, remove if you dont want sourcemaps
-// 		.pipe(buffer())
-// 		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-// 		.pipe(uglify())
-// 		.pipe(sourcemaps.write('./')) // writes .map file
-// 		.pipe(gulp.dest('./public/js'));
-// }
-
-// gulp.task('notes-jsx-client', ['clean-js'], notesJsxClient);
+var React = require('react');
 
 gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
-});
-
-gulp.task('modernizer-js', ['clean-js'], function() {
-
 });
 
 gulp.task('client-js', ['clean-js'], function () {
@@ -130,4 +100,36 @@ gulp.task('watch', ['build'], function() {
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch('./content/projects/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
+});
+
+var jsxToHtml = function(options) {
+	return through2.obj(function (file, enc, cb) {
+		options = options || {};
+
+		require('node-jsx').install({extension: '.jsx'});
+		var component = require(file.path);
+		component = component.default || component;
+		var markup = React.renderToStaticMarkup(React.createElement(component, options));
+		file.contents = new Buffer(markup);
+		file.path = gutil.replaceExtension(file.path, '.html');
+
+		this.push(file);
+	});
+};
+
+gulp.task('build-static-resume', ['build'], function() {
+	return gulp
+		.src('./views/resume/resume.jsx')
+		.pipe(jsxToHtml())
+		.pipe(gulp.dest('./public/html'));
+});
+
+gulp.task('build-static-index', ['build'], function() {
+	return gulp
+		.src('./views/resume/resume.jsx')
+		.pipe(jsxToHtml())
+		.pipe(gulp.dest('./public/html'));
+});
+
+gulp.task('build-static', ['build', 'build-static-resume'], function() {
 });
