@@ -8,7 +8,7 @@ var Layout = React.createClass({
 	render: function() {
 		var subheader = this.props.subheader || "It's been coded";
 		return (
-			<html>
+			<html className="no-js">
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 				<link href="/css/layout.css" type="text/css" rel="stylesheet" />
