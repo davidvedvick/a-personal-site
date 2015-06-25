@@ -4,51 +4,40 @@ var jQuery = require('jquery');
 
 var NotesList = React.createClass({
 	page: 1,
-	isLoading: false,
-	isMoreData: true,
 	getInitialState: function() {
 		return {
 			notes: this.props.notes || []
 		};
 	},
+	loadMoreNotesIfNecessary: function() {
+		if (jQuery(window).scrollTop() >= jQuery('div.note:nth-last-child(5)').offset().top)
+			this.getNotes();
+	},
 	getNotes: function() {
-		if (this.isLoading || !this.isMoreData) return;
+		jQuery(window).off('scroll', this.loadMoreNotesIfNecessary);
 
-		this.isLoading = true;
 	 	jQuery.ajax({
 			url: '/notes/' + (++this.page),
 			dataType: 'json',
 			cache: false,
 			success: function(data) {
-				if (data.length == 0) {
-					this.isMoreData = false;
-					return;
-				}
+				if (data.length == 0) return;
+
 				this.setState({notes: this.state.notes.concat(data)});
-				this.isLoading = false;
+				jQuery(window).on('scroll', this.loadMoreNotesIfNecessary);
 			}.bind(this),
 			error: function(xhr, status, err) {
-				this.isLoading = false;
 				console.error(err.toString());
+				jQuery(window).on('scroll', this.loadMoreNotesIfNecessary);
 			}.bind(this)
 		});
 	},
 	componentDidMount: function() {
 		var reactObject = this;
 		(function($) {
-			var scrollHandler = function(event) {
-				if (!reactObject.isMoreData) {
-					$(window).off('scroll', scrollHandler);
-					return;
-				}
-
-				if ($(window).scrollTop() < $('div.note:nth-last-child(5)').offset().top) return;
-
-				reactObject.getNotes();
-			};
-
 			$(function() {
-				$(window).on('scroll', scrollHandler);
+				$(window).on('scroll', reactObject.loadMoreNotesIfNecessary);
+				reactObject.loadMoreNotesIfNecessary();
 			});
 		})(jQuery);
 	},
