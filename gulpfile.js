@@ -212,7 +212,7 @@ gulp.task('publish-notes', function() {
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/content/notes/'));
 });
 
-gulp.task('publish-jsx', /*['publish-notes'],*/ function() {
+gulp.task('publish-jsx', function() {
 	return gulp
 		.src('./views/**/*.jsx')
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/views/'));

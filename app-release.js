@@ -8,6 +8,7 @@ var less = require('less');
 var path = require('path');
 var async = require('async');
 var notesHandler = require('./notes-app/notes-handler');
+var appConfig = require('./app-config.json');
 
 var app = express();
 app.set('env', 'release');
@@ -40,7 +41,7 @@ app.get('/resume',function (req, res) {
 	res.sendFile(path.join(staticHtmlDir, 'resume.html'));
 });
 
-notesHandler(app);
+notesHandler(app, appConfig.notesLocation);
 
 app.listen(3000);
 
