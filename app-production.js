@@ -9,7 +9,10 @@ var path = require('path');
 var async = require('async');
 
 var app = express();
-app.use('/', express.static(path.join(__dirname, 'public')));
+
+var publicDir = path.join(__dirname, 'public');
+
+app.use('/', express.static(publicDir));
 
 app.use(bodyParser.json());
 // app.use(favIcon());
@@ -24,14 +27,16 @@ app.engine('jsx', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
+var staticHtmlDir = path.join(publicDir, 'html');
+
 app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
+    res.sendFile(path.join(staticHtmlDir, 'index.html'));
 });
 
 app.get('/projects', express.static(path.join(__dirname, 'public', 'html', 'projects.html')));
 
 app.get('/resume',function (req, res) {
-	res.sendFile(path.join(__dirname, 'public', 'html', 'resume.html'));
+	res.sendFile(path.join(staticHtmlDir, 'resume.html'));
 });
 
 (function(localApp) {
