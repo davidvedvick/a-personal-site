@@ -24,12 +24,8 @@ var os = require('os');
 var React = require('react');
 var gulpSsh = require('gulp-ssh')({
 	ignoreErrors: false,
-	sshConfig: {
-		host: 'ssh.phx.nearlyfreespeech.net',
-		port: 22,
-		username: 'dvedvick_lasthopeenterprises',
-		password: 'ypaf0qej0'
-	}
+	// set this from a config file
+	sshConfig: require('./ssh-config.json')
 });
 
 gulp.task('clean-js', function(cb) {
@@ -199,7 +195,7 @@ gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index',
 
 gulp.task('publish-app', ['build-static'], function() {
 	return gulp
-		.src(['./app-production.js', './start-server.sh'])
+		.src(['./app-production.js', './start-server.sh', './package.json'])
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/'));
 });
 
@@ -209,9 +205,21 @@ gulp.task('publish-content', ['build-static'], function() {
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/public/'));
 });
 
-gulp.task('update-server', ['publish-app', 'publish-content'], function() {
+// use git for this instead as it could change often
+gulp.task('publish-notes', function() {
 	return gulp
-		.shell(['cd /home/protected/app/', 'npm install', 'npm update']);
+		.src('./content/notes/**/*.md')
+		.pipe(gulpSsh.sftp('write', '/home/protected/app/content/notes/'));
 });
 
-gulp.task('deploy', ['publish-app', 'publish-content', 'update-server']);
+gulp.task('publish-jsx', /*['publish-notes'],*/ function() {
+	return gulp
+		.src('./views/**/*.jsx')
+		.pipe(gulpSsh.sftp('write', '/home/protected/app/views/'));
+});
+
+gulp.task('update-server', ['publish-app', 'publish-content', /*'publish-notes',*/ 'publish-jsx'], function() {
+	return gulpSsh.shell(['cd /home/protected/app/', 'npm install', 'npm update', 'chmod +x start-server.sh']);
+});
+
+gulp.task('deploy', ['publish-app', 'publish-content', /*'publish-notes',*/ 'publish-jsx', 'update-server']);
