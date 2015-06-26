@@ -1,1 +1,1 @@
-node app-production.js
+node app-release.js
