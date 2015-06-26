@@ -102,9 +102,10 @@ gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
 });
 
+var rawMarkdown = {};
+
 var jsxToHtml = function(options) {
 	return through2.obj(function (file, enc, cb) {
-		options = options || {};
 
 		require('node-jsx').install({extension: '.jsx'});
 		var component = require(file.path);
@@ -114,22 +115,42 @@ var jsxToHtml = function(options) {
 		file.path = gutil.replaceExtension(file.path, '.html');
 
 		this.push(file);
+
+		cb();
 	});
 };
 
-gulp.task('build-static-resume', ['build'], function() {
+var hashDest = function(dest, key, opts) {
+	return through2.obj(function (file, enc, cb) {
+		dest[key] = file.contents.toString(opts.enc);
+		cb();
+	});
+};
+
+gulp.task('store-resume-markdown', function() {
+	return gulp
+		.src('./content/resume.md')
+		.pipe(hashDest(rawMarkdown, 'resume', { enc: 'utf8' }));
+});
+
+gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() {
 	return gulp
 		.src('./views/resume/resume.jsx')
-		.pipe(jsxToHtml())
+		.pipe(jsxToHtml({resume: rawMarkdown['resume']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
-gulp.task('build-static-index', ['build'], function() {
+gulp.task('store-bio-markdown', function() {
 	return gulp
-		.src('./views/resume/resume.jsx')
-		.pipe(jsxToHtml())
+		.src('./content/bio.md')
+		.pipe(hashDest(rawMarkdown, 'bio', { enc: 'utf8' }));
+});
+
+gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
+	return gulp
+		.src('./views/index/index.jsx')
+		.pipe(jsxToHtml({bio: rawMarkdown['bio']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
-gulp.task('build-static', ['build', 'build-static-resume'], function() {
-});
+gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index']);

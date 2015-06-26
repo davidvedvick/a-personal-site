@@ -25,18 +25,7 @@ if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
 app.get('/', function(req, res) {
-    fs.readFile('content/bio.md', function(error, bioMarkdown) {
-        if (error) {
-            console.log(error);
-            return;
-        }
-
-        try {
-            res.render('index/index', { bio: bioMarkdown });
-        } catch (exception) {
-            console.log(exception);
-        }
-    });
+    res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
 });
 
 app.get('/projects', express.static(path.join(__dirname, 'public', 'html', 'projects.html')));
