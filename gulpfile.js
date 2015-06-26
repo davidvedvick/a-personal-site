@@ -22,6 +22,15 @@ var changed = require('gulp-changed');
 var imageResize = require('gulp-image-resize');
 var os = require('os');
 var React = require('react');
+var gulpSsh = require('gulp-ssh')({
+	ignoreErrors: false,
+	sshConfig: {
+		host: 'ssh.phx.nearlyfreespeech.net',
+		port: 22,
+		username: 'dvedvick_lasthopeenterprises',
+		password: 'ypaf0qej0'
+	}
+});
 
 gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
@@ -124,7 +133,7 @@ var hashDest = function(dest, opts) {
 	return through2.obj(function (file, enc, cb) {
 		opts = opts || {};
 
-		dest[file.path.replace(file.base, '')] = opts.onStore ? opts.onStore(file.contents) : file.contents.toString(opts.enc);
+		dest[file.path.replace(file.base, '')] = opts.onStore ? opts.onStore(file.contents) : file.contents.toString(opts.enc || enc);
 		cb();
 	});
 };
@@ -132,7 +141,7 @@ var hashDest = function(dest, opts) {
 gulp.task('store-resume-markdown', function() {
 	return gulp
 		.src('./content/resume.md')
-		.pipe(hashDest(rawMarkdown, { enc: 'utf8' }));
+		.pipe(hashDest(rawMarkdown));
 });
 
 gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() {
@@ -145,7 +154,7 @@ gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() 
 gulp.task('store-bio-markdown', function() {
 	return gulp
 		.src('./content/bio.md')
-		.pipe(hashDest(rawMarkdown, { enc: 'utf8' }));
+		.pipe(hashDest(rawMarkdown));
 });
 
 gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
@@ -159,7 +168,7 @@ var projectMarkdown = {};
 gulp.task('store-project-markdown', function() {
 	return gulp
 		.src('./content/projects/*/features.md')
-		.pipe(hashDest(projectMarkdown, { enc: 'utf8' }));
+		.pipe(hashDest(projectMarkdown));
 });
 
 var projectData = {};
@@ -187,3 +196,22 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
 });
 
 gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);
+
+gulp.task('publish-app', ['build-static'], function() {
+	return gulp
+		.src(['./app-production.js', './start-server.sh'])
+		.pipe(gulpSsh.sftp('write', '/home/protected/app/'));
+});
+
+gulp.task('publish-content', ['build-static'], function() {
+	return gulp
+		.src('./public/**/*')
+		.pipe(gulpSsh.sftp('write', '/home/protected/app/public/'));
+});
+
+gulp.task('update-server', ['publish-app', 'publish-content'], function() {
+	return gulp
+		.shell(['cd /home/protected/app/', 'npm install', 'npm update']);
+});
+
+gulp.task('deploy', ['publish-app', 'publish-content', 'update-server']);
