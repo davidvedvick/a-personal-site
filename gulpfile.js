@@ -193,9 +193,15 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
 
 gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);
 
-gulp.task('publish-app', ['build-static'], function() {
+gulp.task('publish-notes-handler', ['build-static'], function() {
 	return gulp
-		.src(['./app-production.js', './start-server.sh', './package.json'])
+		.src(['./notes-app/notes-handler.js'])
+		.pipe(gulpSsh.sftp('write', '/home/protected/app/notes-app/'));
+});
+
+gulp.task('publish-app', ['build-static', 'publish-notes-handler'], function() {
+	return gulp
+		.src(['./app-release.js', './start-server.sh', './package.json'])
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/'));
 });
 
@@ -205,21 +211,14 @@ gulp.task('publish-content', ['build-static'], function() {
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/public/'));
 });
 
-// use git for this instead as it could change often
-gulp.task('publish-notes', function() {
-	return gulp
-		.src('./content/notes/**/*.md')
-		.pipe(gulpSsh.sftp('write', '/home/protected/app/content/notes/'));
-});
-
 gulp.task('publish-jsx', function() {
 	return gulp
 		.src('./views/**/*.jsx')
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/views/'));
 });
 
-gulp.task('update-server', ['publish-app', 'publish-content', /*'publish-notes',*/ 'publish-jsx'], function() {
-	return gulpSsh.shell(['cd /home/protected/app/', 'npm install', 'npm update', 'chmod +x start-server.sh']);
+gulp.task('update-server', ['publish-app', 'publish-content', 'publish-jsx'], function() {
+	return gulpSsh.shell(['cd /home/protected/app/', 'npm update', 'chmod +x start-server.sh']);
 });
 
-gulp.task('deploy', ['publish-app', 'publish-content', /*'publish-notes',*/ 'publish-jsx', 'update-server']);
+gulp.task('deploy', ['publish-app', 'publish-content', 'publish-jsx', 'update-server']);
