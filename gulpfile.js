@@ -122,7 +122,10 @@ var jsxToHtml = function(options) {
 
 var hashDest = function(dest, key, opts) {
 	return through2.obj(function (file, enc, cb) {
-		dest[key] = file.contents.toString(opts.enc);
+		opts = opts || {};
+
+		if (!dest[key]) dest[key] = {};
+		dest[key][file.path.replace(file.base, '')] = opts.onStore ? opts.onStore(file.contents) : file.contents.toString(opts.enc);
 		cb();
 	});
 };
@@ -136,7 +139,7 @@ gulp.task('store-resume-markdown', function() {
 gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() {
 	return gulp
 		.src('./views/resume/resume.jsx')
-		.pipe(jsxToHtml({resume: rawMarkdown['resume']}))
+		.pipe(jsxToHtml({resume: rawMarkdown['resume']['resume.md']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
@@ -149,8 +152,38 @@ gulp.task('store-bio-markdown', function() {
 gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
 	return gulp
 		.src('./views/index/index.jsx')
-		.pipe(jsxToHtml({bio: rawMarkdown['bio']}))
+		.pipe(jsxToHtml({bio: rawMarkdown['bio']['bio.md']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
-gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index']);
+var projectData = {};
+gulp.task('store-project-markdown', function() {
+	return gulp
+		.src('./content/projects/*/features.md')
+		.pipe(hashDest(projectData, 'projectMarkdown'));
+});
+
+gulp.task('store-project-json', ['store-project-markdown'], function() {
+	return gulp
+		.src('./content/projects/projects.json')
+		.pipe(hashDest(projectData, 'projects', {
+			onStore: function(data) {
+				var projects = JSON.parse(data);
+
+				projects.forEach(function(project) {
+					project.features = projectData['projectMarkdown'][project.name + '/features.md'];
+				});
+
+				return projects;
+			}
+		}));
+});
+
+gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
+	return gulp
+		.src('./views/project/project-list.jsx')
+		.pipe(jsxToHtml({projects: projectData['projects']['projects.json']}))
+		.pipe(gulp.dest('./public/html'));
+});
+
+gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);

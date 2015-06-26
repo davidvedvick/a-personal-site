@@ -33,7 +33,9 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(staticHtmlDir, 'index.html'));
 });
 
-app.get('/projects', express.static(path.join(__dirname, 'public', 'html', 'projects.html')));
+app.get('/projects', function(req, res) {
+    res.sendFile(path.join(staticHtmlDir, 'project-list.html'));
+});
 
 app.get('/resume',function (req, res) {
 	res.sendFile(path.join(staticHtmlDir, 'resume.html'));
