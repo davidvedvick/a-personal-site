@@ -120,12 +120,11 @@ var jsxToHtml = function(options) {
 	});
 };
 
-var hashDest = function(dest, key, opts) {
+var hashDest = function(dest, opts) {
 	return through2.obj(function (file, enc, cb) {
 		opts = opts || {};
 
-		if (!dest[key]) dest[key] = {};
-		dest[key][file.path.replace(file.base, '')] = opts.onStore ? opts.onStore(file.contents) : file.contents.toString(opts.enc);
+		dest[file.path.replace(file.base, '')] = opts.onStore ? opts.onStore(file.contents) : file.contents.toString(opts.enc);
 		cb();
 	});
 };
@@ -133,45 +132,46 @@ var hashDest = function(dest, key, opts) {
 gulp.task('store-resume-markdown', function() {
 	return gulp
 		.src('./content/resume.md')
-		.pipe(hashDest(rawMarkdown, 'resume', { enc: 'utf8' }));
+		.pipe(hashDest(rawMarkdown, { enc: 'utf8' }));
 });
 
 gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() {
 	return gulp
 		.src('./views/resume/resume.jsx')
-		.pipe(jsxToHtml({resume: rawMarkdown['resume']['resume.md']}))
+		.pipe(jsxToHtml({resume: rawMarkdown['resume.md']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
 gulp.task('store-bio-markdown', function() {
 	return gulp
 		.src('./content/bio.md')
-		.pipe(hashDest(rawMarkdown, 'bio', { enc: 'utf8' }));
+		.pipe(hashDest(rawMarkdown, { enc: 'utf8' }));
 });
 
 gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
 	return gulp
 		.src('./views/index/index.jsx')
-		.pipe(jsxToHtml({bio: rawMarkdown['bio']['bio.md']}))
+		.pipe(jsxToHtml({bio: rawMarkdown['bio.md']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
-var projectData = {};
+var projectMarkdown = {};
 gulp.task('store-project-markdown', function() {
 	return gulp
 		.src('./content/projects/*/features.md')
-		.pipe(hashDest(projectData, 'projectMarkdown'));
+		.pipe(hashDest(projectMarkdown, { enc: 'utf8' }));
 });
 
+var projectData = {};
 gulp.task('store-project-json', ['store-project-markdown'], function() {
 	return gulp
 		.src('./content/projects/projects.json')
-		.pipe(hashDest(projectData, 'projects', {
+		.pipe(hashDest(projectData, {
 			onStore: function(data) {
 				var projects = JSON.parse(data);
 
 				projects.forEach(function(project) {
-					project.features = projectData['projectMarkdown'][project.name + '/features.md'];
+					project.features = projectMarkdown[project.name + '/features.md'];
 				});
 
 				return projects;
@@ -182,7 +182,7 @@ gulp.task('store-project-json', ['store-project-markdown'], function() {
 gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
 	return gulp
 		.src('./views/project/project-list.jsx')
-		.pipe(jsxToHtml({projects: projectData['projects']['projects.json']}))
+		.pipe(jsxToHtml({projects: projectData['projects.json']}))
 		.pipe(gulp.dest('./public/html'));
 });
 
