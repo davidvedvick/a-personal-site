@@ -4,10 +4,11 @@ I'm a full-stack software engineer with 5 years of experience in the industry
 developing everything from C# ASP.net applications to WinForms click-once applications
 to maintaining and improving old Delphi applications.
 
-On the side I pursue multiple hobby projects, including a site for building your own
-[computer](http://deliciouspc.com) to an audio playback application for Android
-that streams music from your home PC (or server, if you have a dedicated one). You can learn
-more about those on the [side projects](/projects) page. I guess you could I just
+On the side I pursue multiple hobby projects, including a site where you tell me
+what kind of computer you want and I give you a [delicious recipe](http://deliciouspc.com)
+to build it, to an audio playback application for Android that streams music from
+your home PC (or server, if you have a dedicated one). You can learn more about
+those on the [side projects](/projects) page. I guess you could say that I just
 really love programming and learning about new (and old!) ways of doing things.
 
 In that mold, this site itself was built using the extremely fun combination
