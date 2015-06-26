@@ -1,12 +1,14 @@
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
+var glob = require('glob');
 
 module.exports = function(localApp, notesPath) {
     var getNotes = function(page, onNotesLoaded) {
         const pageSize = 10;
         notesPath = notesPath || 'content/notes';
-        fs.readdir(notesPath, function(err, files) {
+        
+        glob(path.join(notesPath, '*.md'), function(err, files) {
             if (err) {
                 console.log(err);
                 onNotesLoaded(err);
@@ -26,7 +28,7 @@ module.exports = function(localApp, notesPath) {
             async.forEachOf(
                 filesToRead,
                 function(file, key, callback) {
-                    fs.readFile(path.join(notesPath, file), 'utf8', function(err, data) {
+                    fs.readFile(file, 'utf8', function(err, data) {
                         if (err) {
                             callback(err);
                             return;

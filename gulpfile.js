@@ -193,13 +193,13 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
 
 gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);
 
-gulp.task('publish-notes-handler', ['build-static'], function() {
+gulp.task('publish-request-handlers', ['build-static'], function() {
 	return gulp
-		.src(['./notes-app/notes-handler.js'])
-		.pipe(gulpSsh.sftp('write', '/home/protected/app/notes-app/'));
+		.src(['./request-handlers/**/*.js'])
+		.pipe(gulpSsh.sftp('write', '/home/protected/app/request-handlers/'));
 });
 
-gulp.task('publish-app', ['build-static', 'publish-notes-handler'], function() {
+gulp.task('publish-app', ['build-static', 'publish-request-handlers'], function() {
 	return gulp
 		.src(['./app-release.js', './start-server.sh', './package.json'])
 		.pipe(gulpSsh.sftp('write', '/home/protected/app/'));

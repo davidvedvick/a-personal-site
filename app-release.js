@@ -7,7 +7,7 @@ var methodOverride = require('method-override');
 var less = require('less');
 var path = require('path');
 var async = require('async');
-var notesHandler = require('./notes-app/notes-handler');
+var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
 
 var app = express();
