@@ -218,7 +218,7 @@ gulp.task('publish-jsx', function() {
 });
 
 gulp.task('update-server', ['publish-app', 'publish-content', 'publish-jsx'], function() {
-	return gulpSsh.shell(['cd /home/protected/app/', 'npm update', 'chmod +x start-server.sh']);
+	return gulpSsh.shell(['cd /home/protected/app/', 'npm install', 'npm update', 'chmod +x start-server.sh']);
 });
 
 gulp.task('deploy', ['publish-app', 'publish-content', 'publish-jsx', 'update-server']);
