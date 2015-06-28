@@ -11,6 +11,7 @@ var Layout = React.createClass({
 			<html className="no-js">
 			<head>
 				<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+				<meta httpEquiv="X-UA-Compatible" content="IE=Edge" />
 				<link href="/css/layout.css" type="text/css" rel="stylesheet" />
 				<title>David Vedvick ({subheader})</title>
 			</head>

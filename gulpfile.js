@@ -115,7 +115,7 @@ var jsxToHtml = function(options) {
 		require('node-jsx').install({extension: '.jsx'});
 		var component = require(file.path);
 		component = component.default || component;
-		var markup = React.renderToStaticMarkup(React.createElement(component, options));
+		var markup = '<!doctype html>' + React.renderToStaticMarkup(React.createElement(component, options));
 		file.contents = new Buffer(markup);
 		file.path = gutil.replaceExtension(file.path, '.html');
 
