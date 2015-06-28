@@ -196,25 +196,25 @@ gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index',
 gulp.task('publish-request-handlers', ['build-static'], function() {
 	return gulp
 		.src(['./request-handlers/**/*.js'])
-		.pipe(gulpSsh.sftp('write', '/home/protected/app/request-handlers/'));
+		.pipe(gulpSsh.dest('/home/protected/app/request-handlers/'));
 });
 
 gulp.task('publish-app', ['build-static', 'publish-request-handlers'], function() {
 	return gulp
 		.src(['./app-release.js', './start-server.sh', './package.json'])
-		.pipe(gulpSsh.sftp('write', '/home/protected/app/'));
+		.pipe(gulpSsh.dest('/home/protected/app/'));
 });
 
 gulp.task('publish-content', ['build-static'], function() {
 	return gulp
 		.src('./public/**/*')
-		.pipe(gulpSsh.sftp('write', '/home/protected/app/public/'));
+		.pipe(gulpSsh.dest('/home/protected/app/public/'));
 });
 
 gulp.task('publish-jsx', function() {
 	return gulp
 		.src('./views/**/*.jsx')
-		.pipe(gulpSsh.sftp('write', '/home/protected/app/views/'));
+		.pipe(gulpSsh.dest('/home/protected/app/views/'));
 });
 
 gulp.task('update-server', ['publish-app', 'publish-content', 'publish-jsx'], function() {
