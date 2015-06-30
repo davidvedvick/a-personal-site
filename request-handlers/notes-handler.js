@@ -7,7 +7,7 @@ module.exports = function(localApp, notesPath) {
     var getNotes = function(page, onNotesLoaded) {
         const pageSize = 10;
         notesPath = notesPath || 'content/notes';
-        
+
         glob(path.join(notesPath, '*.md'), function(err, files) {
             if (err) {
                 console.log(err);
@@ -48,7 +48,7 @@ module.exports = function(localApp, notesPath) {
                             });
 
                         var newNote = {
-                            created: new Date(props.created),
+                            created: new Date(props.created_gmt || props.created),
                         };
 
                         // Convention: treat first headline as start of note
