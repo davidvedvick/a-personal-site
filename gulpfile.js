@@ -22,6 +22,8 @@ var changed = require('gulp-changed');
 var imageResize = require('gulp-image-resize');
 var os = require('os');
 var React = require('react');
+var appConfig = require('./app-config.json');
+var path = require('path');
 var gulpSsh = require('gulp-ssh')({
 	ignoreErrors: false,
 	// set this from a config file
@@ -103,7 +105,7 @@ gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blob
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);
 	gulp.watch('./imgs/**/*', ['images']);
-	gulp.watch('./content/projects/**/imgs/*', ['project-images']);
+	gulp.watch(path.join(appConfig.projectLocation, '**/imgs/*'), ['project-images']);
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
 });
 
@@ -136,7 +138,7 @@ var hashDest = function(dest, opts) {
 
 gulp.task('store-resume-markdown', function() {
 	return gulp
-		.src('./content/resume.md')
+		.src(appConfig.resumeLocation)
 		.pipe(hashDest(rawMarkdown));
 });
 
@@ -149,7 +151,7 @@ gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() 
 
 gulp.task('store-bio-markdown', function() {
 	return gulp
-		.src('./content/bio.md')
+		.src(appConfig.bioLocation)
 		.pipe(hashDest(rawMarkdown));
 });
 
@@ -163,14 +165,14 @@ gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
 var projectMarkdown = {};
 gulp.task('store-project-markdown', function() {
 	return gulp
-		.src('./content/projects/*/features.md')
+		.src(path.join(appConfig.projectsLocation, '*/features.md'))
 		.pipe(hashDest(projectMarkdown));
 });
 
 var projectData = {};
 gulp.task('store-project-json', ['store-project-markdown'], function() {
 	return gulp
-		.src('./content/projects/projects.json')
+		.src(path.join(appConfig.projectsLocation, 'projects.json'))
 		.pipe(hashDest(projectData, {
 			onStore: function(data) {
 				var projects = JSON.parse(data);
