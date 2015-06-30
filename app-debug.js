@@ -27,7 +27,7 @@ if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
 app.get('/', function(req, res) {
-    fs.readFile('content/bio.md', function(error, bioMarkdown) {
+    fs.readFile(appConfig.bioLocation, function(error, bioMarkdown) {
         if (error) {
             console.log(error);
             return;
@@ -42,7 +42,7 @@ app.get('/', function(req, res) {
 });
 
 app.get('/projects', function(req, res) {
-    fs.readFile('content/projects/projects.json', function(error, rawProjectData) {
+    fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'), function(error, rawProjectData) {
         if (error) {
             console.log(error);
             return;
@@ -82,7 +82,7 @@ app.get('/projects', function(req, res) {
 });
 
 app.get('/resume', function(req, res) {
-    fs.readFile('content/resume.md', function(error, resumeMarkdown) {
+    fs.readFile(appConfig.resumeLocation, function(error, resumeMarkdown) {
         if (error) {
             console.log(error);
             return;
