@@ -220,7 +220,8 @@ gulp.task('publish-jsx', function() {
 });
 
 gulp.task('update-server', ['publish-app', 'publish-content', 'publish-jsx'], function() {
-	return gulpSsh.shell(['cd /home/protected/app/', 'npm install', 'npm update', 'chmod +x start-server.sh']);
+	// NPM Updates should be ran manually
+	return gulpSsh.shell(['cd /home/protected/app/', 'npm install', /*'npm update',*/ 'chmod +x start-server.sh', 'rm -rf /home/tmp/npm*']);
 });
 
 gulp.task('deploy', ['publish-app', 'publish-content', 'publish-jsx', 'update-server']);
