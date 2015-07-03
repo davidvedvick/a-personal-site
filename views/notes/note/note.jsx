@@ -3,6 +3,10 @@ var marked = require('marked');
 var moment = require('moment');
 
 var Note = React.createClass({
+	shouldComponentUpdate: function(nextProps, nextState) {
+		// After initial rendering, the note never changes, so leave it alone
+		return false;
+	},
 	render: function() {
 		return (
 			<div className="note">

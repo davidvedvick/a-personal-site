@@ -45,7 +45,7 @@ var NotesList = React.createClass({
 		// notes objects should look like "{title, date, text}". don't include private
 		// ones
 		var noteNodes = (this.state.notes || []).map(function(note) {
-			return (<Note note={note} />);
+			return (<Note note={note} key={note.created} />);
 		});
 
 		return (
