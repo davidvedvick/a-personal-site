@@ -15,7 +15,7 @@ var app = express();
 app.set('env', 'release');
 
 var publicDir = path.join(__dirname, 'public');
-const maxAge = 60 * 60 * 1000; //one hour
+const maxAge = '365 days';
 
 app.use(compression());
 app.use('/', express.static(publicDir, { maxAge: maxAge }));
