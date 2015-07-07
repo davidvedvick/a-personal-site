@@ -10,9 +10,9 @@ var Index = React.createClass({
 
 		return (
 			<Layout subheader="Side Projects">
-				{projectNodes}
-
 				<script type="text/javascript" src="/js/project.client.js" />
+
+				{projectNodes}
 			</Layout>
 		);
 	}
