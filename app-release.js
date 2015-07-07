@@ -12,7 +12,7 @@ var appConfig = require('./app-config.json');
 var compression = require('compression');
 
 var app = express();
-app.set('env', 'release');
+app.set('env', 'production');
 
 var publicDir = path.join(__dirname, 'public');
 const maxAge = '365 days';
