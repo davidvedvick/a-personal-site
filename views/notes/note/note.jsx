@@ -13,10 +13,10 @@ var Note = React.createClass({
 		var routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);
 		return (
 			<div className="note">
-				<h2 className="note-title"><a href={routeUrl}>{note.title}</a></h2>
+				<h2 className="note-title">{note.title}</h2>
 				<div className="note-text" dangerouslySetInnerHTML={{__html: marked(note.text || "", {sanitize: true})}} />
 				<p className="note-date">
-					<em>Note posted on {moment(note.created).format('LLLL')}</em>
+					<em>Note posted on {moment(note.created).format('LLLL')} - <a href={routeUrl}>link</a></em>
 				</p>
 			</div>
 		);
