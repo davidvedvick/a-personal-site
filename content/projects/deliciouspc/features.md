@@ -4,3 +4,5 @@ Allows customers to:
 
 Afterwards, an estimate is built (manually) and sent to the customer's email
 address.
+
+See it work for you at [deliciouspc.com](http://www.deliciouspc.com)
