@@ -30,6 +30,7 @@ var gulpSsh = require('gulp-ssh')({
 	// set this from a config file
 	sshConfig: require('./ssh-config.json')
 });
+var minifyHtml = require('gulp-minify-html');
 
 gulp.task('clean-js', function(cb) {
 	del(['./public/js'], cb);
@@ -77,7 +78,7 @@ gulp.task('slick-blobs', ['clean-css'], function() {
 gulp.task('less', ['clean-css', 'slick-blobs'], function () {
   return gulp.src('./views/layout.less')
 	.pipe(less({ paths: ["./node_modules"] }))
-	// .pipe(minifyCss())
+	.pipe(minifyCss())
     .pipe(gulp.dest('./public/css'));
 });
 
@@ -147,6 +148,10 @@ var hashDest = function(dest, opts) {
 	});
 };
 
+var minifyHtmlOpts = {
+	conditionals: true
+};
+
 gulp.task('store-resume-markdown', function() {
 	return gulp
 		.src(appConfig.resumeLocation)
@@ -157,6 +162,7 @@ gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() 
 	return gulp
 		.src('./views/resume/resume.jsx')
 		.pipe(jsxToHtml({resume: rawMarkdown['resume.md']}))
+		.pipe(minifyHtml(minifyHtmlOpts))
 		.pipe(gulp.dest('./public/html'));
 });
 
@@ -170,6 +176,7 @@ gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
 	return gulp
 		.src('./views/index/index.jsx')
 		.pipe(jsxToHtml({bio: rawMarkdown['bio.md']}))
+		.pipe(minifyHtml(minifyHtmlOpts))
 		.pipe(gulp.dest('./public/html'));
 });
 
@@ -201,6 +208,7 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
 	return gulp
 		.src('./views/project/project-list.jsx')
 		.pipe(jsxToHtml({projects: projectData['projects.json']}))
+		.pipe(minifyHtml(minifyHtmlOpts))
 		.pipe(gulp.dest('./public/html'));
 });
 
