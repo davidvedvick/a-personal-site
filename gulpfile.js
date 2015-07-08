@@ -24,6 +24,7 @@ var os = require('os');
 var React = require('react');
 var appConfig = require('./app-config.json');
 var path = require('path');
+var markdownPdf = require('gulp-markdown-pdf');
 var gulpSsh = require('gulp-ssh')({
 	ignoreErrors: false,
 	// set this from a config file
@@ -36,7 +37,7 @@ gulp.task('clean-js', function(cb) {
 
 gulp.task('client-js', ['clean-js'], function () {
 	const destDir = './public/js';
-	return gulp.src('./views/*/*.client.{js,jsx}')
+	return gulp.src('./views/**/*.client.{js,jsx}')
 		.pipe(parallel(
 			through2.obj(function (file, enc, next) {
 				browserify(file.path, { extensions: '.jsx' })
@@ -85,7 +86,6 @@ gulp.task('clean-images', function(cb) {
 });
 
 gulp.task('images', ['clean-images'], function () {
-	// Just copy images for now, may compress/resize later
 	return gulp.src('./imgs/*').pipe(gulp.dest('./public/imgs'));
 });
 
@@ -100,13 +100,24 @@ gulp.task('project-images', function () {
 			.pipe(gulp.dest(destDir));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs']);
+gulp.task('build-resume-pdf', function() {
+	return gulp
+		.src(appConfig.resumeLocation)
+		.pipe(markdownPdf())
+		.pipe(rename({
+			extname: '.pdf'
+		}))
+		.pipe(gulp.dest('./public'));
+});
+
+gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs', 'build-resume-pdf']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
+	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
 });
 
 var rawMarkdown = {};

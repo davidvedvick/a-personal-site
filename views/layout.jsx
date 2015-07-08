@@ -16,9 +16,11 @@ var Layout = React.createClass({
 				<title>David Vedvick ({subheader})</title>
 			</head>
 			<body>
-				<div className="layout">
+				<div className="top">
 					<Header subheader={subheader} />
 					<Menu />
+				</div>
+				<div className="content">
 					{this.props.children}
 				</div>
 			</body>
