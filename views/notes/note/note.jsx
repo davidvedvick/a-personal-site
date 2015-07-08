@@ -10,7 +10,7 @@ var Note = React.createClass({
 	},
 	render: function() {
 		var note = this.props.note;
-		var routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);//'/notes/' + this.props.note.pathYear + '/' + this.props.note.postName;
+		var routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);
 		return (
 			<div className="note">
 				<h2 className="note-title"><a href={routeUrl}>{note.title}</a></h2>
