@@ -56,14 +56,12 @@ app.get('/projects', function(req, res) {
             function (project, key, callback) {
                 var filePath = path.join('content', 'projects', project.name, 'features.md');
 
-
                 fs.readFile(filePath, 'utf8', function(err, data) {
                     if (!err)
                         project.features = data;
 
                     callback();
                 });
-
             },
             function(err, results) {
                 if (err) {

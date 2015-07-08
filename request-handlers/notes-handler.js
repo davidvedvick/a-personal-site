@@ -4,6 +4,56 @@ var async = require('async');
 var glob = require('glob');
 
 module.exports = function(localApp, notesPath) {
+    var parseNote = function(file, callback) {
+        fs.readFile(file, 'utf8', function(err, data) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            var textLines = data.split('\n');
+
+            var props = {};
+            textLines
+                .filter(function(line) {
+                    return line.match(/^[a-zA-Z_]*\:.*/);
+                })
+                .forEach(function(line) {
+                    var propName = line.split(':', 1);
+                    props[propName] = line.replace(propName + ':', '').trim();
+                });
+
+            var fileName = path.basename(file, '.md');
+            var newNote = {
+                created: new Date(props.created_gmt || props.created),
+                relativeCreated: new Date(props.created),
+                pathYear: fileName.substring(0, 4),
+                pathMonth: fileName.substring(4, 6),
+                pathDay: fileName.substring(6, 8),
+                pathTitle: fileName.substring(9),
+                title: props.title,
+            };
+
+            // Convention: treat first headline as start of note
+            for (var i = 0; i < textLines.length; i++) {
+                if (textLines[i].trim()[0] !== '#') continue;
+
+                newNote.text = textLines
+                                    .slice(++i)
+                                    // trim any other text
+                                    .map(function(line) {
+                                        return line.trim();
+                                    })
+                                    // add back in the line returns
+                                    .join('\n');
+
+                break;
+            }
+
+            callback(null, newNote);
+        });
+    };
+
     var getNotes = function(page, onNotesLoaded) {
         const pageSize = 10;
         notesPath = notesPath || 'content/notes';
@@ -28,43 +78,10 @@ module.exports = function(localApp, notesPath) {
             async.forEachOf(
                 filesToRead,
                 function(file, key, callback) {
-                    fs.readFile(file, 'utf8', function(err, data) {
+                    parseNote(file, function(err, newNote) {
                         if (err) {
                             callback(err);
                             return;
-                        }
-
-                        var textLines = data.split('\n');
-
-
-                        var props = {};
-                        textLines
-                            .filter(function(line) {
-                                return line.match(/^[a-zA-Z_]*\:.*/);
-                            })
-                            .forEach(function(line) {
-                                var propName = line.split(':', 1);
-                                props[propName] = line.replace(propName + ':', '').trim();
-                            });
-
-                        var newNote = {
-                            created: new Date(props.created_gmt || props.created),
-                        };
-
-                        // Convention: treat first headline as start of note
-                        for (var i = 0; i < textLines.length; i++) {
-                            if (textLines[i].trim()[0] !== '#') continue;
-
-                            newNote.text = textLines
-                                                .slice(i)
-                                                // trim any other text
-                                                .map(function(line) {
-                                                    return line.trim();
-                                                })
-                                                // add back in the line returns
-                                                .join('\n');
-
-                            break;
                         }
 
                         parsedNotes.push(newNote);
@@ -101,6 +118,28 @@ module.exports = function(localApp, notesPath) {
 
             try {
                 res.render('notes/notes-container', { notes: notes });
+            } catch (exception) {
+                console.log(exception);
+            }
+        });
+    });
+
+    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, function(req, res) {
+        var year = req.params[0];
+        var month = req.params[1];
+        var day = req.params[2];
+        var title = req.params[3];
+
+        var filePath = path.join(notesPath, year + month + day + '-' + title + '.md');
+        
+        parseNote(filePath, function(err, note) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+
+            try {
+                res.render('notes/note-container', { note: note });
             } catch (exception) {
                 console.log(exception);
             }

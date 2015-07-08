@@ -105,7 +105,7 @@ gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blob
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);
 	gulp.watch('./imgs/**/*', ['images']);
-	gulp.watch(path.join(appConfig.projectLocation, '**/imgs/*'), ['project-images']);
+	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
 });
 

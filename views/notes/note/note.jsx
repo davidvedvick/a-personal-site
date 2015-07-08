@@ -1,6 +1,7 @@
 var React = require('react');
 var marked = require('marked');
 var moment = require('moment');
+var path = require('path');
 
 var Note = React.createClass({
 	shouldComponentUpdate: function(nextProps, nextState) {
@@ -8,11 +9,14 @@ var Note = React.createClass({
 		return false;
 	},
 	render: function() {
+		var note = this.props.note;
+		var routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);//'/notes/' + this.props.note.pathYear + '/' + this.props.note.postName;
 		return (
 			<div className="note">
-				<div className="note-text" dangerouslySetInnerHTML={{__html: marked(this.props.note.text || "", {sanitize: true})}} />
+				<h2 className="note-title"><a href={routeUrl}>{note.title}</a></h2>
+				<div className="note-text" dangerouslySetInnerHTML={{__html: marked(note.text || "", {sanitize: true})}} />
 				<p className="note-date">
-					<em>Note posted on {moment(this.props.note.created).format('LLLL')}</em>
+					<em>Note posted on {moment(note.created).format('LLLL')}</em>
 				</p>
 			</div>
 		);
