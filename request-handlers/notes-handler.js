@@ -31,7 +31,7 @@ module.exports = function(localApp, notesPath) {
                 pathMonth: fileName.substring(4, 6),
                 pathDay: fileName.substring(6, 8),
                 pathTitle: fileName.substring(9),
-                title: props.title,
+                title: props.title
             };
 
             // Convention: treat first headline as start of note
@@ -40,10 +40,6 @@ module.exports = function(localApp, notesPath) {
 
                 newNote.text = textLines
                                     .slice(++i)
-                                    // trim any other text
-                                    .map(function(line) {
-                                        return line.trim();
-                                    })
                                     // add back in the line returns
                                     .join('\n');
 
@@ -131,7 +127,7 @@ module.exports = function(localApp, notesPath) {
         var title = req.params[3];
 
         var filePath = path.join(notesPath, year + month + day + '-' + title + '.md');
-        
+
         parseNote(filePath, function(err, note) {
             if (err) {
                 console.log(err);
