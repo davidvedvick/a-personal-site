@@ -1,21 +1,13 @@
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
-var source = require('vinyl-source-stream');
-var buffer = require('vinyl-buffer');
-var watchify = require('watchify');
 var browserify = require('browserify');
 var reactify = require('reactify');
 var uglify = require('gulp-uglify');
 var less = require('gulp-less');
 var minifyCss = require('gulp-minify-css');
-var watch = require('gulp-watch');
 var del = require('del');
-var concat = require('gulp-concat');
-var transform = require('vinyl-transform');
-var globby = require('globby');
 var through2 = require('through2');
-var streamify = require('gulp-streamify');
 var rename = require('gulp-rename');
 var parallel = require('concurrent-transform');
 var changed = require('gulp-changed');
@@ -241,7 +233,7 @@ gulp.task('publish-jsx', function() {
 gulp.task('publish', ['publish-app', 'publish-content', 'publish-jsx']);
 
 gulp.task('update-server', ['publish'], function() {
-	return gulpSsh.shell(['cd /home/protected/app/', 'npm prune --production', 'npm install --production', 'chmod +x start-server.sh', 'rm -rf /home/tmp/npm*']);
+	return gulpSsh.shell(['cd /home/protected/app/', 'npm prune --production', 'npm install --production', 'chmod +x start-server.sh', 'rm -rf /home/tmp/npm*', 'npm cache clean']);
 });
 
 gulp.task('deploy', ['publish', 'update-server']);
