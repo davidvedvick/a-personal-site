@@ -1,9 +1,6 @@
 var fs = require('fs');
 var path = require('path');
 var express = require('express');
-var bodyParser = require('body-parser');
-var favIcon = require('serve-favicon');
-var methodOverride = require('method-override');
 var path = require('path');
 var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
@@ -18,11 +15,8 @@ var maxAge = 86400 * 1000;
 app.use(compression());
 app.use('/', express.static(publicDir, { maxAge: maxAge }));
 
-app.use(bodyParser.json());
 // app.use(favIcon());
 // app.use(express.logger('dev'));
-app.use(bodyParser());
-app.use(methodOverride());
 
 app.set('view engine', 'jsx');
 
