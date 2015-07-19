@@ -2,8 +2,9 @@ var fs = require('fs');
 var path = require('path');
 var async = require('async');
 var glob = require('glob');
+var express = require('express');
 
-module.exports = function(localApp, notesPath) {
+module.exports = function(localApp, notesConfig) {
     var parseNote = function(file, callback) {
         fs.readFile(file, 'utf8', function(err, data) {
             if (err) {
@@ -52,9 +53,9 @@ module.exports = function(localApp, notesPath) {
 
     var getNotes = function(page, onNotesLoaded) {
         const pageSize = 10;
-        notesPath = notesPath || 'content/notes';
+        notesConfig.path = notesConfig.path || 'content/notes';
 
-        glob(path.join(notesPath, '*.md'), function(err, files) {
+        glob(path.join(notesConfig.path, '*.md'), function(err, files) {
             if (err) {
                 console.log(err);
                 onNotesLoaded(err);
@@ -105,6 +106,8 @@ module.exports = function(localApp, notesPath) {
         });
     };
 
+    localApp.get('/notes/content', express.static(notesConfig.content));
+
     localApp.get('/notes', function(req, res) {
         getNotes(1, function(err, notes) {
             if (err) {
@@ -126,7 +129,7 @@ module.exports = function(localApp, notesPath) {
         var day = req.params[2];
         var title = req.params[3];
 
-        var filePath = path.join(notesPath, year + month + day + '-' + title + '.md');
+        var filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
         parseNote(filePath, function(err, note) {
             if (err) {
