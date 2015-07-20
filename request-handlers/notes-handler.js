@@ -5,6 +5,9 @@ var glob = require('glob');
 var express = require('express');
 
 module.exports = function(localApp, notesConfig) {
+
+    localApp.use('/notes/content', express.static(notesConfig.content));
+
     var parseNote = function(file, callback) {
         fs.readFile(file, 'utf8', function(err, data) {
             if (err) {
@@ -106,8 +109,6 @@ module.exports = function(localApp, notesConfig) {
         });
     };
 
-    localApp.get('/notes/content', express.static(notesConfig.content));
-
     localApp.get('/notes', function(req, res) {
         getNotes(1, function(err, notes) {
             if (err) {
@@ -147,6 +148,7 @@ module.exports = function(localApp, notesConfig) {
 
     localApp.get(/^\/notes\/([0-9]*)/, function(req, res) {
         var page = req.params[0];
+
         if (!page) {
             res.json([]);
             return;

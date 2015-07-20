@@ -42,7 +42,7 @@ app.get('/resume',function (req, res) {
 	res.sendFile(path.join(staticHtmlDir, 'resume.html'), { maxAge: maxAge });
 });
 
-notesHandler(app, appConfig.notesLocation);
+notesHandler(app, appConfig.notes);
 
 app.listen(3000);
 

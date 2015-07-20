@@ -94,7 +94,7 @@ app.get('/resume', function(req, res) {
     });
 });
 
-notesHandler(app, appConfig.notesLocation);
+notesHandler(app, appConfig.notes);
 
 app.listen(3000);
 
