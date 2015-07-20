@@ -4,9 +4,11 @@ var async = require('async');
 var glob = require('glob');
 var express = require('express');
 
-module.exports = function(localApp, notesConfig) {
+module.exports = function(localApp, notesConfig, environmentOpts) {
 
-    localApp.use('/notes/content', express.static(notesConfig.content));
+    environmentOpts = environmentOpts || {};
+
+    localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
     var parseNote = function(file, callback) {
         fs.readFile(file, 'utf8', function(err, data) {

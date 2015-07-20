@@ -10,6 +10,10 @@ var async = require('async');
 var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
 
+var environmentOpts = {
+    maxAge: 0
+};
+
 var app = express();
 app.use('/', express.static(path.join(__dirname, 'public')));
 
@@ -94,7 +98,7 @@ app.get('/resume', function(req, res) {
     });
 });
 
-notesHandler(app, appConfig.notes);
+notesHandler(app, appConfig.notes, environmentOpts);
 
 app.listen(3000);
 
