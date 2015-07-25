@@ -168,7 +168,7 @@ gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() 
 
 gulp.task('store-bio-markdown', function() {
 	return gulp
-		.src(appConfig.bioLocation)
+		.src(appConfig.bio.path)
 		.pipe(hashDest(rawMarkdown));
 });
 
