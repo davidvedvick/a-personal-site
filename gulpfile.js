@@ -82,6 +82,14 @@ gulp.task('images', ['clean-images'], function () {
 	return gulp.src('./imgs/*').pipe(gulp.dest('./public/imgs'));
 });
 
+gulp.task('profile-image', ['clean-images'], function () {
+	return gulp
+		.src(appConfig.bio.authorPicture)
+		.pipe(imageResize({ width: 500 }))
+		.pipe(rename('profile-picture.jpg'))
+		.pipe(gulp.dest('./public/imgs'));
+});
+
 gulp.task('project-images', function () {
 	const destDir = './public/imgs/projects';
 	return gulp.src('./content/projects/**/imgs/*')
@@ -103,7 +111,7 @@ gulp.task('build-resume-pdf', function() {
 		.pipe(gulp.dest('./public'));
 });
 
-gulp.task('build', ['images', 'project-images', 'less', 'client-js', 'slick-blobs', 'build-resume-pdf']);
+gulp.task('build', ['images', 'project-images', 'profile-image', 'less', 'client-js', 'slick-blobs', 'build-resume-pdf']);
 
 gulp.task('watch', ['build'], function() {
 	gulp.watch('./views/**/*.less', ['less']);

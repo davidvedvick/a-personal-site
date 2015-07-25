@@ -4,8 +4,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
-var less = require('less');
-var path = require('path');
 var async = require('async');
 var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
@@ -31,7 +29,7 @@ if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
 app.get('/', function(req, res) {
-    fs.readFile(appConfig.bioLocation, function(error, bioMarkdown) {
+    fs.readFile(appConfig.bio.path, function(error, bioMarkdown) {
         if (error) {
             console.log(error);
             return;
