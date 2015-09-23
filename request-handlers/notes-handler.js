@@ -3,8 +3,9 @@ var path = require('path');
 var async = require('async');
 var glob = require('glob');
 var express = require('express');
+var momentTimezone = require('moment-timezone');
 
-module.exports = function(localApp, notesConfig, environmentOpts) {
+module.exports = function (localApp, notesConfig, environmentOpts) {
 
     environmentOpts = environmentOpts || {};
 
@@ -32,7 +33,7 @@ module.exports = function(localApp, notesConfig, environmentOpts) {
             var fileName = path.basename(file, '.md');
             var newNote = {
                 created: new Date(props.created_gmt || props.created),
-                relativeCreated: new Date(props.created),
+                relativeCreated: momentTimezone(props.created, 'America/North_Dakota/New_Salem').format(),
                 pathYear: fileName.substring(0, 4),
                 pathMonth: fileName.substring(4, 6),
                 pathDay: fileName.substring(6, 8),

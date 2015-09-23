@@ -23,7 +23,7 @@ var Note = React.createClass({
 			<div className="note">
 				<div className="note-text" dangerouslySetInnerHTML={{__html: html}} />
 				<p className="note-date">
-					<em>Note posted on {moment(note.created).format('LLLL')} - <a href={routeUrl}>link</a></em>
+					<em>Note posted on {moment(note.relativeCreated).format('LLLL')} - <a href={routeUrl}>link</a></em>
 				</p>
 			</div>
 		);
