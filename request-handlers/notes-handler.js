@@ -10,8 +10,8 @@ module.exports = function(localApp, notesConfig, environmentOpts) {
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
-    var parseNote = function(file, callback) {
-        fs.readFile(file, 'utf8', function(err, data) {
+    var parseNote = function (file, callback) {
+        fs.readFile(file, 'utf8', function (err, data) {
             if (err) {
                 callback(err);
                 return;
@@ -21,10 +21,10 @@ module.exports = function(localApp, notesConfig, environmentOpts) {
 
             var props = {};
             textLines
-                .filter(function(line) {
+                .filter(function (line) {
                     return line.match(/^[a-zA-Z_]*\:.*/);
                 })
-                .forEach(function(line) {
+                .forEach(function (line) {
                     var propName = line.split(':', 1);
                     props[propName] = line.replace(propName + ':', '').trim();
                 });
@@ -42,7 +42,7 @@ module.exports = function(localApp, notesConfig, environmentOpts) {
 
             // Convention: treat first headline as start of note
             for (var i = 0; i < textLines.length; i++) {
-                if (textLines[i].trim()[0] !== '#') continue;
+                if (textLines[i].trim() !== '---') continue;
 
                 newNote.text = textLines
                                     .slice(++i)
@@ -56,11 +56,11 @@ module.exports = function(localApp, notesConfig, environmentOpts) {
         });
     };
 
-    var getNotes = function(page, onNotesLoaded) {
+    var getNotes = function (page, onNotesLoaded) {
         const pageSize = 10;
         notesConfig.path = notesConfig.path || 'content/notes';
 
-        glob(path.join(notesConfig.path, '*.md'), function(err, files) {
+        glob(path.join(notesConfig.path, '*.md'), function (err, files) {
             if (err) {
                 console.log(err);
                 onNotesLoaded(err);
@@ -79,8 +79,8 @@ module.exports = function(localApp, notesConfig, environmentOpts) {
 
             async.forEachOf(
                 filesToRead,
-                function(file, key, callback) {
-                    parseNote(file, function(err, newNote) {
+                function (file, key, callback) {
+                    parseNote(file, function (err, newNote) {
                         if (err) {
                             callback(err);
                             return;

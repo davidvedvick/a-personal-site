@@ -21,7 +21,6 @@ var Note = React.createClass({
 
 		return (
 			<div className="note">
-				<h2 className="note-title">{note.title}</h2>
 				<div className="note-text" dangerouslySetInnerHTML={{__html: html}} />
 				<p className="note-date">
 					<em>Note posted on {moment(note.created).format('LLLL')} - <a href={routeUrl}>link</a></em>
