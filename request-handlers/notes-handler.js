@@ -3,10 +3,12 @@ var path = require('path');
 var async = require('async');
 var glob = require('glob');
 var express = require('express');
+var exec = require('child_process').exec;
 
 module.exports = function (localApp, notesConfig, environmentOpts) {
 
     environmentOpts = environmentOpts || {};
+    notesConfig.path = notesConfig.path || 'content/notes';
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
@@ -31,8 +33,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
 
             var fileName = path.basename(file, '.md');
             var newNote = {
-                created: new Date((props.created_gmt || props.created) + ' GMT'),
-                relativeCreated: new Date(props.created),
+                created: props.created_gmt ? new Date(props.created_gmt) : null,
                 pathYear: fileName.substring(0, 4),
                 pathMonth: fileName.substring(4, 6),
                 pathDay: fileName.substring(6, 8),
@@ -52,13 +53,35 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                 break;
             }
 
-            callback(null, newNote);
+            if (newNote.created !== null) {
+                callback(null, newNote);
+                return;
+            }
+
+            if (!notesConfig.gitPath) {
+                var baseName = path.basename(file);
+                newNote.created = new Date(baseName.substring(0, 4), baseName.substring(4, 6), baseName.substring(6, 8));
+
+                callback(null, newNote);
+                return;
+            }
+
+            exec('git -C "' + notesConfig.gitPath + '" log --format=%cD "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
+                function (error, stdout, stderr) {
+                    if (error !== null) {
+                        callback(error);
+                        return;
+                    }
+
+                    newNote.created = new Date(stdout);
+                    callback(null, newNote);
+                }
+            );
         });
     };
 
     var getNotes = function (page, onNotesLoaded) {
         const pageSize = 10;
-        notesConfig.path = notesConfig.path || 'content/notes';
 
         glob(path.join(notesConfig.path, '*.md'), function (err, files) {
             if (err) {
@@ -98,7 +121,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
 
                     parsedNotes =
                         parsedNotes
-                            .sort(function(a, b) {
+                            .sort(function (a, b) {
                                 return isFinite(a.created) && isFinite(b.created) ?
                                     (a.created > b.created) - (a.created < b.created) :
                                     NaN;
@@ -111,8 +134,8 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
         });
     };
 
-    localApp.get('/notes', function(req, res) {
-        getNotes(1, function(err, notes) {
+    localApp.get('/notes', function (req, res) {
+        getNotes(1, function (err, notes) {
             if (err) {
                 console.log(err);
                 return;
@@ -126,7 +149,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
         });
     });
 
-    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, function(req, res) {
+    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, function (req, res) {
         var year = req.params[0];
         var month = req.params[1];
         var day = req.params[2];
@@ -134,7 +157,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
 
         var filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
-        parseNote(filePath, function(err, note) {
+        parseNote(filePath, function (err, note) {
             if (err) {
                 console.log(err);
                 return;
@@ -156,7 +179,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
             return;
         }
 
-        getNotes(page, function(err, notes) {
+        getNotes(page, function (err, notes) {
             if (err) {
                 console.log(err);
                 return;
