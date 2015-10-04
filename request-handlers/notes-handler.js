@@ -66,7 +66,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                 return;
             }
 
-            exec('git -C "' + notesConfig.gitPath + '" log --format=%cD "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
+            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
                 function (error, stdout, stderr) {
                     if (error !== null) {
                         callback(error);
