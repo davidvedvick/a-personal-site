@@ -1,6 +1,6 @@
 var React = require('react');
 var marked = require('marked');
-var moment = require('moment');
+var moment = require('moment-timezone');
 var path = require('path');
 var highlightJs = require('highlight.js');
 
@@ -23,7 +23,7 @@ var Note = React.createClass({
 			<div className="note">
 				<div className="note-text" dangerouslySetInnerHTML={{__html: html}} />
 				<p className="note-date">
-					<em>Note posted on {moment(note.created).format('LLLL')} - <a href={routeUrl}>link</a></em>
+					<em>Note posted on {moment(note.created).tz('America/Chicago').format('LLLL z')} - <a href={routeUrl}>link</a></em>
 				</p>
 			</div>
 		);
