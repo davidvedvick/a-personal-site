@@ -13,6 +13,8 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
     var parseNote = function (file, callback) {
+        parseNote.propMatch = /(^[a-zA-Z_]*)\:(.*)/;
+
         fs.readFile(file, 'utf8', function (err, data) {
             if (err) {
                 callback(err);
@@ -22,36 +24,44 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
             var textLines = data.split('\n');
 
             var props = {};
-            textLines
-                .filter(function (line) {
-                    return line.match(/^[a-zA-Z_]*\:.*/);
-                })
-                .forEach(function (line) {
-                    var propName = line.split(':', 1);
-                    props[propName] = line.replace(propName + ':', '').trim();
-                });
 
             var fileName = path.basename(file, '.md');
+
             var newNote = {
-                created: props.created_gmt ? new Date(props.created_gmt) : null,
+                created: null,
                 pathYear: fileName.substring(0, 4),
                 pathMonth: fileName.substring(4, 6),
                 pathDay: fileName.substring(6, 8),
-                pathTitle: fileName.substring(9),
-                title: props.title
+                pathTitle: fileName.substring(9)
             };
 
-            // Convention: treat first headline as start of note
-            for (var i = 0; i < textLines.length; i++) {
-                if (textLines[i].trim() !== '---') continue;
+            var lineNumber = 0;
+            for (var i = lineNumber; i < textLines.length; i++) {
+                lineNumber = i;
+                var line = textLines[i];
 
-                newNote.text = textLines
-                                    .slice(++i)
-                                    // add back in the line returns
-                                    .join('\n');
+                if (line.trim() === '---') break;
 
-                break;
+                var matches = parseNote.propMatch.exec(line);
+                if (!matches) continue;
+
+                var propName = matches[1];
+                var value = matches[2].trim();
+
+                switch (propName) {
+                    case 'created_gmt':
+                        newNote.created = new Date(value);
+                        break;
+                    case 'title':
+                        newNote.title = value;
+                        break;
+                }
             }
+
+            newNote.text = textLines
+                                .slice(lineNumber + 1)
+                                // add back in the line returns
+                                .join('\n');
 
             if (newNote.created !== null) {
                 callback(null, newNote);
@@ -59,9 +69,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
             }
 
             if (!notesConfig.gitPath) {
-                var baseName = path.basename(file);
-                newNote.created = new Date(baseName.substring(0, 4), baseName.substring(4, 6), baseName.substring(6, 8));
-
+                newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
                 callback(null, newNote);
                 return;
             }
