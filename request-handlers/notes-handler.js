@@ -23,10 +23,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
 
             var textLines = data.split('\n');
 
-            var props = {};
-
             var fileName = path.basename(file, '.md');
-
             var newNote = {
                 created: null,
                 pathYear: fileName.substring(0, 4),
@@ -99,8 +96,8 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
             }
 
             var startIndex = (page - 1) * pageSize;
+
             // really hacky way to pull files back for now
-            // need to filter out (or just delete) private files in the future
             var filesToRead = files
                                 .sort()
                                 .reverse()
