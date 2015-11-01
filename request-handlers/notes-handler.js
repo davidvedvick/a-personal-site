@@ -32,12 +32,14 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                 pathTitle: fileName.substring(9)
             };
 
-            var lineNumber = 0;
-            for (var i = lineNumber; i < textLines.length; i++) {
-                lineNumber = i;
+            for (var i = 0; i < textLines.length; i++) {
                 var line = textLines[i];
 
-                if (line.trim() === '---') break;
+                if (line.trim() === '---') {
+                    // add back in the line returns
+                    newNote.text = textLines.slice(i + 1).join('\n');
+                    break;
+                }
 
                 var matches = parseNote.propMatch.exec(line);
                 if (!matches) continue;
@@ -54,11 +56,6 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                         break;
                 }
             }
-
-            newNote.text = textLines
-                                .slice(lineNumber + 1)
-                                // add back in the line returns
-                                .join('\n');
 
             if (newNote.created !== null) {
                 callback(null, newNote);
