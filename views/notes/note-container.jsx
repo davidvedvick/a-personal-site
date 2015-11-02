@@ -3,7 +3,7 @@ var Layout = require('../layout');
 var Note = require('./note/note');
 
 var NotesContainer = React.createClass({
-	render: function() {
+	render: function () {
 		return (
 			<Layout subheader="Notes">
 				<Note note={this.props.note} />

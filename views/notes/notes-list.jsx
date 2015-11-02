@@ -4,47 +4,47 @@ var jQuery = require('jquery');
 
 var NotesList = React.createClass({
 	page: 1,
-	getInitialState: function() {
+	getInitialState: function () {
 		return {
 			notes: this.props.notes || []
 		};
 	},
-	loadMoreNotesIfNecessary: function() {
+	loadMoreNotesIfNecessary: function () {
 		if (jQuery(window).scrollTop() >= jQuery('div.note:nth-last-child(5)').offset().top)
 			this.getNotes();
 	},
-	getNotes: function() {
+	getNotes: function () {
 		jQuery(window).off('scroll', this.loadMoreNotesIfNecessary);
 
-	 	jQuery.ajax({
+		jQuery.ajax({
 			url: '/notes/' + (++this.page),
 			dataType: 'json',
 			cache: false,
-			success: function(data) {
-				if (data.length == 0) return;
+			success: function (data) {
+				if (data.length === 0) return;
 
 				this.setState({notes: this.state.notes.concat(data)});
 				jQuery(window).on('scroll', this.loadMoreNotesIfNecessary);
 			}.bind(this),
-			error: function(xhr, status, err) {
+			error: function (xhr, status, err) {
 				console.error(err.toString());
 				jQuery(window).on('scroll', this.loadMoreNotesIfNecessary);
 			}.bind(this)
 		});
 	},
-	componentDidMount: function() {
+	componentDidMount: function () {
 		var reactObject = this;
-		(function($) {
-			$(function() {
+		(function ($) {
+			$(function () {
 				$(window).on('scroll', reactObject.loadMoreNotesIfNecessary);
 				reactObject.loadMoreNotesIfNecessary();
 			});
 		})(jQuery);
 	},
-	render: function() {
+	render: function () {
 		// notes objects should look like "{title, date, text}". don't include private
 		// ones
-		var noteNodes = (this.state.notes || []).map(function(note) {
+		var noteNodes = (this.state.notes || []).map(function (note) {
 			return (<Note note={note} key={note.created} />);
 		});
 
