@@ -21,8 +21,6 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                 return;
             }
 
-            var textLines = data.split('\n');
-
             var fileName = path.basename(file, '.md');
             var newNote = {
                 created: null,
@@ -32,6 +30,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                 pathTitle: fileName.substring(9)
             };
 
+            var textLines = data.split('\n');
             for (var i = 0; i < textLines.length; i++) {
                 var line = textLines[i];
 
