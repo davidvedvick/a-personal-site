@@ -24,7 +24,7 @@ var gulpSsh = require('gulp-ssh')({
 });
 var minifyHtml = require('gulp-minify-html');
 
-gulp.task('clean-js', function(cb) {
+gulp.task('clean-js', function (cb) {
 	del(['./public/js'], cb);
 });
 
@@ -35,7 +35,7 @@ gulp.task('client-js', ['clean-js'], function () {
 			through2.obj(function (file, enc, next) {
 				browserify(file.path, { extensions: '.jsx' })
 					.transform(reactify)
-					.bundle(function(err, res){
+					.bundle(function (err, res) {
 						if (err)
 							console.log(err);
 						// assumes file.contents is a Buffer
@@ -57,24 +57,24 @@ gulp.task('client-js', ['clean-js'], function () {
 		.pipe(gulp.dest(destDir));
 });
 
-gulp.task('clean-css', function(cb) {
+gulp.task('clean-css', function (cb) {
 	del(['./public/css'], cb);
 });
 
 // copy slick carousel blobs
-gulp.task('slick-blobs', ['clean-css'], function() {
+gulp.task('slick-blobs', ['clean-css'], function () {
 	return gulp.src(['./node_modules/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}']).pipe(gulp.dest('./public/css'));
 });
 
 // Bundle LESS
 gulp.task('less', ['clean-css', 'slick-blobs'], function () {
-  return gulp.src('./views/layout.less')
-	.pipe(less({ paths: ["./node_modules"] }))
-	.pipe(minifyCss())
-    .pipe(gulp.dest('./public/css'));
+	return gulp.src('./views/layout.less')
+		.pipe(less({ paths: ['./node_modules'] }))
+		.pipe(minifyCss())
+		.pipe(gulp.dest('./public/css'));
 });
 
-gulp.task('clean-images', function(cb) {
+gulp.task('clean-images', function (cb) {
 	del(['./public/images'], cb);
 });
 
@@ -101,7 +101,7 @@ gulp.task('project-images', function () {
 			.pipe(gulp.dest(destDir));
 });
 
-gulp.task('build-resume-pdf', function() {
+gulp.task('build-resume-pdf', function () {
 	return gulp
 		.src(appConfig.resumeLocation)
 		.pipe(markdownPdf())
@@ -113,7 +113,7 @@ gulp.task('build-resume-pdf', function() {
 
 gulp.task('build', ['images', 'project-images', 'profile-image', 'less', 'client-js', 'slick-blobs', 'build-resume-pdf']);
 
-gulp.task('watch', ['build'], function() {
+gulp.task('watch', ['build'], function () {
 	gulp.watch('./views/**/*.less', ['less']);
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
@@ -123,7 +123,7 @@ gulp.task('watch', ['build'], function() {
 
 var rawMarkdown = {};
 
-var jsxToHtml = function(options) {
+var jsxToHtml = function (options) {
 	return through2.obj(function (file, enc, cb) {
 
 		require('node-jsx').install({extension: '.jsx'});
@@ -139,7 +139,7 @@ var jsxToHtml = function(options) {
 	});
 };
 
-var hashDest = function(dest, opts) {
+var hashDest = function (dest, opts) {
 	return through2.obj(function (file, enc, cb) {
 		opts = opts || {};
 
@@ -152,13 +152,13 @@ var minifyHtmlOpts = {
 	conditionals: true
 };
 
-gulp.task('store-resume-markdown', function() {
+gulp.task('store-resume-markdown', function () {
 	return gulp
 		.src(appConfig.resumeLocation)
 		.pipe(hashDest(rawMarkdown));
 });
 
-gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() {
+gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function () {
 	return gulp
 		.src('./views/resume/resume.jsx')
 		.pipe(jsxToHtml({resume: rawMarkdown['resume.md']}))
@@ -166,13 +166,13 @@ gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function() 
 		.pipe(gulp.dest('./public/html'));
 });
 
-gulp.task('store-bio-markdown', function() {
+gulp.task('store-bio-markdown', function () {
 	return gulp
 		.src(appConfig.bio.path)
 		.pipe(hashDest(rawMarkdown));
 });
 
-gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
+gulp.task('build-static-index', ['build', 'store-bio-markdown'], function () {
 	return gulp
 		.src('./views/index/index.jsx')
 		.pipe(jsxToHtml({bio: rawMarkdown['bio.md']}))
@@ -181,21 +181,21 @@ gulp.task('build-static-index', ['build', 'store-bio-markdown'], function() {
 });
 
 var projectMarkdown = {};
-gulp.task('store-project-markdown', function() {
+gulp.task('store-project-markdown', function () {
 	return gulp
 		.src(path.join(appConfig.projectsLocation, '*/features.md'))
 		.pipe(hashDest(projectMarkdown));
 });
 
 var projectData = {};
-gulp.task('store-project-json', ['store-project-markdown'], function() {
+gulp.task('store-project-json', ['store-project-markdown'], function () {
 	return gulp
 		.src(path.join(appConfig.projectsLocation, 'projects.json'))
 		.pipe(hashDest(projectData, {
-			onStore: function(data) {
+			onStore: function (data) {
 				var projects = JSON.parse(data);
 
-				projects.forEach(function(project) {
+				projects.forEach(function (project) {
 					project.features = projectMarkdown[project.name + '/features.md'];
 				});
 
@@ -204,7 +204,7 @@ gulp.task('store-project-json', ['store-project-markdown'], function() {
 		}));
 });
 
-gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
+gulp.task('build-static-projects', ['build', 'store-project-json'], function () {
 	return gulp
 		.src('./views/project/project-list.jsx')
 		.pipe(jsxToHtml({projects: projectData['projects.json']}))
@@ -214,25 +214,25 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function() {
 
 gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);
 
-gulp.task('publish-request-handlers', ['build-static'], function() {
+gulp.task('publish-request-handlers', ['build-static'], function () {
 	return gulp
 		.src(['./request-handlers/**/*.js'])
 		.pipe(gulpSsh.dest('/home/protected/app/request-handlers/'));
 });
 
-gulp.task('publish-app', ['build-static', 'publish-request-handlers'], function() {
+gulp.task('publish-app', ['build-static', 'publish-request-handlers'], function () {
 	return gulp
 		.src(['./app-release.js', './start-server.sh', './package.json'])
 		.pipe(gulpSsh.dest('/home/protected/app/'));
 });
 
-gulp.task('publish-content', ['build-static'], function() {
+gulp.task('publish-content', ['build-static'], function () {
 	return gulp
 		.src('./public/**/*')
 		.pipe(gulpSsh.dest('/home/protected/app/public/'));
 });
 
-gulp.task('publish-jsx', function() {
+gulp.task('publish-jsx', function () {
 	return gulp
 		.src('./views/**/*.jsx')
 		.pipe(gulpSsh.dest('/home/protected/app/views/'));
@@ -240,7 +240,7 @@ gulp.task('publish-jsx', function() {
 
 gulp.task('publish', ['publish-app', 'publish-content', 'publish-jsx']);
 
-gulp.task('update-server', ['publish'], function() {
+gulp.task('update-server', ['publish'], function () {
 	return gulpSsh.shell(['cd /home/protected/app/', 'npm prune --production', 'npm install --production', 'chmod +x start-server.sh', 'rm -rf /home/tmp/npm*', 'npm cache clean']);
 });
 
