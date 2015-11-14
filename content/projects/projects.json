@@ -10,6 +10,14 @@
 		"images":
 		[
 			{
+				"path": "nexus_5_now_playing_click.png",
+				"description": "Now Playing View with Ratings"
+			},
+			{
+				"path": "nexus_5_portrait_menu.png",
+				"description": "The menu"
+			},
+			{
 				"path": "nexus_5_landscape.png",
 				"description": "Landscape view"
 			},
