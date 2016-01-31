@@ -3,6 +3,7 @@ var path = require('path');
 var glob = require('globby');
 var express = require('express');
 var exec = require('child_process').exec;
+var readline = require('readline');
 
 module.exports = (localApp, notesConfig, environmentOpts) => {
 
@@ -15,48 +16,47 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
         parseNote.propMatch = /(^[a-zA-Z_]*)\:(.*)/;
 
         return new Promise((resolve, reject) => {
-            fs.readFile(file, 'utf8', (err, data) => {
-                if (err) {
-                    reject(err);
+            var fileName = path.basename(file, '.md');
+            var newNote = {
+                created: null,
+                pathYear: fileName.substring(0, 4),
+                pathMonth: fileName.substring(4, 6),
+                pathDay: fileName.substring(6, 8),
+                pathTitle: fileName.substring(9),
+                hash: fileName,
+                text: null
+            };
+
+            var lineReader = readline.createInterface({ input: fs.createReadStream(file) });
+            lineReader.on('line', line => {
+                if (newNote.text != null) {
+                    newNote.text += line;
                     return;
                 }
 
-                var fileName = path.basename(file, '.md');
-                var newNote = {
-                    created: null,
-                    pathYear: fileName.substring(0, 4),
-                    pathMonth: fileName.substring(4, 6),
-                    pathDay: fileName.substring(6, 8),
-                    pathTitle: fileName.substring(9),
-                    hash: fileName
-                };
-
-                var textLines = data.split('\n');
-                for (var i = 0; i < textLines.length; i++) {
-                    var line = textLines[i];
-
-                    if (line.trim() === '---') {
-                        // add back in the line returns
-                        newNote.text = textLines.slice(i + 1).join('\n');
-                        break;
-                    }
-
-                    var matches = parseNote.propMatch.exec(line);
-                    if (!matches) continue;
-
-                    var propName = matches[1];
-                    var value = matches[2].trim();
-
-                    switch (propName) {
-                        case 'created_gmt':
-                            newNote.created = new Date(value);
-                            break;
-                        case 'title':
-                            newNote.title = value;
-                            break;
-                    }
+                if (line.trim() === '---') {
+                    // Begin adding the text
+                    newNote.text = '';
+                    return;
                 }
 
+                var matches = parseNote.propMatch.exec(line);
+                if (!matches) return;
+
+                var propName = matches[1];
+                var value = matches[2].trim();
+
+                switch (propName) {
+                    case 'created_gmt':
+                        newNote.created = new Date(value);
+                        return;
+                    case 'title':
+                        newNote.title = value;
+                        return;
+                }
+            });
+
+            lineReader.on('close', () => {
                 if (newNote.created !== null) {
                     resolve(newNote);
                     return;
