@@ -83,50 +83,39 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
         });
     };
 
-    var getNotes = (page, onNotesLoaded) => {
+    var getNotes = (page) => {
         const pageSize = 10;
 
-        glob(path.join(notesConfig.path, '*.md')).then(files => {
-            var startIndex = (page - 1) * pageSize;
+        return glob(path.join(notesConfig.path, '*.md')).then(files => {
+            const startIndex = (page - 1) * pageSize;
 
             // really hacky way to pull files back for now
-            var filesToRead = files
+            const filesToRead = files
                                 .sort()
                                 .reverse()
                                 .slice(startIndex, startIndex + pageSize);
 
-            Promise.all(filesToRead.map(f => parseNote(f)))
+            return Promise.all(filesToRead.map(f => parseNote(f)))
                 .then(parsedNotes => {
-                    parsedNotes =
-                        parsedNotes
+                    return parsedNotes
                             .sort(function (a, b) {
                                 return isFinite(a.created) && isFinite(b.created) ?
                                     (a.created > b.created) - (a.created < b.created) :
                                     NaN;
                             })
                             .reverse();
-
-                    onNotesLoaded(null, parsedNotes);
-                }).catch(onNotesLoaded);
-        }).catch(err => {
-            console.log(err);
-            onNotesLoaded(err);
+                });
         });
     };
 
     localApp.get('/notes', (req, res) => {
-        getNotes(1, (err, notes) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
-
+        getNotes(1).then(notes => {
             try {
                 res.render('notes/notes-container', { notes: notes });
             } catch (exception) {
                 console.log(exception);
             }
-        });
+        }).catch(console.error);
     });
 
     localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, (req, res) => {
@@ -141,9 +130,9 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             try {
                 res.render('notes/note-container', { note: note });
             } catch (exception) {
-                console.log(exception);
+                console.error(exception);
             }
-        }).catch(console.log);
+        }).catch(console.error);
     });
 
     localApp.get(/^\/notes\/([0-9]*)/, (req, res) => {
@@ -154,17 +143,12 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             return;
         }
 
-        getNotes(page, (err, notes) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
-
+        getNotes(page).then(notes => {
             try {
                 res.json(notes);
             } catch (exception) {
-                console.log(exception);
+                console.error(exception);
             }
-        });
+        }).catch(console.error);
     });
 };
