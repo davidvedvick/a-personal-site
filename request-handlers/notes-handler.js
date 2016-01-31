@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var async = require('async');
+var asyncLib = require('async');
 var glob = require('globby');
 var express = require('express');
 var exec = require('child_process').exec;
@@ -84,13 +84,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
     var getNotes = function (page, onNotesLoaded) {
         const pageSize = 10;
 
-        glob(path.join(notesConfig.path, '*.md'), function (err, files) {
-            if (err) {
-                console.log(err);
-                onNotesLoaded(err);
-                return;
-            }
-
+        glob(path.join(notesConfig.path, '*.md')).then(files => {
             var startIndex = (page - 1) * pageSize;
 
             // really hacky way to pull files back for now
@@ -101,7 +95,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
 
             var parsedNotes = [];
 
-            async.forEachOf(
+            asyncLib.forEachOf(
                 filesToRead,
                 function (file, key, callback) {
                     parseNote(file, function (err, newNote) {
@@ -132,6 +126,10 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                     onNotesLoaded(error, parsedNotes);
                 }
             );
+        }).catch(err => {
+            console.log(err);
+            onNotesLoaded(err);
+            return;
         });
     };
 

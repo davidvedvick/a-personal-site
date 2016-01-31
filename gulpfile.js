@@ -25,7 +25,7 @@ var gulpSsh = require('gulp-ssh')({
 var htmlmin = require('gulp-htmlmin');
 
 gulp.task('clean-js', function (cb) {
-	del(['./public/js'], cb);
+	del(['./public/js']).then(() => { cb(); });
 });
 
 gulp.task('client-js', ['clean-js'], function () {
@@ -58,7 +58,7 @@ gulp.task('client-js', ['clean-js'], function () {
 });
 
 gulp.task('clean-css', function (cb) {
-	del(['./public/css'], cb);
+	del(['./public/css']).then(() => { cb(); });
 });
 
 // copy slick carousel blobs
@@ -75,7 +75,7 @@ gulp.task('less', ['clean-css', 'slick-blobs'], function () {
 });
 
 gulp.task('clean-images', function (cb) {
-	del(['./public/images'], cb);
+	del(['./public/images']).then(() => { cb(); });
 });
 
 gulp.task('images', ['clean-images'], function () {
