@@ -27,7 +27,8 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                     pathYear: fileName.substring(0, 4),
                     pathMonth: fileName.substring(4, 6),
                     pathDay: fileName.substring(6, 8),
-                    pathTitle: fileName.substring(9)
+                    pathTitle: fileName.substring(9),
+                    hash: fileName
                 };
 
                 var textLines = data.split('\n');
