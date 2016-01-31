@@ -4,7 +4,6 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
-var async = require('async');
 var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
 
@@ -28,8 +27,8 @@ app.engine('jsx', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-app.get('/', function(req, res) {
-    fs.readFile(appConfig.bio.path, function(error, bioMarkdown) {
+app.get('/', (req, res) => {
+    fs.readFile(appConfig.bio.path, (error, bioMarkdown) => {
         if (error) {
             console.log(error);
             return;
@@ -43,46 +42,40 @@ app.get('/', function(req, res) {
     });
 });
 
-app.get('/projects', function(req, res) {
-    fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'), function(error, rawProjectData) {
+app.get('/projects', (req, res) => {
+    fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'), (error, rawProjectData) => {
         if (error) {
-            console.log(error);
+            console.error(error);
             return;
         }
 
-        var projects = JSON.parse(rawProjectData);
-
         // inject the features markdown text into the project objects
-        async.forEachOf(
-            projects,
-            function (project, key, callback) {
+        Promise.all(JSON.parse(rawProjectData).map(project => {
+            return new Promise((resolve, reject) => {
                 var filePath = path.join('content', 'projects', project.name, 'features.md');
 
-                fs.readFile(filePath, 'utf8', function(err, data) {
-                    if (!err)
-                        project.features = data;
+                fs.readFile(filePath, 'utf8', (err, data) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
 
-                    callback();
+                    project.features = data;
+                    resolve(project);
                 });
-            },
-            function(err, results) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                try {
-                    res.render('project/project-list', { projects: projects });
-                } catch (exception) {
-                    console.log(exception);
-                }
+            });
+        })).then(projects => {
+            try {
+                res.render('project/project-list', { projects: projects });
+            } catch (exception) {
+                console.error(exception);
             }
-        );
+        }).catch(console.error);
     });
 });
 
-app.get('/resume', function(req, res) {
-    fs.readFile(appConfig.resumeLocation, function(error, resumeMarkdown) {
+app.get('/resume', (req, res) => {
+    fs.readFile(appConfig.resumeLocation, (error, resumeMarkdown) => {
         if (error) {
             console.log(error);
             return;

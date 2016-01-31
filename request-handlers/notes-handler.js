@@ -1,87 +1,88 @@
 var fs = require('fs');
 var path = require('path');
-var asyncLib = require('async');
 var glob = require('globby');
 var express = require('express');
 var exec = require('child_process').exec;
 
-module.exports = function (localApp, notesConfig, environmentOpts) {
+module.exports = (localApp, notesConfig, environmentOpts) => {
 
     environmentOpts = environmentOpts || {};
     notesConfig.path = notesConfig.path || 'content/notes';
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
-    var parseNote = function (file, callback) {
+    var parseNote = (file) => {
         parseNote.propMatch = /(^[a-zA-Z_]*)\:(.*)/;
 
-        fs.readFile(file, 'utf8', function (err, data) {
-            if (err) {
-                callback(err);
-                return;
-            }
-
-            var fileName = path.basename(file, '.md');
-            var newNote = {
-                created: null,
-                pathYear: fileName.substring(0, 4),
-                pathMonth: fileName.substring(4, 6),
-                pathDay: fileName.substring(6, 8),
-                pathTitle: fileName.substring(9)
-            };
-
-            var textLines = data.split('\n');
-            for (var i = 0; i < textLines.length; i++) {
-                var line = textLines[i];
-
-                if (line.trim() === '---') {
-                    // add back in the line returns
-                    newNote.text = textLines.slice(i + 1).join('\n');
-                    break;
+        return new Promise((resolve, reject) => {
+            fs.readFile(file, 'utf8', (err, data) => {
+                if (err) {
+                    reject(err);
+                    return;
                 }
 
-                var matches = parseNote.propMatch.exec(line);
-                if (!matches) continue;
+                var fileName = path.basename(file, '.md');
+                var newNote = {
+                    created: null,
+                    pathYear: fileName.substring(0, 4),
+                    pathMonth: fileName.substring(4, 6),
+                    pathDay: fileName.substring(6, 8),
+                    pathTitle: fileName.substring(9)
+                };
 
-                var propName = matches[1];
-                var value = matches[2].trim();
+                var textLines = data.split('\n');
+                for (var i = 0; i < textLines.length; i++) {
+                    var line = textLines[i];
 
-                switch (propName) {
-                    case 'created_gmt':
-                        newNote.created = new Date(value);
+                    if (line.trim() === '---') {
+                        // add back in the line returns
+                        newNote.text = textLines.slice(i + 1).join('\n');
                         break;
-                    case 'title':
-                        newNote.title = value;
-                        break;
-                }
-            }
-
-            if (newNote.created !== null) {
-                callback(null, newNote);
-                return;
-            }
-
-            if (!notesConfig.gitPath) {
-                newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
-                callback(null, newNote);
-                return;
-            }
-
-            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                function (error, stdout, stderr) {
-                    if (error !== null) {
-                        callback(error);
-                        return;
                     }
 
-                    newNote.created = new Date(stdout);
-                    callback(null, newNote);
+                    var matches = parseNote.propMatch.exec(line);
+                    if (!matches) continue;
+
+                    var propName = matches[1];
+                    var value = matches[2].trim();
+
+                    switch (propName) {
+                        case 'created_gmt':
+                            newNote.created = new Date(value);
+                            break;
+                        case 'title':
+                            newNote.title = value;
+                            break;
+                    }
                 }
-            );
+
+                if (newNote.created !== null) {
+                    resolve(newNote);
+                    return;
+                }
+
+                if (!notesConfig.gitPath) {
+                    newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
+                    resolve(newNote);
+                    return;
+                }
+
+                exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
+                    function (error, stdout, stderr) {
+                        if (error !== null) {
+                            reject(error);
+                            return;
+                        }
+
+                        newNote.created = new Date(stdout);
+                        resolve(newNote);
+                    }
+                );
+            });
         });
     };
 
-    var getNotes = function (page, onNotesLoaded) {
+    var getNotes = (page, onNotesLoaded) => {
         const pageSize = 10;
 
         glob(path.join(notesConfig.path, '*.md')).then(files => {
@@ -93,27 +94,8 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                                 .reverse()
                                 .slice(startIndex, startIndex + pageSize);
 
-            var parsedNotes = [];
-
-            asyncLib.forEachOf(
-                filesToRead,
-                function (file, key, callback) {
-                    parseNote(file, function (err, newNote) {
-                        if (err) {
-                            callback(err);
-                            return;
-                        }
-
-                        parsedNotes.push(newNote);
-                        callback();
-                    });
-                },
-                function (error, results) {
-                    if (error) {
-                        onNotesLoaded(error);
-                        return;
-                    }
-
+            Promise.all(filesToRead.map(f => parseNote(f)))
+                .then(parsedNotes => {
                     parsedNotes =
                         parsedNotes
                             .sort(function (a, b) {
@@ -123,18 +105,16 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
                             })
                             .reverse();
 
-                    onNotesLoaded(error, parsedNotes);
-                }
-            );
+                    onNotesLoaded(null, parsedNotes);
+                }).catch(onNotesLoaded);
         }).catch(err => {
             console.log(err);
             onNotesLoaded(err);
-            return;
         });
     };
 
-    localApp.get('/notes', function (req, res) {
-        getNotes(1, function (err, notes) {
+    localApp.get('/notes', (req, res) => {
+        getNotes(1, (err, notes) => {
             if (err) {
                 console.log(err);
                 return;
@@ -148,7 +128,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
         });
     });
 
-    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, function (req, res) {
+    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, (req, res) => {
         var year = req.params[0];
         var month = req.params[1];
         var day = req.params[2];
@@ -156,21 +136,16 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
 
         var filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
-        parseNote(filePath, function (err, note) {
-            if (err) {
-                console.log(err);
-                return;
-            }
-
+        parseNote(filePath).then(note => {
             try {
                 res.render('notes/note-container', { note: note });
             } catch (exception) {
                 console.log(exception);
             }
-        });
+        }).catch(console.log);
     });
 
-    localApp.get(/^\/notes\/([0-9]*)/, function (req, res) {
+    localApp.get(/^\/notes\/([0-9]*)/, (req, res) => {
         var page = req.params[0];
 
         if (!page) {
@@ -178,7 +153,7 @@ module.exports = function (localApp, notesConfig, environmentOpts) {
             return;
         }
 
-        getNotes(page, function (err, notes) {
+        getNotes(page, (err, notes) => {
             if (err) {
                 console.log(err);
                 return;
