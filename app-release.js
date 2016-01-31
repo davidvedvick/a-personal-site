@@ -1,7 +1,5 @@
-var fs = require('fs');
 var path = require('path');
 var express = require('express');
-var path = require('path');
 var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
 var compression = require('compression');
@@ -28,15 +26,15 @@ app.engine('jsx', require('express-react-views').createEngine());
 
 var staticHtmlDir = path.join(publicDir, 'html');
 
-app.get('/', function(req, res) {
+app.get('/', function (req, res) {
     res.sendFile(path.join(staticHtmlDir, 'index.html'), { maxAge: maxAge });
 });
 
-app.get('/projects', function(req, res) {
+app.get('/projects', function (req, res) {
     res.sendFile(path.join(staticHtmlDir, 'project-list.html'), { maxAge: maxAge });
 });
 
-app.get('/resume',function (req, res) {
+app.get('/resume', function (req, res) {
 	res.sendFile(path.join(staticHtmlDir, 'resume.html'), { maxAge: maxAge });
 });
 

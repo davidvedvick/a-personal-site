@@ -5,7 +5,7 @@ var browserify = require('browserify');
 var reactify = require('reactify');
 var uglify = require('gulp-uglify');
 var less = require('gulp-less');
-var minifyCss = require('gulp-minify-css');
+var cssnano = require('gulp-cssnano');
 var del = require('del');
 var through2 = require('through2');
 var rename = require('gulp-rename');
@@ -22,7 +22,7 @@ var gulpSsh = require('gulp-ssh')({
 	// set this from a config file
 	sshConfig: require('./ssh-config.json')
 });
-var minifyHtml = require('gulp-minify-html');
+var htmlmin = require('gulp-htmlmin');
 
 gulp.task('clean-js', function (cb) {
 	del(['./public/js'], cb);
@@ -70,7 +70,7 @@ gulp.task('slick-blobs', ['clean-css'], function () {
 gulp.task('less', ['clean-css', 'slick-blobs'], function () {
 	return gulp.src('./views/layout.less')
 		.pipe(less({ paths: ['./node_modules'] }))
-		.pipe(minifyCss())
+		.pipe(cssnano())
 		.pipe(gulp.dest('./public/css'));
 });
 
@@ -148,10 +148,6 @@ var hashDest = function (dest, opts) {
 	});
 };
 
-var minifyHtmlOpts = {
-	conditionals: true
-};
-
 gulp.task('store-resume-markdown', function () {
 	return gulp
 		.src(appConfig.resumeLocation)
@@ -162,7 +158,7 @@ gulp.task('build-static-resume', ['build', 'store-resume-markdown'], function ()
 	return gulp
 		.src('./views/resume/resume.jsx')
 		.pipe(jsxToHtml({resume: rawMarkdown['resume.md']}))
-		.pipe(minifyHtml(minifyHtmlOpts))
+		.pipe(htmlmin())
 		.pipe(gulp.dest('./public/html'));
 });
 
@@ -176,7 +172,7 @@ gulp.task('build-static-index', ['build', 'store-bio-markdown'], function () {
 	return gulp
 		.src('./views/index/index.jsx')
 		.pipe(jsxToHtml({bio: rawMarkdown['bio.md']}))
-		.pipe(minifyHtml(minifyHtmlOpts))
+		.pipe(htmlmin())
 		.pipe(gulp.dest('./public/html'));
 });
 
@@ -208,7 +204,7 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function () 
 	return gulp
 		.src('./views/project/project-list.jsx')
 		.pipe(jsxToHtml({projects: projectData['projects.json']}))
-		.pipe(minifyHtml(minifyHtmlOpts))
+		.pipe(htmlmin())
 		.pipe(gulp.dest('./public/html'));
 });
 

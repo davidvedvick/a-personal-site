@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var async = require('async');
-var glob = require('glob');
+var glob = require('globby');
 var express = require('express');
 var exec = require('child_process').exec;
 
