@@ -69,7 +69,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                 }
 
                 exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                    function (error, stdout, stderr) {
+                    (error, stdout, stderr) => {
                         if (error !== null) {
                             reject(error);
                             return;
@@ -96,15 +96,13 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                                 .slice(startIndex, startIndex + pageSize);
 
             return Promise.all(filesToRead.map(f => parseNote(f)))
-                .then(parsedNotes => {
-                    return parsedNotes
-                            .sort(function (a, b) {
-                                return isFinite(a.created) && isFinite(b.created) ?
-                                    (a.created > b.created) - (a.created < b.created) :
-                                    NaN;
-                            })
-                            .reverse();
-                });
+                .then(parsedNotes =>
+                    parsedNotes
+                        .sort((a, b) =>
+                            isFinite(a.created) && isFinite(b.created) ?
+                                (a.created > b.created) - (a.created < b.created) :
+                                NaN)
+                        .reverse());
         });
     };
 
