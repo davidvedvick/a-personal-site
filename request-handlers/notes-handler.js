@@ -4,6 +4,7 @@ var glob = require('globby');
 var express = require('express');
 var exec = require('child_process').exec;
 var readline = require('readline');
+var os = require('os');
 
 module.exports = (localApp, notesConfig, environmentOpts) => {
 
@@ -29,8 +30,9 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
             var lineReader = readline.createInterface({ input: fs.createReadStream(file) });
             lineReader.on('line', line => {
+                // `newNote.text` is not null, so we are now able to add text
                 if (newNote.text != null) {
-                    newNote.text += line;
+                    newNote.text += line + os.EOL;
                     return;
                 }
 
