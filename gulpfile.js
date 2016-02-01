@@ -237,6 +237,7 @@ gulp.task('publish-jsx', function () {
 gulp.task('publish', ['publish-app', 'publish-content', 'publish-jsx']);
 
 gulp.task('update-server', ['publish'], function () {
+	// uninstall all the packages: `npm ls -p --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm uninstall`
 	return gulpSsh.shell(['cd /home/protected/app/', 'npm prune --production', 'npm install --production', 'chmod +x start-server.sh', 'rm -rf /home/tmp/npm*', 'npm cache clean']);
 });
 
