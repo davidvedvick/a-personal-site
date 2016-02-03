@@ -4,12 +4,13 @@ var glob = require('globby');
 var express = require('express');
 var exec = require('child_process').exec;
 var readline = require('readline');
-var os = require('os');
 
 module.exports = (localApp, notesConfig, environmentOpts) => {
 
     environmentOpts = environmentOpts || {};
     notesConfig.path = notesConfig.path || 'content/notes';
+
+	var newLine = '\n';
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
@@ -32,7 +33,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             lineReader.on('line', line => {
                 // `newNote.text` is not null, so we are now able to add text
                 if (newNote.text != null) {
-                    newNote.text += line + os.EOL;
+                    newNote.text += line + newLine;
                     return;
                 }
 
