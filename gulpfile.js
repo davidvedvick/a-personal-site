@@ -36,7 +36,7 @@ gulp.task('client-js', ['clean-js'], function () {
 	var pipe = gulp.src('./views/**/*.client.{js,jsx}')
 		.pipe(parallel(
 			through2.obj(function (file, enc, next) {
-				browserify(file.path, { extensions: '.jsx' })
+				browserify(file.path, { extensions: '.jsx', debug: !production })
 					.transform(babelify, { presets: ['es2015', 'react']})
 					.bundle(function (err, res) {
 						if (err) console.log(err);
