@@ -2,7 +2,7 @@ var gulp = require('gulp');
 var gutil = require('gulp-util');
 var sourcemaps = require('gulp-sourcemaps');
 var browserify = require('browserify');
-var reactify = require('reactify');
+var babelify = require('babelify');
 var uglify = require('gulp-uglify');
 var less = require('gulp-less');
 var cssnano = require('gulp-cssnano');
@@ -24,23 +24,24 @@ var gulpSsh = require('gulp-ssh')({
 });
 var htmlmin = require('gulp-htmlmin');
 
+var production = false;
+
 gulp.task('clean-js', function (cb) {
 	del(['./public/js']).then(() => { cb(); });
 });
 
 gulp.task('client-js', ['clean-js'], function () {
 	const destDir = './public/js';
-	return gulp.src('./views/**/*.client.{js,jsx}')
+
+	var pipe = gulp.src('./views/**/*.client.{js,jsx}')
 		.pipe(parallel(
 			through2.obj(function (file, enc, next) {
 				browserify(file.path, { extensions: '.jsx' })
-					.transform(reactify)
+					.transform(babelify, { presets: ['es2015', 'react']})
 					.bundle(function (err, res) {
-						if (err)
-							console.log(err);
+						if (err) console.log(err);
 						// assumes file.contents is a Buffer
-						else
-							file.contents = res;
+						else file.contents = res;
 
 						next(null, file);
 					});
@@ -50,11 +51,17 @@ gulp.task('client-js', ['clean-js'], function () {
 		.pipe(rename({
 			dirname: '',
 			extname: '.js'
-		}))
-		.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-		.pipe(parallel(uglify(), os.cpus().length))
-		.pipe(sourcemaps.write('./')) // writes .map file
-		.pipe(gulp.dest(destDir));
+		}));
+
+	if (!production) {
+		pipe = pipe
+				.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+				.pipe(sourcemaps.write('./')); // writes .map file
+	} else {
+		pipe = pipe.pipe(parallel(uglify(), os.cpus().length));
+	}
+
+	return pipe.pipe(gulp.dest(destDir));
 });
 
 gulp.task('clean-css', function (cb) {
@@ -210,41 +217,46 @@ gulp.task('build-static-projects', ['build', 'store-project-json'], function () 
 
 gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);
 
+gulp.task('set-publish-vars', function (cb) {
+	production = true;
+	cb();
+});
+
 gulp.task('publish-request-handlers', ['build-static'], function () {
 	return gulp
 		.src(['./request-handlers/**/*.js'])
 		.pipe(gulpSsh.dest('/home/protected/app/request-handlers/'));
 });
 
-gulp.task('publish-app', ['build-static', 'publish-request-handlers'], function () {
+gulp.task('publish-app', ['set-publish-vars', 'build-static', 'publish-request-handlers'], function () {
 	return gulp
 		.src(['./app-release.js', './start-server.sh', './package.json'])
 		.pipe(gulpSsh.dest('/home/protected/app/'));
 });
 
-gulp.task('publish-content', ['build-static'], function () {
+gulp.task('publish-content', ['set-publish-vars', 'build-static'], function () {
 	return gulp
 		.src('./public/**/*')
 		.pipe(gulpSsh.dest('/home/protected/app/public/'));
 });
 
-gulp.task('publish-jsx', function () {
+gulp.task('publish-jsx', ['set-publish-vars'], function () {
 	return gulp
 		.src('./views/**/*.jsx')
 		.pipe(gulpSsh.dest('/home/protected/app/views/'));
 });
 
-gulp.task('publish', ['publish-app', 'publish-content', 'publish-jsx']);
+gulp.task('publish', ['set-publish-vars', 'publish-app', 'publish-content', 'publish-jsx']);
 
 gulp.task('update-server', ['publish'], function () {
 	// uninstall all the packages: `npm ls -p --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm uninstall`
 	return gulpSsh.shell([
-	  'cd /home/protected/app/', 
-	  'chmod +x start-server.sh', 
-	  'npm install --production', 
-	  'npm prune --production', 
-	  'npm dedupe', 
-	  'rm -rf /home/tmp/npm*', 
+	  'cd /home/protected/app/',
+	  'chmod +x start-server.sh',
+	  'npm install --production',
+	  'npm prune --production',
+	  'npm dedupe',
+	  'rm -rf /home/tmp/npm*',
 	  'npm cache clean'
   ]);
 });
