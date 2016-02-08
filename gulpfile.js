@@ -254,6 +254,7 @@ gulp.task('update-server', ['publish'], function () {
 		'cd /home/protected/app/',
 		'chmod +x start-server.sh',
 		'npm install --production',
+		'npm update --production',
 		'npm prune --production',
 		'npm dedupe',
 		'rm -rf /home/tmp/npm*',
