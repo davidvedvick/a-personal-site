@@ -15,7 +15,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
     var parseNote = (file) => {
-        parseNote.propMatch = /(^[a-zA-Z_]*)\:(.*)/;
+        parseNote.propMatch = parseNote.propMatch || /(^[a-zA-Z_]*)\:(.*)/;
 
         return new Promise((resolve, reject) => {
             var fileName = path.basename(file, '.md');
