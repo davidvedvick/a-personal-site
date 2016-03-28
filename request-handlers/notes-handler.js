@@ -17,72 +17,97 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     var parseNote = (file) => {
         parseNote.propMatch = parseNote.propMatch || /(^[a-zA-Z_]*)\:(.*)/;
 
+        parseNote.noteCache = parseNote.noteCache || {};
+
         return new Promise((resolve, reject) => {
             var fileName = path.basename(file, '.md');
-            var newNote = {
-                created: null,
-                pathYear: fileName.substring(0, 4),
-                pathMonth: fileName.substring(4, 6),
-                pathDay: fileName.substring(6, 8),
-                pathTitle: fileName.substring(9),
-                hash: fileName,
-                text: null
+
+            var cacheAndResolveNote = (note) => {
+                parseNote.noteCache[file] = note;
+                resolve(note);
             };
 
-            var lineReader = readline.createInterface({ input: fs.createReadStream(file) });
-            lineReader.on('line', line => {
-                // `newNote.text` is not null, so we are now able to add text
-                if (newNote.text != null) {
-                    newNote.text += line + newLine;
-                    return;
-                }
-
-                if (line.trim() === '---') {
-                    // Begin adding the text
-                    newNote.text = '';
-                    return;
-                }
-
-                var matches = parseNote.propMatch.exec(line);
-                if (!matches) return;
-
-                var propName = matches[1];
-                var value = matches[2].trim();
-
-                switch (propName) {
-                    case 'created_gmt':
-                        newNote.created = new Date(value);
+            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
+                (error, stdout, stderr) => {
+                    var latestCommit = stdout;
+                    if (error !== null) {
+                        reject(error);
                         return;
-                    case 'title':
-                        newNote.title = value;
+                    }
+
+                    var cachedNote = parseNote.noteCache[file];
+                    if (cachedNote && cachedNote.commit === latestCommit) {
+                        resolve(cachedNote);
                         return;
-                }
-            });
+                    }
 
-            lineReader.on('close', () => {
-                if (newNote.created !== null) {
-                    resolve(newNote);
-                    return;
-                }
+                    var newNote = {
+                        created: null,
+                        pathYear: fileName.substring(0, 4),
+                        pathMonth: fileName.substring(4, 6),
+                        pathDay: fileName.substring(6, 8),
+                        pathTitle: fileName.substring(9),
+                        hash: fileName,
+                        text: null,
+                        commit: latestCommit
+                    };
 
-                if (!notesConfig.gitPath) {
-                    newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
-                    resolve(newNote);
-                    return;
-                }
-
-                exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                    (error, stdout, stderr) => {
-                        if (error !== null) {
-                            reject(error);
+                    var lineReader = readline.createInterface({ input: fs.createReadStream(file) });
+                    lineReader.on('line', line => {
+                        // `newNote.text` is not null, so we are now able to add text
+                        if (newNote.text != null) {
+                            newNote.text += line + newLine;
                             return;
                         }
 
-                        newNote.created = new Date(stdout);
-                        resolve(newNote);
-                    }
-                );
-            });
+                        if (line.trim() === '---') {
+                            // Begin adding the text
+                            newNote.text = '';
+                            return;
+                        }
+
+                        var matches = parseNote.propMatch.exec(line);
+                        if (!matches) return;
+
+                        var propName = matches[1];
+                        var value = matches[2].trim();
+
+                        switch (propName) {
+                            case 'created_gmt':
+                                newNote.created = new Date(value);
+                                return;
+                            case 'title':
+                                newNote.title = value;
+                                return;
+                        }
+                    });
+
+                    lineReader.on('close', () => {
+                        if (newNote.created !== null) {
+                            cacheAndResolveNote(newNote);
+                            return;
+                        }
+
+                        if (!notesConfig.gitPath) {
+                            newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
+                            cacheAndResolveNote(newNote);
+                            return;
+                        }
+
+                        exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
+                            (error, stdout, stderr) => {
+                                if (error !== null) {
+                                    reject(error);
+                                    return;
+                                }
+
+                                newNote.created = new Date(stdout);
+                                cacheAndResolveNote(newNote);
+                            }
+                        );
+                    });
+                }
+            );
         });
     };
 
