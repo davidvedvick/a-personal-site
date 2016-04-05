@@ -27,7 +27,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                 resolve(note);
             };
 
-            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
+            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
                 (error, stdout, stderr) => {
                     var latestCommit = stdout;
                     if (error !== null) {
