@@ -1,17 +1,13 @@
 (function ($) {
-	$(function() {
-		var slick = require("slick-carousel");
+	$(function () {
+		require('slick-carousel');
 
-		$(".screenshots-container").slick({
+		$('.screenshots-container').slick({
 			dots: true,
 			infinite: true,
 			speed: 1000,
 			slidesToShow: 1,
-			slidesToScroll: 1,
-			// fade: true,
-			// autoplay: true,
-			// autoplaySpeed: 6000,
-			// cssEase: 'linear'
+			slidesToScroll: 1
 		});
 	});
-})(require("jquery"));
+})(require('jquery'));

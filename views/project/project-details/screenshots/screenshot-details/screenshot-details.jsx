@@ -1,15 +1,5 @@
-var React = require("react");
-var path = require("path");
+import { div, img } from 'react-hyperscript-helpers';
 
-var ScreenshotDetails = React.createClass({
-    displayName: "ScreenshotDetails",
-    render: function() {
-        return (
-            <div className="screenshot-details-container">
-                <img src={this.props.url} className="screenshot-details" />
-            </div>
-        );
-    }
-});
+var ScreenshotDetails = (props) => div('.screenshot-details-container', [ img('.screenshot-details', { src: props.url }) ]);
 
-module.exports = ScreenshotDetails;
+export default ScreenshotDetails;
