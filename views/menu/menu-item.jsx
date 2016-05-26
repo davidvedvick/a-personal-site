@@ -1,16 +1,7 @@
-var React = require("react");
+import { li, a } from 'react-hyperscript-helpers';
 
-var MenuItem = React.createClass({
-	displayName: "MenuItem",
-	render: function() {
-		return (
-			<li className="menu-item">
-				<a href={this.props.menuItem.link}>
-					{this.props.menuItem.caption}
-				</a>
-			</li>
-		);
-	}
-});
+var MenuItem = props => li('.menu-item', [
+	a({ href: props.menuItem.link }, props.menuItem.caption)
+]);
 
 module.exports = MenuItem;

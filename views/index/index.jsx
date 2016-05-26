@@ -1,18 +1,12 @@
-var React = require('react');
-var Layout = require('../layout');
-var marked = require('marked');
+import { div, img, hh, h } from 'react-hyperscript-helpers';
+import Layout from '../layout';
+import marked from 'marked';
 
-var Index = React.createClass({
-	render: function () {
-		return (
-			<Layout>
-				<div className="bio">
-					<img className="author-picture" src="/imgs/profile-picture.jpg" />
-					<div className="bio-text" dangerouslySetInnerHTML={{__html: marked((this.props.bio || '').toString(), {sanitize: true})}} />
-				</div>
-			</Layout>
-		);
-	}
-});
+var Index = props => Layout([
+	div('.bio', [
+		img('.author-picture', { src: '/imgs/profile-picture.jpg' }),
+		div('.bio-text', { dangerouslySetInnerHTML: { __html: marked((props.bio || '').toString(), { sanitize: true }) } })
+	])
+]);
 
-module.exports = Index;
+export default Index;

@@ -1,30 +1,25 @@
-var React = require('react');
-var Menu = require('./menu/menu');
-var Header = require('./header');
+import { html, head, meta, link, title, body, div, hh } from 'react-hyperscript-helpers';
 
-var Layout = (props) => {
+import Menu from './menu/menu';
+import Header from './header';
+
+var Layout = hh(props => {
 	const subheader = props.subheader || "It's been coded";
 	const header = 'David Vedvick (' + subheader + ')';
-	return (
-		<html className="no-js">
-		<head>
-			<meta httpEquiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-			<meta httpEquiv="X-UA-Compatible" content="IE=Edge" />
-			<meta name="viewport" content="width=device-width, initial-scale=1" />
-			<link href="/css/layout.css" type="text/css" rel="stylesheet" />
-			<title>{header}</title>
-		</head>
-		<body>
-			<div className="top">
-				<Header subheader={subheader} />
-				<Menu />
-			</div>
-			<div className="content">
-				{props.children}
-			</div>
-		</body>
-		</html>
-	);
-};
+
+	return html('.no-js', [
+			head([
+				meta({httpEquiv: 'Content-Type', content: 'text/html; charset=ISO-8859-1'}),
+				meta({httpEquiv: 'X-UA-Compatible', content: 'IE=Edge'}),
+				meta({httpEquiv: 'viewport', content: 'width=device-width, initial-scale=1"'}),
+				link({href: '/css/layout.css', type: 'text/css', rel: 'stylesheet'}),
+				title(header)
+			]),
+			body([
+				div('.top', [ Header({subheader: subheader}), Menu() ]),
+				div('.content', Array.isArray(props.children) ? props.children : [ props.children ])
+			])
+		]);
+});
 
 module.exports = Layout;

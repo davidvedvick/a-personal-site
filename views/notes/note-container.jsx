@@ -1,15 +1,5 @@
-var React = require('react');
-var Layout = require('../layout');
-var Note = require('./note/note');
+// import h from 'react-hyperscript-helpers';
+import Layout from '../layout';
+import Note from './note/note';
 
-var NotesContainer = React.createClass({
-	render: function () {
-		return (
-			<Layout subheader="Notes">
-				<Note note={this.props.note} />
-			</Layout>
-		);
-	}
-});
-
-module.exports = NotesContainer;
+export default (props) => Layout({subheader: 'Notes'}, [ Note({note: props.note}) ]);

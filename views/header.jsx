@@ -1,15 +1,8 @@
-var React = require("react");
+import { div, h1, h2, a } from 'react-hyperscript-helpers';
 
-var Header = React.createClass({
-	displayName: "Header",
-	render: function() {
-		return (
-			<div className="header">
-				<h1><a href="/" alt="Bio" title="Bio" className="header-home-link">David Vedvick</a></h1>
-				<h2>{this.props.subheader}</h2>
-			</div>
-		);
-	}
-});
+var Header = props => div('.header', [
+	h1([ a('.header-home-link', { href: '/', alt: 'Bio', title: 'Bio'}, 'David Vedvick')]),
+	h2(props.subheader)
+]);
 
 module.exports = Header;
