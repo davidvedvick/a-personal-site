@@ -1,4 +1,4 @@
-import { div, img, hh, h } from 'react-hyperscript-helpers';
+import { div, img } from 'react-hyperscript-helpers';
 import Layout from '../layout';
 import marked from 'marked';
 
