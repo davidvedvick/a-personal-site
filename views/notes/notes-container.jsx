@@ -1,18 +1,16 @@
-var React = require('react');
-var ReactDomServer = require('react-dom/server');
-var Layout = require('../layout');
-var NotesList = require('./notes-list');
+import React from 'react';
+import ReactDomServer from 'react-dom/server';
+import LayoutFactory from '../layout';
+import NotesList from './notes-list';
+import { div, script } from 'react-hyperscript-helpers';
 
-var NotesContainer = React.createClass({
-	render: function() {
-		return (
-			<Layout subheader="Notes">
-				<div id="notes-container" dangerouslySetInnerHTML={{__html: ReactDomServer.renderToString(React.createElement(NotesList, { notes: this.props.notes }))}} />
+const NotesContainer = (props) => {
+	const html = ReactDomServer.renderToString(React.createElement(NotesList, { notes: props.notes }));
 
-				<script type="text/javascript" src="/js/notes.client.js" />
-			</Layout>
-		);
-	}
-});
+	return LayoutFactory([
+		div('#notes-container', { dangerouslySetInnerHTML: {__html: html} }),
+		script({ type: 'text/javascript', src: '/js/notes.client.js' })
+	]);
+};
 
-module.exports = NotesContainer;
+export default NotesContainer;
