@@ -5,8 +5,8 @@ var path = require('path');
 var highlightJs = require('highlight.js');
 import { div, a, em, p } from 'react-hyperscript-helpers';
 
-const Note = () => {
-	const note = this.props.note;
+const Note = (props) => {
+	const note = props.note;
 	const routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);
 	const html = marked(note.text || '', {
 		sanitize: true,
