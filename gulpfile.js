@@ -33,7 +33,7 @@ gulp.task('client-js', ['clean-js'], () => {
 
 	var pipe = gulp.src('./views/**/*.client.{js,jsx}')
 		.pipe(parallel(
-			through2.obj(function (file, enc, next) {
+			through2.obj((file, enc, next) =>
 				browserify(file.path, { extensions: '.jsx', debug: !production })
 					.transform(babelify, { presets: ['es2015', 'react'] })
 					.bundle((err, res) => {
@@ -42,10 +42,8 @@ gulp.task('client-js', ['clean-js'], () => {
 						else file.contents = res;
 
 						next(null, file);
-					});
-			})),
-			os.cpus().length
-		)
+					})),
+			os.cpus().length))
 		.pipe(rename({
 			dirname: '',
 			extname: '.js'
