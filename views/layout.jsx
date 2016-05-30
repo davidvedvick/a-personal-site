@@ -1,9 +1,9 @@
-import { html, head, meta, link, title, body, div, hh } from 'react-hyperscript-helpers';
+import { html, head, meta, link, title, body, div, hh as factory } from 'react-hyperscript-helpers';
 
 import Menu from './menu/menu';
 import Header from './header';
 
-var Layout = hh(props => {
+const Layout = props => {
 	const subheader = props.subheader || "It's been coded";
 	const header = 'David Vedvick (' + subheader + ')';
 
@@ -20,6 +20,8 @@ var Layout = hh(props => {
 				div('.content', Array.isArray(props.children) ? props.children : [ props.children ])
 			])
 		]);
-});
+};
 
-module.exports = Layout;
+const LayoutFactory = factory(Layout);
+
+export default LayoutFactory;
