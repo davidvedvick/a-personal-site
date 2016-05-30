@@ -3,18 +3,20 @@ import Note from './note/note';
 import jQuery from 'jquery';
 import { div, hh } from 'react-hyperscript-helpers';
 
-const NotesList = React.createClass({
-	page: 1,
-	getInitialState: function () {
-		return {
-			notes: this.props.notes || []
-		};
-	},
-	loadMoreNotesIfNecessary: function () {
+class NotesList extends React.Component {
+	constructor (props) {
+		super(props);
+
+		this.page = 1;
+		this.state = { notes: this.props.notes || [] };
+	}
+
+	loadMoreNotesIfNecessary () {
 		if (jQuery(window).scrollTop() >= jQuery('div.note:nth-last-child(5)').offset().top)
 			this.getNotes();
-	},
-	getNotes: function () {
+	}
+
+	getNotes () {
 		jQuery(window).off('scroll', this.loadMoreNotesIfNecessary);
 
 		const reactObject = this;
@@ -33,17 +35,19 @@ const NotesList = React.createClass({
 				jQuery(window).on('scroll', reactObject.loadMoreNotesIfNecessary);
 			}
 		});
-	},
-	componentDidMount: function () {
-		var reactObject = this;
+	}
+
+	componentDidMount () {
+		const reactObject = this;
 		(($) => {
 			$(() => {
 				$(window).on('scroll', reactObject.loadMoreNotesIfNecessary);
 				reactObject.loadMoreNotesIfNecessary();
 			});
 		})(jQuery);
-	},
-	render: function () {
+	}
+
+	render () {
 		// notes objects should look like "{title, date, text}". don't include private
 		// ones
 		var noteNodes = (this.state.notes || [])
@@ -51,6 +55,6 @@ const NotesList = React.createClass({
 
 		return div(noteNodes);
 	}
-});
+}
 
 export default hh(NotesList);
