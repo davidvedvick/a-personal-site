@@ -1,7 +1,7 @@
-import { ul } from 'react-hyperscript-helpers';
+import { ul, hh } from 'react-hyperscript-helpers';
 var MenuItem = require('./menu-item');
 
-var Menu = () => {
+var Menu = hh(() => {
 	var menuNodes = [
 		{
 			'link': '/projects',
@@ -18,6 +18,6 @@ var Menu = () => {
 	].map(menuNode => MenuItem({ menuItem: menuNode }));
 
 	return ul('.menu-list', menuNodes);
-};
+});
 
 export default Menu;

@@ -1,9 +1,9 @@
 import React from 'react';
 import Note from './note/note';
 import jQuery from 'jquery';
-import { div } from 'react-hyperscript-helpers';
+import { div, hh } from 'react-hyperscript-helpers';
 
-var NotesList = React.createClass({
+const NotesList = React.createClass({
 	page: 1,
 	getInitialState: function () {
 		return {
@@ -53,4 +53,4 @@ var NotesList = React.createClass({
 	}
 });
 
-module.exports = NotesList;
+export default hh(NotesList);

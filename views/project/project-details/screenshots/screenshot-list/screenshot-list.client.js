@@ -1,5 +1,5 @@
-(function ($) {
-	$(function () {
+(($) => {
+	$(() => {
 		require('slick-carousel');
 
 		$('.screenshots-container').slick({

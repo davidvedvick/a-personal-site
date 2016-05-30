@@ -1,7 +1,7 @@
 import Features from './features/features';
 import ScreenshotList from './screenshots/screenshot-list/screenshot-list';
 import path from 'path';
-import { h2, h3, div } from 'react-hyperscript-helpers';
+import { h2, h3, div, hh } from 'react-hyperscript-helpers';
 
 const Title = props => h2('.title', props.title);
 
@@ -34,4 +34,6 @@ const ProjectDetails = props => {
 	]);
 };
 
-module.exports = ProjectDetails;
+const projectDetailsFactory = hh(ProjectDetails);
+
+export default projectDetailsFactory;

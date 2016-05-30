@@ -1,4 +1,4 @@
-import { html, head, meta, link, title, body, div, hh as factory } from 'react-hyperscript-helpers';
+import { html, head, meta, link, title, body, div, hh } from 'react-hyperscript-helpers';
 
 import Menu from './menu/menu';
 import Header from './header';
@@ -22,6 +22,6 @@ const Layout = props => {
 		]);
 };
 
-const LayoutFactory = factory(Layout);
+const LayoutFactory = hh(Layout);
 
 export default LayoutFactory;
