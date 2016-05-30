@@ -15,9 +15,9 @@ var Menu = () => {
 			'link': '/notes',
 			'caption': 'Notes'
 		}
-	].map(menuItem => MenuItem({ menuItem: menuItem }));
+	].map(menuNode => MenuItem({ menuItem: menuNode }));
 
 	return ul('.menu-list', menuNodes);
 };
 
-module.exports = Menu;
+export default Menu;
