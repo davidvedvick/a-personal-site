@@ -1,8 +1,7 @@
-var React = require('react');
-var marked = require('marked');
-var moment = require('moment-timezone');
-var path = require('path');
-var highlightJs = require('highlight.js');
+import marked from 'marked';
+import moment from 'moment-timezone';
+import path from 'path';
+import highlightJs from 'highlight.js';
 import { div, a, em, p } from 'react-hyperscript-helpers';
 
 const Note = (props) => {
@@ -14,7 +13,7 @@ const Note = (props) => {
 	});
 
 	return div('.note', [
-		div('.note-text', { dangerouslySetInnerHTML: { __html: html }}),
+		div('.note-text', { dangerouslySetInnerHTML: { __html: html } }),
 		p('.note-date', [ em(`Note posted on ${moment(note.created).tz('America/Chicago').format('LLLL z')} - `, [ a({ href: routeUrl }, 'link') ]) ])
 	]);
 };
