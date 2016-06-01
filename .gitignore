@@ -6,5 +6,8 @@
 /js/
 /css/
 /public/
+/protected/
+/app/public/
+/build/
 ssh-config.json
 app-config.json
