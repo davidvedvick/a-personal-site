@@ -6,7 +6,6 @@ var exec = require('child_process').exec;
 var readline = require('readline');
 
 module.exports = (localApp, notesConfig, environmentOpts) => {
-
     environmentOpts = environmentOpts || {};
     notesConfig.path = notesConfig.path || 'content/notes';
 

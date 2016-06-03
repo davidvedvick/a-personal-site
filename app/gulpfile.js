@@ -20,6 +20,8 @@ var production = false;
 
 var outputDir = './';
 const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
+const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
+const nodeModuleDir = path.join(__dirname, '../node_modules');
 
 const numberOfCpus = os.cpus().length;
 
@@ -30,7 +32,7 @@ gulp.task('clean-js', (cb) => { del([getOutputDir('public/js')]).then(() => cb()
 gulp.task('client-js', ['clean-js'], () => {
 	const destDir = getOutputDir('public/js');
 
-	var pipe = gulp.src('./views/**/*.client.{js,jsx}')
+	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
 		.pipe(parallel(
 			through2.obj((file, enc, next) =>
 				browserify(file.path, { extensions: '.jsx', debug: !production })
@@ -63,19 +65,19 @@ gulp.task('clean-css', function (cb) {
 
 // copy slick carousel blobs
 gulp.task('slick-blobs', ['clean-css'], () =>
-	gulp.src(['../node_modules/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}']).pipe(gulp.dest(getOutputDir('public/css'))));
+	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
 
 // Bundle LESS
 gulp.task('less', ['clean-css', 'slick-blobs'],
 	() =>
-		gulp.src('./views/layout.less')
-			.pipe(less({ paths: ['../node_modules'] }))
+		gulp.src(getInputDir('views/layout.less'))
+			.pipe(less({ paths: [nodeModuleDir] }))
 			.pipe(cssnano())
 			.pipe(gulp.dest(getOutputDir('public/css'))));
 
 gulp.task('clean-images', (cb) => { del([getOutputDir('./public/images')]).then(() => cb()); });
 
-gulp.task('images', ['clean-images'], () => gulp.src('./imgs/*').pipe(gulp.dest(getOutputDir('public/imgs'))));
+gulp.task('images', ['clean-images'], () => gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs'))));
 
 gulp.task('profile-image', ['clean-images'],
 	() =>
@@ -87,7 +89,7 @@ gulp.task('profile-image', ['clean-images'],
 
 gulp.task('project-images', () => {
 	const destDir = getOutputDir('public/imgs/projects');
-	return gulp.src('./content/projects/**/imgs/*')
+	return gulp.src(getInputDir('content/projects/**/imgs/*'))
 			.pipe(changed(destDir))
 			.pipe(parallel(
 				imageResize({ height: 300 }),

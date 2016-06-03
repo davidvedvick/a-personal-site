@@ -6,7 +6,7 @@ const parallel = require('concurrent-transform');
 const os = require('os');
 const React = require('react');
 const ReactDomServer = require('react-dom/server');
-const appConfig = require('./app/app-config.json');
+const appConfig = Object.assign(require('./app/app-config.json'), require('./app-config.json'));
 const path = require('path');
 const gulpSsh = require('gulp-ssh')({
 	ignoreErrors: false,
@@ -15,7 +15,8 @@ const gulpSsh = require('gulp-ssh')({
 });
 const htmlmin = require('gulp-htmlmin');
 const gulpBabel = require('gulp-babel');
-const babelCore = require('babel-core');
+const del = require('del');
+const revertPath = require('gulp-revert-path');
 
 const numberOfCpus = os.cpus().length;
 
@@ -27,6 +28,8 @@ var rawMarkdown = {};
 
 var jsxToHtml = (options) =>
 	through2.obj(function (file, enc, cb) {
+		require('node-jsx').install({extension: '.jsx'});
+
 		var component = require(file.path);
 		component = component.default || component;
 		const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
@@ -55,7 +58,7 @@ gulp.task('store-resume-markdown',
 gulp.task('build-static-resume', ['build', 'build-server-js', 'store-resume-markdown'],
 	() =>
 		gulp
-			.src('./build/views/resume/resume.js')
+			.src('./build/views/resume/resume.jsx')
 			.pipe(jsxToHtml({resume: rawMarkdown['resume.md']}))
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html')));
@@ -69,7 +72,7 @@ gulp.task('store-bio-markdown',
 gulp.task('build-static-index', ['build', 'build-server-js', 'store-bio-markdown'],
 	() =>
 		gulp
-			.src('./build/views/index/index.js')
+			.src('./build/views/index/index.jsx')
 			.pipe(jsxToHtml({bio: rawMarkdown['bio.md']}))
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html')));
@@ -85,7 +88,7 @@ var projectData = {};
 gulp.task('store-project-json', ['store-project-markdown'],
 	() =>
 		gulp
-			.src(path.join('./app', appConfig.projectsLocation, 'projects.json'))
+			.src(path.join(appConfig.projectsLocation, 'projects.json'))
 			.pipe(hashDest(projectData, {
 				onStore: (data) => {
 					const projects = JSON.parse(data);
@@ -101,20 +104,21 @@ gulp.task('store-project-json', ['store-project-markdown'],
 gulp.task('build-static-projects', ['build', 'build-server-js', 'store-project-json'],
 	() =>
 		gulp
-			.src('./build/views/project/project-list.js')
+			.src('./build/views/project/project-list.jsx')
 			.pipe(jsxToHtml({projects: projectData['projects.json'] || []}))
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html')));
 
-gulp.task('build-server-js', ['clean-js', 'build'],
+gulp.task('build-server-js', ['build'],
 	() =>
 		gulp
-			.src([ './app/**/*.{js,jsx}', '!app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
+			.src([ './app/**/*.{js,jsx}', '!"app-debug.js"', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
 			.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
-			// .pipe(parallel(uglify(), numberOfCpus))
+			.pipe(revertPath())
+			.pipe(parallel(uglify(), numberOfCpus))
 			.pipe(gulp.dest('build')));
 
-gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects']);
+gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects', 'build-server-js']);
 
 gulp.task('publish-request-handlers', ['build-static'],
 	() =>
