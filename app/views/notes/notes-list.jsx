@@ -17,9 +17,9 @@ class NotesList extends React.Component {
 	}
 
 	getNotes () {
-		jQuery(window).off('scroll', this.loadMoreNotesIfNecessary);
-
 		const reactObject = this;
+		jQuery(window).off('scroll', reactObject.loadMoreNotesIfNecessary);
+
 		jQuery.ajax({
 			url: '/notes/' + (++reactObject.page),
 			dataType: 'json',
@@ -27,7 +27,7 @@ class NotesList extends React.Component {
 			success: (data) => {
 				if (data.length === 0) return;
 
-				this.setState({notes: reactObject.state.notes.concat(data)});
+				reactObject.setState({notes: reactObject.state.notes.concat(data)});
 				jQuery(window).on('scroll', reactObject.loadMoreNotesIfNecessary);
 			},
 			error: (xhr, status, err) => {
@@ -57,4 +57,6 @@ class NotesList extends React.Component {
 	}
 }
 
-export default hh(NotesList);
+export { NotesList };
+
+export default hh((props) => new NotesList(props));
