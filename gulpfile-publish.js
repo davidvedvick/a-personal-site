@@ -49,6 +49,12 @@ var hashDest = (dest, opts) =>
 		cb();
 	});
 
+gulp.task('clean-server-js',
+	(cb) => {
+		del([ './build/**/*.{js,jsx}', '!./build/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
+			.then(() => cb());
+	});
+
 gulp.task('store-resume-markdown',
 	() =>
 		gulp
@@ -109,10 +115,10 @@ gulp.task('build-static-projects', ['build', 'build-server-js', 'store-project-j
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html')));
 
-gulp.task('build-server-js', ['build'],
+gulp.task('build-server-js', ['clean-server-js', 'build'],
 	() =>
 		gulp
-			.src([ './app/**/*.{js,jsx}', '!"app-debug.js"', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
+			.src([ './app/**/*.{js,jsx}', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
 			.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
 			.pipe(revertPath())
 			.pipe(parallel(uglify(), numberOfCpus))
