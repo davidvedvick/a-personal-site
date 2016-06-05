@@ -49,11 +49,11 @@ var hashDest = (dest, opts) =>
 		cb();
 	});
 
-gulp.task('clean-build', (cb) => { 	del(['build']).then(() => cb()); });
+gulp.task('clean-build', (cb) => { del(['build']).then(() => cb()); });
 
 gulp.task('copy-dynamic-build', ['clean-build', 'build'],
 	() =>
-		gulp.src('./app/public/**/*').pipe(gulp.dest('./build/public')));
+		gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public')));
 
 gulp.task('build-server-js', ['clean-build'],
 	() =>
@@ -124,10 +124,15 @@ gulp.task('build-static-projects', ['build-server-js', 'store-project-json'],
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html')));
 
+gulp.task('copy-node-project-data', ['clean-build'],
+	() =>
+		gulp.src(['./package.json', './app/start-server.sh']).pipe(gulp.dest('./build')));
+
 gulp.task('build-static', [
 	'clean-build',
 	'build',
 	'copy-dynamic-build',
+	'copy-node-project-data',
 	'build-static-resume',
 	'build-static-index',
 	'build-static-projects',
