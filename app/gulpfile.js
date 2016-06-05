@@ -18,7 +18,7 @@ const path = require('path');
 
 var production = false;
 
-var outputDir = './';
+var outputDir = __dirname;
 const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
 const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
 const nodeModuleDir = path.join(__dirname, '../node_modules');
@@ -119,6 +119,6 @@ gulp.task('watch', ['build'], () => {
 });
 
 module.exports = (options) => {
-	production = options.production;
-	outputDir = options.outputDir;
+	production = options.production || production;
+	outputDir = options.outputDir || outputDir;
 };

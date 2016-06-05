@@ -21,7 +21,7 @@ const revertPath = require('gulp-revert-path');
 const numberOfCpus = os.cpus().length;
 
 // Register dynamic build tasks
-(() => require('./app/gulpfile.js')({ production: true, outputDir: './build' }))();
+(() => require('./app/gulpfile.js')({ production: true }))();
 
 // Static build tasks
 var rawMarkdown = {};
@@ -49,11 +49,20 @@ var hashDest = (dest, opts) =>
 		cb();
 	});
 
-gulp.task('clean-server-js',
-	(cb) => {
-		del([ './build/**/*.{js,jsx}', '!./build/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
-			.then(() => cb());
-	});
+gulp.task('clean-build', (cb) => { 	del(['build']).then(() => cb()); });
+
+gulp.task('copy-dynamic-build', ['clean-build', 'build'],
+	() =>
+		gulp.src('./app/public/**/*').pipe(gulp.dest('./build/public')));
+
+gulp.task('build-server-js', ['clean-build'],
+	() =>
+		gulp
+			.src([ './app/**/*.{js,jsx}', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
+			.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
+			.pipe(revertPath())
+			.pipe(parallel(uglify(), numberOfCpus))
+			.pipe(gulp.dest('build')));
 
 gulp.task('store-resume-markdown',
 	() =>
@@ -61,7 +70,7 @@ gulp.task('store-resume-markdown',
 			.src(appConfig.resumeLocation)
 			.pipe(hashDest(rawMarkdown)));
 
-gulp.task('build-static-resume', ['build', 'build-server-js', 'store-resume-markdown'],
+gulp.task('build-static-resume', ['build-server-js', 'store-resume-markdown'],
 	() =>
 		gulp
 			.src('./build/views/resume/resume.jsx')
@@ -75,7 +84,7 @@ gulp.task('store-bio-markdown',
 			.src(appConfig.bio.path)
 			.pipe(hashDest(rawMarkdown)));
 
-gulp.task('build-static-index', ['build', 'build-server-js', 'store-bio-markdown'],
+gulp.task('build-static-index', ['build-server-js', 'store-bio-markdown'],
 	() =>
 		gulp
 			.src('./build/views/index/index.jsx')
@@ -107,7 +116,7 @@ gulp.task('store-project-json', ['store-project-markdown'],
 				}
 			})));
 
-gulp.task('build-static-projects', ['build', 'build-server-js', 'store-project-json'],
+gulp.task('build-static-projects', ['build-server-js', 'store-project-json'],
 	() =>
 		gulp
 			.src('./build/views/project/project-list.jsx')
@@ -115,42 +124,20 @@ gulp.task('build-static-projects', ['build', 'build-server-js', 'store-project-j
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html')));
 
-gulp.task('build-server-js', ['clean-server-js', 'build'],
+gulp.task('build-static', [
+	'clean-build',
+	'build',
+	'copy-dynamic-build',
+	'build-static-resume',
+	'build-static-index',
+	'build-static-projects',
+	'build-server-js']);
+
+gulp.task('publish', ['build-static'],
 	() =>
 		gulp
-			.src([ './app/**/*.{js,jsx}', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
-			.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
-			.pipe(revertPath())
-			.pipe(parallel(uglify(), numberOfCpus))
-			.pipe(gulp.dest('build')));
-
-gulp.task('build-static', ['build', 'build-static-resume', 'build-static-index', 'build-static-projects', 'build-server-js']);
-
-gulp.task('publish-request-handlers', ['build-static'],
-	() =>
-		gulp
-			.src(['./request-handlers/**/*.js'])
-			.pipe(gulpSsh.dest('/home/protected/app/request-handlers/')));
-
-gulp.task('publish-app', ['build-static', 'publish-request-handlers'],
-	() =>
-		gulp
-			.src(['./app-release.js', './start-server.sh', './package.json'])
-			.pipe(gulpSsh.dest('/home/protected/app/')));
-
-gulp.task('publish-content', ['build-static'],
-	() =>
-		gulp
-			.src('./public/**/*')
-			.pipe(gulpSsh.dest('/home/protected/app/public/')));
-
-gulp.task('publish-js', ['build-es5-js'],
-	() =>
-		gulp
-			.src('protected')
-			.pipe(gulpSsh.dest('/home/protected/')));
-
-gulp.task('publish', ['publish-app', 'publish-content', 'publish-js']);
+			.src(['./build/**/*', './package.json'])
+			.pipe(gulpSsh.dest('/home/protected/app')));
 
 gulp.task('update-server', ['publish'],
 	// uninstall all the packages: `npm ls -p --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm uninstall`
