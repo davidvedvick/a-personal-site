@@ -14,7 +14,7 @@ const Note = hh((props) => {
 
 	return div('.note', [
 		div('.note-text', { dangerouslySetInnerHTML: { __html: html } }),
-		p('.note-date', [ em(`Note posted on ${moment(note.created).tz('America/Chicago').format('LLLL z')} - `, [ a({ href: routeUrl }, 'link') ]) ])
+		p('.note-date', [ em([ `Note posted on ${moment(note.created).tz('America/Chicago').format('LLLL z')} - `, [ a({ href: routeUrl }, 'link') ] ]) ])
 	]);
 });
 

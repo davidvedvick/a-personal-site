@@ -60,7 +60,8 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app/app-release.js"
+    "release": "node app/app-release.js",
+    "debug": "node app/app-debug.js"
   },
   "keywords": [
     "david",
