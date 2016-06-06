@@ -11,7 +11,7 @@ const Layout = (props) => {
 			head([
 				meta({httpEquiv: 'Content-Type', content: 'text/html; charset=ISO-8859-1'}),
 				meta({httpEquiv: 'X-UA-Compatible', content: 'IE=Edge'}),
-				meta({httpEquiv: 'viewport', content: 'width=device-width, initial-scale=1'}),
+				meta({name: 'viewport', content: 'width=device-width, initial-scale=1'}),
 				link({href: '/css/layout.css', type: 'text/css', rel: 'stylesheet'}),
 				title(header)
 			]),
