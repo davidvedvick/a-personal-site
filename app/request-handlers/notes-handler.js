@@ -143,12 +143,12 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     });
 
     localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, (req, res) => {
-        var year = req.params[0];
-        var month = req.params[1];
-        var day = req.params[2];
-        var title = req.params[3];
+        const year = req.params[0];
+        const month = req.params[1];
+        const day = req.params[2];
+        const title = req.params[3];
 
-        var filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
+        const filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
         parseNote(filePath).then((note) => {
             try {
@@ -160,7 +160,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     });
 
     localApp.get(/^\/notes\/([0-9]*)/, (req, res) => {
-        var page = req.params[0];
+        const page = req.params[0];
 
         if (!page) {
             res.json([]);
