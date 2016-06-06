@@ -1,27 +1,27 @@
-var fs = require('fs');
-var path = require('path');
-var glob = require('globby');
-var express = require('express');
-var exec = require('child_process').exec;
-var readline = require('readline');
+const fs = require('fs');
+const path = require('path');
+const glob = require('globby');
+const express = require('express');
+const exec = require('child_process').exec;
+const readline = require('readline');
 
 module.exports = (localApp, notesConfig, environmentOpts) => {
     environmentOpts = environmentOpts || {};
     notesConfig.path = notesConfig.path || 'content/notes';
 
-	var newLine = '\n';
+    const newLine = '\n';
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
-    var parseNote = (file) => {
+    const parseNote = (file) => {
         parseNote.propMatch = parseNote.propMatch || /(^[a-zA-Z_]*)\:(.*)/;
 
         parseNote.noteCache = parseNote.noteCache || {};
 
         return new Promise((resolve, reject) => {
-            var fileName = path.basename(file, '.md');
+            const fileName = path.basename(file, '.md');
 
-            var cacheAndResolveNote = (note) => {
+            const cacheAndResolveNote = (note) => {
                 parseNote.noteCache[file] = note;
                 resolve(note);
             };
@@ -33,13 +33,13 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                         return;
                     }
 
-                    var cachedNote = parseNote.noteCache[file];
+                    const cachedNote = parseNote.noteCache[file];
                     if (cachedNote && cachedNote.commit === latestCommit) {
                         resolve(cachedNote);
                         return;
                     }
 
-                    var newNote = {
+                    const newNote = {
                         created: null,
                         pathYear: fileName.substring(0, 4),
                         pathMonth: fileName.substring(4, 6),
@@ -50,8 +50,8 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                         commit: latestCommit
                     };
 
-                    var lineReader = readline.createInterface({ input: fs.createReadStream(file) });
-                    lineReader.on('line', line => {
+                    const lineReader = readline.createInterface({ input: fs.createReadStream(file) });
+                    lineReader.on('line', (line) => {
                         // `newNote.text` is not null, so we are now able to add text
                         if (newNote.text != null) {
                             newNote.text += line + newLine;
@@ -64,11 +64,11 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                             return;
                         }
 
-                        var matches = parseNote.propMatch.exec(line);
+                        const matches = parseNote.propMatch.exec(line);
                         if (!matches) return;
 
-                        var propName = matches[1];
-                        var value = matches[2].trim();
+                        const propName = matches[1];
+                        const value = matches[2].trim();
 
                         switch (propName) {
                             case 'created_gmt':
@@ -112,7 +112,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     var getNotes = (page) => {
         const pageSize = 10;
 
-        return glob(path.join(notesConfig.path, '*.md')).then(files => {
+        return glob(path.join(notesConfig.path, '*.md')).then((files) => {
             const startIndex = (page - 1) * pageSize;
 
             // really hacky way to pull files back for now
@@ -121,8 +121,8 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
                                 .reverse()
                                 .slice(startIndex, startIndex + pageSize);
 
-            return Promise.all(filesToRead.map(f => parseNote(f)))
-                .then(parsedNotes =>
+            return Promise.all(filesToRead.map((f) => parseNote(f)))
+                .then((parsedNotes) =>
                     parsedNotes
                         .sort((a, b) =>
                             isFinite(a.created) && isFinite(b.created) ?
@@ -133,7 +133,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     };
 
     localApp.get('/notes', (req, res) => {
-        getNotes(1).then(notes => {
+        getNotes(1).then((notes) => {
             try {
                 res.render('notes/notes-container', { notes: notes });
             } catch (exception) {
@@ -150,7 +150,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
         var filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
-        parseNote(filePath).then(note => {
+        parseNote(filePath).then((note) => {
             try {
                 res.render('notes/note-container', { note: note });
             } catch (exception) {
@@ -167,7 +167,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             return;
         }
 
-        getNotes(page).then(notes => {
+        getNotes(page).then((notes) => {
             try {
                 res.json(notes);
             } catch (exception) {
