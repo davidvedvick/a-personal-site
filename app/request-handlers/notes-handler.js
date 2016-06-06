@@ -109,7 +109,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
         });
     };
 
-    var getNotes = (page) => {
+    const getNotes = (page) => {
         const pageSize = 10;
 
         return glob(path.join(notesConfig.path, '*.md')).then((files) => {
