@@ -3,7 +3,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const browserify = require('browserify');
 const babelify = require('babelify');
 const uglify = require('gulp-uglify');
-const less = require('gulp-less');
+const sass = require('gulp-sass');
 const cssnano = require('gulp-cssnano');
 const del = require('del');
 const through2 = require('through2');
@@ -68,10 +68,10 @@ gulp.task('slick-blobs', ['clean-css'], () =>
 	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
 
 // Bundle LESS
-gulp.task('less', ['clean-css', 'slick-blobs'],
+gulp.task('sass', ['clean-css', 'slick-blobs'],
 	() =>
-		gulp.src(getInputDir('views/layout.less'))
-			.pipe(less({ paths: [nodeModuleDir] }))
+		gulp.src(getInputDir('views/layout.scss'))
+			.pipe(sass().on('error', sass.logError))
 			.pipe(cssnano())
 			.pipe(gulp.dest(getOutputDir('public/css'))));
 
