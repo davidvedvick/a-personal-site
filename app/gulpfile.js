@@ -67,7 +67,7 @@ gulp.task('clean-css', function (cb) {
 gulp.task('slick-blobs', ['clean-css'], () =>
 	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
 
-// Bundle LESS
+// Bundle SASS
 gulp.task('sass', ['clean-css', 'slick-blobs'],
 	() =>
 		gulp.src(getInputDir('views/layout.scss'))
@@ -108,10 +108,10 @@ gulp.task('build-resume-pdf',
 			}))
 			.pipe(gulp.dest(getOutputDir('public'))));
 
-gulp.task('build', ['images', 'project-images', 'profile-image', 'less', 'client-js', 'slick-blobs', 'build-resume-pdf']);
+gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
 
 gulp.task('watch', ['build'], () => {
-	gulp.watch('./views/**/*.less', ['less']);
+	gulp.watch('./views/**/*.scss', ['sass']);
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
