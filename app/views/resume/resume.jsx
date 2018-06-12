@@ -7,7 +7,7 @@ const Resume = hh((props) => LayoutFactory({ subheader: 'Resume' }, [
 		a('#pdf-version', { href: '/resume.pdf' }, [
 			img({ src: '/imgs/file-pdf.svg', alt: 'View the PDF version!' })
 		]),
-		div('.resume-content', { dangerouslySetInnerHTML: {__html: marked((props.resume || '').toString(), {sanitize: true})} })
+		div('.resume-content', { dangerouslySetInnerHTML: {__html: marked((props.resume || '').toString(), {sanitize: false})} })
 	])
 ]));
 

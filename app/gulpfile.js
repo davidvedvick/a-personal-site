@@ -102,7 +102,9 @@ gulp.task('build-resume-pdf',
 	() =>
 		gulp
 			.src(appConfig.resumeLocation)
-			.pipe(markdownPdf())
+			.pipe(markdownPdf({
+				remarkable: { html: true }
+			}))
 			.pipe(rename({
 				extname: '.pdf'
 			}))
