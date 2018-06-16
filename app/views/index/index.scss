@@ -1,4 +1,6 @@
-div.bio:extend(div.content all) {
+div.bio {
+	@extend div.content;
+
 	max-width: 1600px;
 	margin-left: auto;
 	margin-right: auto;
@@ -10,8 +12,8 @@ div.bio:extend(div.content all) {
 		padding: 25px;
 
 		@media screen and (max-width:510px) {
-            padding-left: 0;
+      padding-left: 0;
 			padding-right: 0;
-        }
+  	}
 	}
 }

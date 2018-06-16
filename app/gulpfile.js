@@ -67,11 +67,33 @@ gulp.task('clean-css', function (cb) {
 gulp.task('slick-blobs', ['clean-css'], () =>
 	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
 
+const npmSassAliases = {};
+/**
+* Will look for .scss|sass files inside the node_modules folder
+*/
+function npmSassResolver(url, file, done) {
+	// check if the path was already found and cached
+	if(npmSassAliases[url]) {
+		return done({ file: npmSassAliases[url] });
+	}
+
+	// look for modules installed through npm
+	try {
+		var newPath = path.relative('./css', require.resolve(url));
+		npmSassAliases[url] = newPath; // cache this request
+		return done({ file: newPath });
+	} catch(e) {
+		// if your module could not be found, just return the original url
+		npmSassAliases[url] = url;
+		return done({ file: url });
+	}
+}
+
 // Bundle SASS
 gulp.task('sass', ['clean-css', 'slick-blobs'],
 	() =>
 		gulp.src(getInputDir('views/layout.scss'))
-			.pipe(sass().on('error', sass.logError))
+			.pipe(sass({ importer: npmSassResolver }).on('error', sass.logError))
 			.pipe(cssnano())
 			.pipe(gulp.dest(getOutputDir('public/css'))));
 
