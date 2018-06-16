@@ -1,11 +1,11 @@
 [
 	{
-		"name": "audiocanoe",
-		"description": "audiocanoe is a streaming music client for JRiver Media Center (http://jriver.com/)",
+		"name": "projectblue",
+		"description": "project blue is a streaming music client for JRiver Media Center (http://jriver.com/)",
 		"headlineImage":
 		{
 			"path": "clearstream_logo.png",
-			"description": "audiocanoe logo"
+			"description": "project blue logo"
 		},
 		"images":
 		[
