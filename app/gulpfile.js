@@ -79,7 +79,7 @@ function npmSassResolver(url, file, done) {
 
 	// look for modules installed through npm
 	try {
-		var newPath = path.relative('./css', require.resolve(url));
+		const newPath = getInputDir(path.relative('./css', require.resolve(url)));
 		npmSassAliases[url] = newPath; // cache this request
 		return done({ file: newPath });
 	} catch(e) {
