@@ -8,7 +8,8 @@ const React = require('react');
 const ReactDomServer = require('react-dom/server');
 const appConfig = Object.assign(require('./app/app-config.json'), require('./app-config.json'));
 const path = require('path');
-const gulpSsh = require('gulp-ssh')({
+const GulpSsh = require('gulp-ssh');
+const gulpSsh = new GulpSsh({
 	ignoreErrors: false,
 	// set this from a config file
 	sshConfig: require('./ssh-config.json')
