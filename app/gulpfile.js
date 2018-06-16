@@ -3,7 +3,7 @@ const sourcemaps = require('gulp-sourcemaps');
 const browserify = require('browserify');
 const babelify = require('babelify');
 const uglify = require('gulp-uglify');
-const less = require('gulp-less');
+const sass = require('gulp-sass');
 const cssnano = require('gulp-cssnano');
 const del = require('del');
 const through2 = require('through2');
@@ -67,11 +67,33 @@ gulp.task('clean-css', function (cb) {
 gulp.task('slick-blobs', ['clean-css'], () =>
 	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
 
-// Bundle LESS
-gulp.task('less', ['clean-css', 'slick-blobs'],
+const npmSassAliases = {};
+/**
+* Will look for .scss|sass files inside the node_modules folder
+*/
+function npmSassResolver(url, file, done) {
+	// check if the path was already found and cached
+	if(npmSassAliases[url]) {
+		return done({ file: npmSassAliases[url] });
+	}
+
+	// look for modules installed through npm
+	try {
+		var newPath = path.relative('./css', require.resolve(url));
+		npmSassAliases[url] = newPath; // cache this request
+		return done({ file: newPath });
+	} catch(e) {
+		// if your module could not be found, just return the original url
+		npmSassAliases[url] = url;
+		return done({ file: url });
+	}
+}
+
+// Bundle SASS
+gulp.task('sass', ['clean-css', 'slick-blobs'],
 	() =>
-		gulp.src(getInputDir('views/layout.less'))
-			.pipe(less({ paths: [nodeModuleDir] }))
+		gulp.src(getInputDir('views/layout.scss'))
+			.pipe(sass({ importer: npmSassResolver }).on('error', sass.logError))
 			.pipe(cssnano())
 			.pipe(gulp.dest(getOutputDir('public/css'))));
 
@@ -110,10 +132,10 @@ gulp.task('build-resume-pdf',
 			}))
 			.pipe(gulp.dest(getOutputDir('public'))));
 
-gulp.task('build', ['images', 'project-images', 'profile-image', 'less', 'client-js', 'slick-blobs', 'build-resume-pdf']);
+gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
 
 gulp.task('watch', ['build'], () => {
-	gulp.watch('./views/**/*.less', ['less']);
+	gulp.watch('./views/**/*.scss', ['sass']);
 	gulp.watch('./imgs/**/*', ['images']);
 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);

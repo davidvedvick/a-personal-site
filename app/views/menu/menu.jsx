@@ -1,5 +1,5 @@
 import { ul, hh } from 'react-hyperscript-helpers';
-var MenuItem = require('./menu-item');
+import MenuItem from './menu-item';
 
 var Menu = hh(() => {
 	var menuNodes = [

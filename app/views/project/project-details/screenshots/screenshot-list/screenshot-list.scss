@@ -2,15 +2,15 @@ div.screenshots-container {
 	width: 525px;
 	max-width: 100%;
 	height: 300px;
-  	margin-right: 25px;
+	margin-right: 25px;
 	overflow: visible;
 	float: right;
 
 	@import "../screenshot-details/screenshot-details";
 
-    .slick-next::before, .slick-prev::before {
-        color: #000;
-    }
+  .slick-next::before, .slick-prev::before {
+      color: #000;
+  }
 
 	.slick-track {
 		height: 300px;

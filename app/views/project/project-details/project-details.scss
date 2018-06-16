@@ -1,4 +1,5 @@
-div.project:extend(div.content all) {
+div.project {
+	@extend div.content;
 	overflow: visible;
 
 	div.project-details-container {
