@@ -29,7 +29,15 @@ const numberOfCpus = os.cpus().length;
 
 gulp.task('clean-js', (cb) => { del([getOutputDir('public/js')]).then(() => cb()); });
 
-gulp.task('client-js', ['clean-js'], () => {
+gulp.task('clean-css', function (cb) {
+	del([getOutputDir('public/css')]).then(() => { cb(); });
+});
+
+gulp.task('clean-images', (cb) => { del([getOutputDir('./public/images')]).then(() => cb()); });
+
+const clean = gulp.parallel('clean-js',	'clean-css', 'clean-images');
+
+gulp.task('client-js', () => {
 	const destDir = getOutputDir('public/js');
 
 	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
@@ -59,12 +67,8 @@ gulp.task('client-js', ['clean-js'], () => {
 	return pipe.pipe(gulp.dest(destDir));
 });
 
-gulp.task('clean-css', function (cb) {
-	del([getOutputDir('public/css')]).then(() => { cb(); });
-});
-
 // copy slick carousel blobs
-gulp.task('slick-blobs', ['clean-css'], () =>
+gulp.task('slick-blobs', () =>
 	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
 
 const npmSassAliases = {};
@@ -79,7 +83,7 @@ function npmSassResolver(url, file, done) {
 
 	// look for modules installed through npm
 	try {
-		const newPath = getInputDir(path.relative('./css', require.resolve(url)));
+		const newPath = require.resolve(url);
 		npmSassAliases[url] = newPath; // cache this request
 		return done({ file: newPath });
 	} catch(e) {
@@ -90,18 +94,18 @@ function npmSassResolver(url, file, done) {
 }
 
 // Bundle SASS
-gulp.task('sass', ['clean-css', 'slick-blobs'],
+gulp.task('sass',
 	() =>
 		gulp.src(getInputDir('views/layout.scss'))
 			.pipe(sass({ importer: npmSassResolver }).on('error', sass.logError))
 			.pipe(cssnano())
 			.pipe(gulp.dest(getOutputDir('public/css'))));
 
-gulp.task('clean-images', (cb) => { del([getOutputDir('./public/images')]).then(() => cb()); });
+const buildCss = gulp.series('slick-blobs', 'sass');
 
-gulp.task('images', ['clean-images'], () => gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs'))));
+gulp.task('images', () => gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs'))));
 
-gulp.task('profile-image', ['clean-images'],
+gulp.task('profile-image',
 	() =>
 		gulp
 			.src(appConfig.bio.authorPicture)
@@ -120,17 +124,25 @@ gulp.task('project-images', () => {
 			.pipe(gulp.dest(destDir));
 });
 
-gulp.task('build-resume-pdf',
+const buildImages = gulp.parallel('images', 'profile-image', 'project-images'); 
+
+gulp.task('build-resume-pdf', [ 'sass' ],
 	() =>
 		gulp
 			.src(appConfig.resumeLocation)
 			.pipe(markdownPdf({
-				remarkable: { html: true }
+				remarkable: { html: true, breaks: false },
+				cssPath: getOutputDir('public/css/layout.css'),
+				paperFormat: 'Letter'
 			}))
 			.pipe(rename({
 				extname: '.pdf'
 			}))
 			.pipe(gulp.dest(getOutputDir('public'))));
+
+gulp.series(
+	clean,
+	'client-js')
 
 gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
 
