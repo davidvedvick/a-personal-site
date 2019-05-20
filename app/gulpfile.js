@@ -27,17 +27,14 @@ const numberOfCpus = os.cpus().length;
 
 // Dynamic build content
 
-gulp.task('clean-js', (cb) => { del([getOutputDir('public/js')]).then(() => cb()); });
+function clean() {
+	return del([
+		getOutputDir('public/js'),
+		getOutputDir('public/css'),
+		getOutputDir('public/images')]);
+}
 
-gulp.task('clean-css', function (cb) {
-	del([getOutputDir('public/css')]).then(() => { cb(); });
-});
-
-gulp.task('clean-images', (cb) => { del([getOutputDir('./public/images')]).then(() => cb()); });
-
-const clean = gulp.parallel('clean-js',	'clean-css', 'clean-images');
-
-gulp.task('client-js', () => {
+function buildJs() {
 	const destDir = getOutputDir('public/js');
 
 	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
@@ -65,7 +62,7 @@ gulp.task('client-js', () => {
 			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
 
 	return pipe.pipe(gulp.dest(destDir));
-});
+};
 
 // copy slick carousel blobs
 gulp.task('slick-blobs', () =>
@@ -124,37 +121,42 @@ gulp.task('project-images', () => {
 			.pipe(gulp.dest(destDir));
 });
 
-const buildImages = gulp.parallel('images', 'profile-image', 'project-images'); 
+const buildImages = gulp.parallel('images', 'profile-image', 'project-images');
 
-gulp.task('build-resume-pdf', [ 'sass' ],
-	() =>
-		gulp
-			.src(appConfig.resumeLocation)
-			.pipe(markdownPdf({
-				remarkable: { html: true, breaks: false },
-				cssPath: getOutputDir('public/css/layout.css'),
-				paperFormat: 'Letter'
-			}))
-			.pipe(rename({
-				extname: '.pdf'
-			}))
-			.pipe(gulp.dest(getOutputDir('public'))));
+function buildResumePdf() {
+	return gulp
+		.src(appConfig.resumeLocation)
+		.pipe(markdownPdf({
+			remarkable: { html: true, breaks: false },
+			cssPath: getOutputDir('public/css/layout.css'),
+			paperFormat: 'Letter'
+		}))
+		.pipe(rename({
+			extname: '.pdf'
+		}))
+		.pipe(gulp.dest(getOutputDir('public')));
+}
 
-gulp.series(
+const buildSite = gulp.series(
 	clean,
-	'client-js')
+	gulp.parallel(
+		buildJs,
+		gulp.series(buildCss, buildResumePdf),
+		buildImages));
 
-gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
-
-gulp.task('watch', ['build'], () => {
-	gulp.watch('./views/**/*.scss', ['sass']);
-	gulp.watch('./imgs/**/*', ['images']);
-	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
-	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
-	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
-});
+// gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
+//
+// gulp.task('watch', ['build'], () => {
+// 	gulp.watch('./views/**/*.scss', ['sass']);
+// 	gulp.watch('./imgs/**/*', ['images']);
+// 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
+// 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
+// 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
+// });
 
 module.exports = (options) => {
 	production = options.production || production;
 	outputDir = options.outputDir || outputDir;
 };
+
+module.exports.build = buildSite;
