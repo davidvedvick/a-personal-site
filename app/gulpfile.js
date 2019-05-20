@@ -65,8 +65,11 @@ function buildJs() {
 };
 
 // copy slick carousel blobs
-gulp.task('slick-blobs', () =>
-	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
+function collectSlickBlobs() {
+	return gulp
+		.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`])
+		.pipe(gulp.dest(getOutputDir('public/css')));
+}
 
 const npmSassAliases = {};
 /**
@@ -91,26 +94,28 @@ function npmSassResolver(url, file, done) {
 }
 
 // Bundle SASS
-gulp.task('sass',
-	() =>
-		gulp.src(getInputDir('views/layout.scss'))
+function transformSass() {
+	return gulp.src(getInputDir('views/layout.scss'))
 			.pipe(sass({ importer: npmSassResolver }).on('error', sass.logError))
 			.pipe(cssnano())
-			.pipe(gulp.dest(getOutputDir('public/css'))));
+			.pipe(gulp.dest(getOutputDir('public/css')));
+}
 
-const buildCss = gulp.series('slick-blobs', 'sass');
+const buildCss = gulp.series(collectSlickBlobs, transformSass);
 
-gulp.task('images', () => gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs'))));
+function buildPublicImages() {
+	return gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs')));
+}
 
-gulp.task('profile-image',
-	() =>
-		gulp
-			.src(appConfig.bio.authorPicture)
-			.pipe(imageResize({ width: 500 }))
-			.pipe(rename('profile-picture.jpg'))
-			.pipe(gulp.dest(getOutputDir('public/imgs'))));
+function buildProfileImage() {
+	return gulp
+		.src(appConfig.bio.authorPicture)
+		.pipe(imageResize({ width: 500 }))
+		.pipe(rename('profile-picture.jpg'))
+		.pipe(gulp.dest(getOutputDir('public/imgs')));
+}
 
-gulp.task('project-images', () => {
+function buildProjectImages() {
 	const destDir = getOutputDir('public/imgs/projects');
 	return gulp.src(getInputDir('content/projects/**/imgs/*'))
 			.pipe(changed(destDir))
@@ -119,9 +124,9 @@ gulp.task('project-images', () => {
 				os.cpus().length
 			))
 			.pipe(gulp.dest(destDir));
-});
+}
 
-const buildImages = gulp.parallel('images', 'profile-image', 'project-images');
+buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
 function buildResumePdf() {
 	return gulp
@@ -144,8 +149,6 @@ const buildSite = gulp.series(
 		gulp.series(buildCss, buildResumePdf),
 		buildImages));
 
-// gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
-//
 // gulp.task('watch', ['build'], () => {
 // 	gulp.watch('./views/**/*.scss', ['sass']);
 // 	gulp.watch('./imgs/**/*', ['images']);
