@@ -9,7 +9,7 @@ const ReactDomServer = require('react-dom/server');
 const appConfig = Object.assign(require('./app/app-config.json'), require('./app-config.json'));
 const path = require('path');
 const GulpSsh = require('gulp-ssh');
-const gulpSsh = new GulpSsh({
+const gulpSsh = () => new GulpSsh({
 	ignoreErrors: false,
 	// set this from a config file
 	sshConfig: require('./ssh-config.json')
@@ -18,15 +18,17 @@ const htmlmin = require('gulp-htmlmin');
 const gulpBabel = require('gulp-babel');
 const del = require('del');
 const revertPath = require('gulp-revert-path');
+const { promisify } = require('util');
+var fs = require('fs');
 
 const numberOfCpus = os.cpus().length;
 
 // Register dynamic build tasks
-(() => require('./app/gulpfile.js')({ production: true }))();
+const appBuild = require('./app/gulpfile.js')({ production: true });
+
+const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 
 // Static build tasks
-var rawMarkdown = {};
-
 var jsxToHtml = (options) =>
 	through2.obj(function (file, enc, cb) {
 		require('node-jsx').install({extension: '.jsx'});
@@ -42,121 +44,94 @@ var jsxToHtml = (options) =>
 		cb();
 	});
 
-var hashDest = (dest, opts) =>
-	through2.obj((file, enc, cb) => {
-		opts = opts || {};
+const cleanBuild = () => del(['build']);
 
-		dest[file.path.replace(file.base, '')] = opts.onStore ? opts.onStore(file.contents) : file.contents.toString(opts.enc || enc);
-		cb();
-	});
+function copyDynamicBuild() {
+	return gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public'));
+}
 
-gulp.task('clean-build', (cb) => { del(['build']).then(() => cb()); });
+function buildServerJs() {
+	return gulp
+		.src([ './app/**/*.{js,jsx}', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
+		.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
+		.pipe(revertPath())
+		.pipe(parallel(uglify(), numberOfCpus))
+		.pipe(gulp.dest('build'));
+}
 
-gulp.task('copy-dynamic-build', ['clean-build', 'build'],
-	() =>
-		gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public')));
+async function buildStaticResume() {
+	const rawMarkdown = await promiseReadFile(appConfig.resumeLocation);
 
-gulp.task('build-server-js', ['clean-build'],
-	() =>
-		gulp
-			.src([ './app/**/*.{js,jsx}', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
-			.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
-			.pipe(revertPath())
-			.pipe(parallel(uglify(), numberOfCpus))
-			.pipe(gulp.dest('build')));
-
-gulp.task('store-resume-markdown',
-	() =>
-		gulp
-			.src(appConfig.resumeLocation)
-			.pipe(hashDest(rawMarkdown)));
-
-gulp.task('build-static-resume', ['build-server-js', 'store-resume-markdown'],
-	() =>
-		gulp
+	await gulp
 			.src('./build/views/resume/resume.jsx')
-			.pipe(jsxToHtml({resume: rawMarkdown['resume.md']}))
+			.pipe(jsxToHtml({resume: rawMarkdown}))
 			.pipe(htmlmin())
-			.pipe(gulp.dest('./build/public/html')));
+			.pipe(gulp.dest('./build/public/html'));
+}
 
-gulp.task('store-bio-markdown',
-	() =>
-		gulp
-			.src(appConfig.bio.path)
-			.pipe(hashDest(rawMarkdown)));
+async function buildStaticIndex() {
+	const rawMarkdown = await promiseReadFile(appConfig.bio.path);
 
-gulp.task('build-static-index', ['build-server-js', 'store-bio-markdown'],
-	() =>
-		gulp
+	await gulp
 			.src('./build/views/index/index.jsx')
-			.pipe(jsxToHtml({bio: rawMarkdown['bio.md']}))
+			.pipe(jsxToHtml({bio: rawMarkdown}))
 			.pipe(htmlmin())
-			.pipe(gulp.dest('./build/public/html')));
+			.pipe(gulp.dest('./build/public/html'));
+}
 
-var projectMarkdown = {};
-gulp.task('store-project-markdown',
-	() =>
-		gulp
-			.src(path.join(appConfig.projectsLocation, '*/features.md'))
-			.pipe(hashDest(projectMarkdown)));
+async function buildStaticProjects() {
+	let projects = JSON.parse(await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json')));
 
-var projectData = {};
-gulp.task('store-project-json', ['store-project-markdown'],
-	() =>
-		gulp
-			.src(path.join(appConfig.projectsLocation, 'projects.json'))
-			.pipe(hashDest(projectData, {
-				onStore: (data) => {
-					const projects = JSON.parse(data);
+	projects = await Promise.all(projects.map(async project => {
+		const filePath = path.join(appConfig.projectsLocation, project.name, 'features.md');
+		project.features = await promiseReadFile(filePath);
+		return project;
+	}));
 
-					projects.forEach((project) => {
-						project.features = projectMarkdown[project.name + '/features.md'];
-					});
+	await gulp
+		.src('./build/views/project/project-list.jsx')
+		.pipe(jsxToHtml({projects: projects}))
+		.pipe(htmlmin())
+		.pipe(gulp.dest('./build/public/html'));
+}
 
-					return projects;
-				}
-			})));
+const copyNodeProjectData = () => gulp.src(['./package.json', './app/start-server.sh']).pipe(gulp.dest('./build'));
 
-gulp.task('build-static-projects', ['build-server-js', 'store-project-json'],
-	() =>
-		gulp
-			.src('./build/views/project/project-list.jsx')
-			.pipe(jsxToHtml({projects: projectData['projects.json'] || []}))
-			.pipe(htmlmin())
-			.pipe(gulp.dest('./build/public/html')));
+const buildStatic = gulp.series(
+	cleanBuild,
+	appBuild.build,
+	copyDynamicBuild,
+	gulp.parallel(
+		copyNodeProjectData,
+		gulp.series(
+			buildServerJs,
+			gulp.parallel(
+				buildStaticResume,
+				buildStaticIndex,
+				buildStaticProjects))));
 
-gulp.task('copy-node-project-data', ['clean-build'],
-	() =>
-		gulp.src(['./package.json', './app/start-server.sh']).pipe(gulp.dest('./build')));
+async function publish() {
+	await buildStatic();
 
-gulp.task('build-static', [
-	'clean-build',
-	'build',
-	'copy-dynamic-build',
-	'copy-node-project-data',
-	'build-static-resume',
-	'build-static-index',
-	'build-static-projects',
-	'build-server-js']);
+	await gulp
+		.src(['./build/**/*', './package.json'])
+		.pipe(gulpSsh().dest('/home/protected/app'));
+}
 
-gulp.task('publish', ['build-static'],
-	() =>
-		gulp
-			.src(['./build/**/*', './package.json'])
-			.pipe(gulpSsh.dest('/home/protected/app')));
+const updateServerPackages = () =>
+	gulpSsh().shell([
+		'cd /home/protected/app/',
+		'chmod +x start-server.sh',
+		'npm install --production',
+		'npm update --production',
+		'npm prune --production',
+		'npm dedupe',
+		'rm -rf /home/tmp/npm*',
+		'npm cache clean'
+	]);
 
-gulp.task('update-server', ['publish'],
-	// uninstall all the packages: `npm ls -p --depth=0 | awk -F/node_modules/ '{print $2}' | grep -vE '^(npm|)$' | xargs -r npm uninstall`
-	() =>
-		gulpSsh.shell([
-			'cd /home/protected/app/',
-			'chmod +x start-server.sh',
-			'npm install --production',
-			'npm update --production',
-			'npm prune --production',
-			'npm dedupe',
-			'rm -rf /home/tmp/npm*',
-			'npm cache clean'
-		]));
+const deploy = gulp.series(publish, updateServerPackages);
 
-gulp.task('deploy', ['publish', 'update-server']);
+module.exports.deploy = deploy;
+module.exports.publish = publish;
+module.exports.buildStatic = buildStatic;

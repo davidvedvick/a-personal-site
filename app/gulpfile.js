@@ -157,9 +157,13 @@ const buildSite = gulp.series(
 // 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
 // });
 
-module.exports = (options) => {
+module.exports = function(options) {
 	production = options.production || production;
 	outputDir = options.outputDir || outputDir;
+
+	return {
+		build: buildSite
+	};
 };
 
-module.exports.build = buildSite;
+module.exports.default = buildSite;

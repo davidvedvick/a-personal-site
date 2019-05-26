@@ -62,7 +62,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "node app/app-release.js",
+    "release": "gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && node app-release.js",
     "debug": "node app/app-debug.js",
     "publish-content": "gulp --gulpfile=gulpfile-publish.js publish"
   },
