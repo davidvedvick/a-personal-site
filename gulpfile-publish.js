@@ -53,26 +53,21 @@ function copyDynamicBuild() {
 
 function buildServerJs() {
 	return gulp
-		.src([ './app/**/*.{jsx}' ], { allowEmpty: true })
+		.src([ './app/**/*.js', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*', '!./**/gulpfile*.js' ], { allowEmpty: true })
 		.pipe(parallel(gulpBabel({ presets: [ ['@babel/preset-env', {
 			"targets": {
 				"node": "v8.15.1"
 			}
-		}], '@babel/preset-react' ] }), numberOfCpus))
+		}] ] }), numberOfCpus))
 		.pipe(parallel(terser(), numberOfCpus))
 		.pipe(gulp.dest('./build'));
-
-	// await gulp
-	// 	.src('./build/**/*.jsx')
-	// 	.pipe(rename({ extname: 'js' }))
-	// 	.pipe(gulp.dest('./build'));
 }
 
 async function buildStaticResume() {
 	const rawMarkdown = await promiseReadFile(appConfig.resumeLocation);
 
 	await gulp
-			.src('./build/views/resume/resume.jsx')
+			.src('./build/views/resume/resume.js')
 			.pipe(jsxToHtml({resume: rawMarkdown}))
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html'));
@@ -82,7 +77,7 @@ async function buildStaticIndex() {
 	const rawMarkdown = await promiseReadFile(appConfig.bio.path);
 
 	await gulp
-			.src('./build/views/index/index.jsx')
+			.src('./build/views/index/index.js')
 			.pipe(jsxToHtml({bio: rawMarkdown}))
 			.pipe(htmlmin())
 			.pipe(gulp.dest('./build/public/html'));
@@ -98,7 +93,7 @@ async function buildStaticProjects() {
 	}));
 
 	await gulp
-		.src('./build/views/project/project-list.jsx')
+		.src('./build/views/project/project-list.js')
 		.pipe(jsxToHtml({projects: projects}))
 		.pipe(htmlmin())
 		.pipe(gulp.dest('./build/public/html'));

@@ -21,8 +21,7 @@ app.use(bodyParser());
 app.use(methodOverride());
 
 app.set('views', __dirname + '/views');
-app.set('view engine', 'jsx');
-app.engine('jsx', require('express-react-views').createEngine());
+app.set('view engine', 'js');
 app.engine('js', require('express-react-views').createEngine());
 
 // development only
