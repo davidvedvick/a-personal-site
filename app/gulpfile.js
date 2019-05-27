@@ -1,8 +1,7 @@
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const browserify = require('browserify');
-const babelify = require('babelify');
-const uglify = require('gulp-uglify');
+const terser = require('gulp-terser');
 const sass = require('gulp-sass');
 const cssnano = require('gulp-cssnano');
 const del = require('del');
@@ -41,7 +40,13 @@ function buildJs() {
 		.pipe(parallel(
 			through2.obj((file, enc, next) =>
 				browserify(file.path, { extensions: '.jsx', debug: !production })
-					.transform(babelify, { presets: [ 'es2015', 'react' ] })
+					.transform('babelify', { presets: [ ['@babel/preset-env', {
+						"targets": {
+							"browsers": [
+								"last 2 versions"
+							]
+						}
+					}], '@babel/preset-react' ] })
 					.bundle((err, res) => {
 						if (err) console.log(err);
 						// assumes file.contents is a Buffer
@@ -56,7 +61,7 @@ function buildJs() {
 		}));
 
 	pipe = production
-		? pipe.pipe(parallel(uglify(), numberOfCpus))
+		? pipe.pipe(parallel(terser(), numberOfCpus))
 		: pipe
 			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
 			.pipe(sourcemaps.write(getOutputDir())); // writes .map file

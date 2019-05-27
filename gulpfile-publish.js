@@ -1,6 +1,6 @@
 const gulp = require('gulp');
 const gutil = require('gulp-util');
-const uglify = require('gulp-uglify');
+const terser = require('gulp-terser');
 const through2 = require('through2');
 const parallel = require('concurrent-transform');
 const os = require('os');
@@ -18,6 +18,7 @@ const htmlmin = require('gulp-htmlmin');
 const gulpBabel = require('gulp-babel');
 const del = require('del');
 const revertPath = require('gulp-revert-path');
+const rename = require('gulp-rename');
 const { promisify } = require('util');
 var fs = require('fs');
 
@@ -52,11 +53,19 @@ function copyDynamicBuild() {
 
 function buildServerJs() {
 	return gulp
-		.src([ './app/**/*.{js,jsx}', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*' ])
-		.pipe(parallel(gulpBabel({ presets: [ 'es2015', 'react', '@niftyco/babel-node' ] }), numberOfCpus))
-		.pipe(revertPath())
-		.pipe(parallel(uglify(), numberOfCpus))
-		.pipe(gulp.dest('build'));
+		.src([ './app/**/*.{jsx}' ], { allowEmpty: true })
+		.pipe(parallel(gulpBabel({ presets: [ ['@babel/preset-env', {
+			"targets": {
+				"node": "v8.15.1"
+			}
+		}], '@babel/preset-react' ] }), numberOfCpus))
+		.pipe(parallel(terser(), numberOfCpus))
+		.pipe(gulp.dest('./build'));
+
+	// await gulp
+	// 	.src('./build/**/*.jsx')
+	// 	.pipe(rename({ extname: 'js' }))
+	// 	.pipe(gulp.dest('./build'));
 }
 
 async function buildStaticResume() {
@@ -110,10 +119,8 @@ const buildStatic = gulp.series(
 				buildStaticIndex,
 				buildStaticProjects))));
 
-async function publish() {
-	await buildStatic();
-
-	await gulp
+function publish() {
+	return gulp
 		.src(['./build/**/*', './package.json'])
 		.pipe(gulpSsh().dest('/home/protected/app'));
 }
@@ -130,8 +137,7 @@ const updateServerPackages = () =>
 		'npm cache clean'
 	]);
 
-const deploy = gulp.series(publish, updateServerPackages);
+const deploy = gulp.series(buildStatic, publish, updateServerPackages);
 
 module.exports.deploy = deploy;
-module.exports.publish = publish;
 module.exports.buildStatic = buildStatic;
