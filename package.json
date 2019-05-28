@@ -65,7 +65,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && node app-release.js",
     "debug": "cd app && gulp && node app-debug.js",
-    "deploy": "gulp --gulpfile=gulpfile-publish.js deploy"
+    "deploy": "gulp --gulpfile=gulpfile-publish.js deploy",
+    "publish-biography": "gulp --gulpfile=gulpfile-publish.js publishBiography",
+    "publish-resume": "gulp --gulpfile=gulpfile-publish.js publishResume",
+    "publish-projects": "gulp --gulpfile=gulpfile-publish.js publishProjects"
   },
   "keywords": [
     "david",
