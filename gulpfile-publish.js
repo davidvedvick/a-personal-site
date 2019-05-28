@@ -103,9 +103,10 @@ const copyNodeProjectData = () => gulp.src(['./package.json', './app/start-serve
 
 const buildStatic = gulp.series(
 	cleanBuild,
-	appBuild.build,
-	copyDynamicBuild,
 	gulp.parallel(
+		gulp.series(
+			appBuild.build,
+			copyDynamicBuild),
 		copyNodeProjectData,
 		gulp.series(
 			buildServerJs,
@@ -119,6 +120,21 @@ function publish() {
 		.src(['./build/**/*', './package.json'])
 		.pipe(gulpSsh().dest('/home/protected/app'));
 }
+
+const publishBiography = gulp.series(
+	cleanBuild,
+	buildServerJs,
+	buildStaticIndex);
+
+const publishResume = gulp.series(
+	cleanBuild,
+	buildServerJs,
+	buildStaticProjects);
+
+const publishProjects = gulp.series(
+	cleanBuild,
+	buildServerJs,
+	buildStaticResume);
 
 const updateServerPackages = () =>
 	gulpSsh().shell([
@@ -136,3 +152,6 @@ const deploy = gulp.series(buildStatic, publish, updateServerPackages);
 
 module.exports.deploy = deploy;
 module.exports.buildStatic = buildStatic;
+module.exports.publishBiography = publishBiography;
+module.exports.publishResume = publishResume;
+module.exports.publishProjects = publishProjects;
