@@ -20,8 +20,9 @@ app.use(bodyParser.json());
 app.use(bodyParser());
 app.use(methodOverride());
 
-app.set('view engine', 'jsx');
-app.engine('jsx', require('express-react-views').createEngine());
+app.set('views', __dirname + '/views');
+app.set('view engine', 'js');
+app.engine('js', require('express-react-views').createEngine());
 
 // development only
 if ('development' === app.get('env'))
@@ -52,7 +53,10 @@ app.get('/projects', (req, res) => {
         // inject the features markdown text into the project objects
         Promise.all(JSON.parse(rawProjectData).map(project => {
             return new Promise((resolve, reject) => {
-                var filePath = path.join('content', 'projects', project.name, 'features.md');
+                var filePath = path.join(
+                  appConfig.projectsLocation,
+                  project.name,
+                  'features.md');
 
                 fs.readFile(filePath, 'utf8', (err, data) => {
                     if (err) {

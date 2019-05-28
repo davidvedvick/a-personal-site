@@ -20,9 +20,9 @@ app.use('/', express.static(publicDir, { maxAge: maxAge }));
 // app.use(favIcon());
 // app.use(express.logger('dev'));
 
-app.set('view engine', 'jsx');
+app.set('view engine', 'js');
 
-app.engine('jsx', require('express-react-views').createEngine());
+app.engine('js', require('express-react-views').createEngine({ transformViews: false }));
 
 var staticHtmlDir = path.join(publicDir, 'html');
 

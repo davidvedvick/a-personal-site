@@ -8,7 +8,7 @@ const NotesContainer = hh((props) => {
 
 	return LayoutFactory([
 		div('#notes-container', { dangerouslySetInnerHTML: {__html: html} }),
-		script({ type: 'text/javascript', src: '/js/notes.client.js' })
+		script({ type: 'text/javascript', src: '/js/notes.client.js', async: 'async' })
 	]);
 });
 
