@@ -17,10 +17,10 @@ const gulpSsh = () => new GulpSsh({
 const htmlmin = require('gulp-htmlmin');
 const gulpBabel = require('gulp-babel');
 const del = require('del');
-const revertPath = require('gulp-revert-path');
-const rename = require('gulp-rename');
 const { promisify } = require('util');
-var fs = require('fs');
+const fs = require('fs');
+const debug = require('gulp-debug');
+const rename = require('gulp-rename');
 
 const numberOfCpus = os.cpus().length;
 
@@ -28,6 +28,11 @@ const numberOfCpus = os.cpus().length;
 const appBuild = require('./app/gulpfile.js')({ production: true });
 
 const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
+
+function promiseStream(gulpStream) {
+	return new Promise((resolve, reject) =>
+		gulpStream.on('end', resolve).on('error', reject));
+}
 
 // Static build tasks
 var jsxToHtml = (options) =>
@@ -66,21 +71,21 @@ function buildServerJs() {
 async function buildStaticResume() {
 	const rawMarkdown = await promiseReadFile(appConfig.resumeLocation);
 
-	await gulp
+	await promiseStream(gulp
 			.src('./build/views/resume/resume.js')
 			.pipe(jsxToHtml({resume: rawMarkdown}))
 			.pipe(htmlmin())
-			.pipe(gulp.dest('./build/public/html'));
+			.pipe(gulp.dest('./build/public/html')));
 }
 
 async function buildStaticIndex() {
 	const rawMarkdown = await promiseReadFile(appConfig.bio.path);
 
-	await gulp
+	await promiseStream(gulp
 			.src('./build/views/index/index.js')
 			.pipe(jsxToHtml({bio: rawMarkdown}))
 			.pipe(htmlmin())
-			.pipe(gulp.dest('./build/public/html'));
+			.pipe(gulp.dest('./build/public/html')));
 }
 
 async function buildStaticProjects() {
@@ -92,11 +97,11 @@ async function buildStaticProjects() {
 		return project;
 	}));
 
-	await gulp
+	await promiseStream(gulp
 		.src('./build/views/project/project-list.js')
 		.pipe(jsxToHtml({projects: projects}))
 		.pipe(htmlmin())
-		.pipe(gulp.dest('./build/public/html'));
+		.pipe(gulp.dest('./build/public/html')));
 }
 
 const copyNodeProjectData = () => gulp.src(['./package.json', './app/start-server.sh']).pipe(gulp.dest('./build'));
@@ -121,20 +126,38 @@ function publish() {
 		.pipe(gulpSsh().dest('/home/protected/app'));
 }
 
+function publishHtml() {
+	return gulp
+		.src('./build/public/**/*.html')
+		.pipe(gulpSsh().dest('/home/protected/app'));
+}
+
+function publishImages() {
+	return gulp
+		.src('./build/public/imgs/**/*')
+		.pipe(gulpSsh().dest('/home/protected/app'));
+}
+
 const publishBiography = gulp.series(
 	cleanBuild,
 	buildServerJs,
-	buildStaticIndex);
+	buildStaticIndex,
+	publishHtml);
 
 const publishResume = gulp.series(
 	cleanBuild,
 	buildServerJs,
-	buildStaticProjects);
+	buildStaticResume,
+	publishHtml);
 
 const publishProjects = gulp.series(
 	cleanBuild,
+	appBuild.buildImages,
+	copyDynamicBuild,
 	buildServerJs,
-	buildStaticResume);
+	buildStaticProjects,
+	publishHtml,
+	publishImages);
 
 const updateServerPackages = () =>
 	gulpSsh().shell([

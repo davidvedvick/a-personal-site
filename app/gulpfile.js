@@ -167,7 +167,8 @@ module.exports = function(options) {
 	outputDir = options.outputDir || outputDir;
 
 	return {
-		build: buildSite
+		build: buildSite,
+		buildImages: buildImages
 	};
 };
 
