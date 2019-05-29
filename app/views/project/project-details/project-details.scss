@@ -1,5 +1,5 @@
 div.project {
-	@extend div.content;
+	@extend div, .content;
 	overflow: visible;
 
 	div.project-details-container {

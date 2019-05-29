@@ -24,6 +24,8 @@ const nodeModuleDir = path.join(__dirname, '../node_modules');
 
 const numberOfCpus = os.cpus().length;
 
+sass.compiler = require('sass');
+
 // Dynamic build content
 
 function clean() {
@@ -101,7 +103,7 @@ function npmSassResolver(url, file, done) {
 // Bundle SASS
 function transformSass() {
 	return gulp.src(getInputDir('views/layout.scss'))
-			.pipe(sass({ importer: npmSassResolver }).on('error', sass.logError))
+			.pipe(sass({ importer: npmSassResolver, fiber: require('fibers') }).on('error', sass.logError))
 			.pipe(cssnano())
 			.pipe(gulp.dest(getOutputDir('public/css')));
 }
