@@ -2,8 +2,7 @@ const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const browserify = require('browserify');
 const terser = require('gulp-terser');
-const sass = require('gulp-sass');
-const cssnano = require('gulp-cssnano');
+const cleanCss = require('gulp-clean-css');
 const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
@@ -14,6 +13,10 @@ const os = require('os');
 const appConfig = require('./app-config.json');
 const markdownPdf = require('gulp-markdown-pdf');
 const path = require('path');
+
+const sass = require('gulp-sass');
+const Fiber = require('fibers');
+const deSassify = () => sass({ importer: npmSassResolver, fiber: Fiber }).on('error', sass.logError);
 
 var production = false;
 
@@ -103,12 +106,12 @@ function npmSassResolver(url, file, done) {
 // Bundle SASS
 function transformSass() {
 	return gulp.src(getInputDir('views/layout.scss'))
-			.pipe(sass({ importer: npmSassResolver, fiber: require('fibers') }).on('error', sass.logError))
-			.pipe(cssnano())
+			.pipe(deSassify())
+			.pipe(cleanCss())
 			.pipe(gulp.dest(getOutputDir('public/css')));
 }
 
-const buildCss = gulp.series(collectSlickBlobs, transformSass);
+const buildCss = gulp.parallel(collectSlickBlobs, transformSass);
 
 function buildPublicImages() {
 	return gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs')));
