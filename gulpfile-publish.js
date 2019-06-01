@@ -29,10 +29,7 @@ const appBuild = require('./app/gulpfile.js')({ production: true });
 
 const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 
-function promiseStream(gulpStream) {
-	return new Promise((resolve, reject) =>
-		gulpStream.on('end', resolve).on('error', reject));
-}
+const promiseStream = (gulpStream) => new Promise((resolve, reject) => gulpStream.on('end', resolve).on('error', reject));
 
 // Static build tasks
 var jsxToHtml = (options) =>
@@ -126,6 +123,12 @@ function publish() {
 		.pipe(gulpSsh().dest('/home/protected/app'));
 }
 
+function publishPublic() {
+	return gulp
+		.src('./build/public/**/*')
+		.pipe(gulpSsh().dest('/home/protected/app/public'));
+}
+
 function publishHtml() {
 	return gulp
 		.src('./build/public/**/*.html')
@@ -146,9 +149,11 @@ const publishBiography = gulp.series(
 
 const publishResume = gulp.series(
 	cleanBuild,
+	appBuild.buildResumePdf,
+	copyDynamicBuild,
 	buildServerJs,
 	buildStaticResume,
-	publishHtml);
+	publishPublic);
 
 const publishProjects = gulp.series(
 	cleanBuild,

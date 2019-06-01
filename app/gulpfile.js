@@ -2,8 +2,7 @@ const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const browserify = require('browserify');
 const terser = require('gulp-terser');
-const sass = require('gulp-sass');
-const cssnano = require('gulp-cssnano');
+const cleanCss = require('gulp-clean-css');
 const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
@@ -14,6 +13,37 @@ const os = require('os');
 const appConfig = require('./app-config.json');
 const markdownPdf = require('gulp-markdown-pdf');
 const path = require('path');
+
+const npmSassAliases = {};
+/**
+* Will look for .scss|sass files inside the node_modules folder
+*/
+function npmSassResolver(url, file, done) {
+	// check if the path was already found and cached
+	if(npmSassAliases[url]) {
+		return done({ file: npmSassAliases[url] });
+	}
+
+	// look for modules installed through npm
+	try {
+		const newPath = require.resolve(url);
+		npmSassAliases[url] = newPath; // cache this request
+		return done({ file: newPath });
+	} catch(e) {
+		// if your module could not be found, just return the original url
+		npmSassAliases[url] = url;
+		return done({ file: url });
+	}
+}
+
+const sass = require('gulp-sass');
+const Fiber = require('fibers');
+const deSassify = () => sass(
+	{
+		importer: npmSassResolver,
+		fiber: Fiber,
+		outputStyle: 'compressed'
+	}).on('error', sass.logError);
 
 var production = false;
 
@@ -78,37 +108,15 @@ function collectSlickBlobs() {
 		.pipe(gulp.dest(getOutputDir('public/css')));
 }
 
-const npmSassAliases = {};
-/**
-* Will look for .scss|sass files inside the node_modules folder
-*/
-function npmSassResolver(url, file, done) {
-	// check if the path was already found and cached
-	if(npmSassAliases[url]) {
-		return done({ file: npmSassAliases[url] });
-	}
-
-	// look for modules installed through npm
-	try {
-		const newPath = require.resolve(url);
-		npmSassAliases[url] = newPath; // cache this request
-		return done({ file: newPath });
-	} catch(e) {
-		// if your module could not be found, just return the original url
-		npmSassAliases[url] = url;
-		return done({ file: url });
-	}
-}
-
 // Bundle SASS
 function transformSass() {
 	return gulp.src(getInputDir('views/layout.scss'))
-			.pipe(sass({ importer: npmSassResolver, fiber: require('fibers') }).on('error', sass.logError))
-			.pipe(cssnano())
+			.pipe(deSassify())
+			.pipe(cleanCss({ compatibility: 'ie9' }))
 			.pipe(gulp.dest(getOutputDir('public/css')));
 }
 
-const buildCss = gulp.series(collectSlickBlobs, transformSass);
+const buildCss = gulp.parallel(collectSlickBlobs, transformSass);
 
 function buildPublicImages() {
 	return gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs')));
@@ -170,7 +178,8 @@ module.exports = function(options) {
 
 	return {
 		build: buildSite,
-		buildImages: buildImages
+		buildImages: gulp.series(clean, buildImages),
+		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
 	};
 };
 
