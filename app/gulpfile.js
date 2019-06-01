@@ -143,7 +143,7 @@ function buildProjectImages() {
 
 buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
-function buildResumePdf() {	
+function buildResumePdf() {
 	return gulp
 		.src(appConfig.resumeLocation)
 		.pipe(markdownPdf({
@@ -178,7 +178,8 @@ module.exports = function(options) {
 
 	return {
 		build: buildSite,
-		buildImages: buildImages
+		buildImages: gulp.series(clean, buildImages),
+		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
 	};
 };
 

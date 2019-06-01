@@ -123,6 +123,12 @@ function publish() {
 		.pipe(gulpSsh().dest('/home/protected/app'));
 }
 
+function publishPublic() {
+	return gulp
+		.src('./build/public/**/*')
+		.pipe(gulpSsh().dest('/home/protected/app/public'));
+}
+
 function publishHtml() {
 	return gulp
 		.src('./build/public/**/*.html')
@@ -143,9 +149,11 @@ const publishBiography = gulp.series(
 
 const publishResume = gulp.series(
 	cleanBuild,
+	appBuild.buildResumePdf,
+	copyDynamicBuild,
 	buildServerJs,
 	buildStaticResume,
-	publishHtml);
+	publishPublic);
 
 const publishProjects = gulp.series(
 	cleanBuild,
