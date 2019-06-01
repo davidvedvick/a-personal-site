@@ -14,9 +14,36 @@ const appConfig = require('./app-config.json');
 const markdownPdf = require('gulp-markdown-pdf');
 const path = require('path');
 
+const npmSassAliases = {};
+/**
+* Will look for .scss|sass files inside the node_modules folder
+*/
+function npmSassResolver(url, file, done) {
+	// check if the path was already found and cached
+	if(npmSassAliases[url]) {
+		return done({ file: npmSassAliases[url] });
+	}
+
+	// look for modules installed through npm
+	try {
+		const newPath = require.resolve(url);
+		npmSassAliases[url] = newPath; // cache this request
+		return done({ file: newPath });
+	} catch(e) {
+		// if your module could not be found, just return the original url
+		npmSassAliases[url] = url;
+		return done({ file: url });
+	}
+}
+
 const sass = require('gulp-sass');
 const Fiber = require('fibers');
-const deSassify = () => sass({ importer: npmSassResolver, fiber: Fiber }).on('error', sass.logError);
+const deSassify = () => sass(
+	{
+		importer: npmSassResolver,
+		fiber: Fiber,
+		outputStyle: 'compressed'
+	}).on('error', sass.logError);
 
 var production = false;
 
@@ -81,33 +108,11 @@ function collectSlickBlobs() {
 		.pipe(gulp.dest(getOutputDir('public/css')));
 }
 
-const npmSassAliases = {};
-/**
-* Will look for .scss|sass files inside the node_modules folder
-*/
-function npmSassResolver(url, file, done) {
-	// check if the path was already found and cached
-	if(npmSassAliases[url]) {
-		return done({ file: npmSassAliases[url] });
-	}
-
-	// look for modules installed through npm
-	try {
-		const newPath = require.resolve(url);
-		npmSassAliases[url] = newPath; // cache this request
-		return done({ file: newPath });
-	} catch(e) {
-		// if your module could not be found, just return the original url
-		npmSassAliases[url] = url;
-		return done({ file: url });
-	}
-}
-
 // Bundle SASS
 function transformSass() {
 	return gulp.src(getInputDir('views/layout.scss'))
 			.pipe(deSassify())
-			.pipe(cleanCss())
+			.pipe(cleanCss({ compatibility: 'ie9' }))
 			.pipe(gulp.dest(getOutputDir('public/css')));
 }
 
@@ -138,7 +143,7 @@ function buildProjectImages() {
 
 buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
-function buildResumePdf() {
+function buildResumePdf() {	
 	return gulp
 		.src(appConfig.resumeLocation)
 		.pipe(markdownPdf({

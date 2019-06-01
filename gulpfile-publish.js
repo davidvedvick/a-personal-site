@@ -29,10 +29,7 @@ const appBuild = require('./app/gulpfile.js')({ production: true });
 
 const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 
-function promiseStream(gulpStream) {
-	return new Promise((resolve, reject) =>
-		gulpStream.on('end', resolve).on('error', reject));
-}
+const promiseStream = (gulpStream) => new Promise((resolve, reject) => gulpStream.on('end', resolve).on('error', reject));
 
 // Static build tasks
 var jsxToHtml = (options) =>
