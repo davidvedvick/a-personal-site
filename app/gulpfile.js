@@ -41,8 +41,7 @@ const Fiber = require('fibers');
 const deSassify = () => sass(
 	{
 		importer: npmSassResolver,
-		fiber: Fiber,
-		outputStyle: 'compressed'
+		fiber: Fiber
 	}).on('error', sass.logError);
 
 var production = false;
@@ -112,7 +111,7 @@ function collectSlickBlobs() {
 function transformSass() {
 	return gulp.src(getInputDir('views/layout.scss'))
 			.pipe(deSassify())
-			.pipe(cleanCss({ compatibility: 'ie9' }))
+			.pipe(cleanCss())
 			.pipe(gulp.dest(getOutputDir('public/css')));
 }
 
@@ -148,7 +147,7 @@ function buildResumePdf() {
 		.src(appConfig.resumeLocation)
 		.pipe(markdownPdf({
 			remarkable: { html: true, breaks: false },
-			cssPath: getOutputDir('public/css/layout.css'),
+			//cssPath: getOutputDir('public/css/layout.css'),
 			paperFormat: 'Letter'
 		}))
 		.pipe(rename({
