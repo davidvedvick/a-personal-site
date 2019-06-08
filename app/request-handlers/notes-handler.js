@@ -16,6 +16,33 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
+    async function* fileReaderIterator(file) {
+        const readStream = fs.createReadStream(file, { encoding: 'utf8', highWaterMark: 1024 });
+        const readBytesPromise = () => new Promise((resolve, reject) => {
+            const reader = () => {
+                resolve(readStream.read(1024));
+                readStream.removeListener('readable', reader);
+            };
+            readStream.on('readable', reader);
+        });
+
+        let previous = '';
+        let next;
+        while ((next = await readBytesPromise())) {
+            previous += next;
+            let eolIndex = -1;
+            while ((eolIndex = previous.indexOf('\n')) >= 0) {
+                const line = previous.slice(0, eolIndex);
+                yield line;
+                previous = previous.slice(eolIndex + 1);
+            }
+        }
+
+        if (previous.length > 0) {
+            yield previous;
+        }
+    };
+
     async function parseNote(file) {
         parseNote.propMatch = parseNote.propMatch || /(^[a-zA-Z_]*)\:(.*)/;
 
@@ -41,7 +68,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             commit: latestCommit
         };
 
-        const lineReader = readline.createInterface({ input: fs.createReadStream(file) });
+        const lineReader = fileReaderIterator(file);
         for await (const line of lineReader) {
             // `newNote.text` is not null, so we are now able to add text
             if (newNote.text != null) {
@@ -110,6 +137,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             res.render('notes/notes-container', { notes: await getNotes(1) });
         } catch (exception) {
             console.log(exception);
+            res.status(500).send('An error occurred');
         }
     });
 
@@ -125,6 +153,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             res.render('notes/note-container', { note: await parseNote(filePath) });
         } catch (exception) {
             console.error(exception);
+            res.status(500).send('An error occurred');
         }
     });
 
@@ -140,6 +169,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             res.json(await getNotes(page));
         } catch (exception) {
             console.log(exception);
+            res.status(500).send('An error occurred');
         }
     });
 };
