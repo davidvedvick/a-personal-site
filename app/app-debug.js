@@ -4,6 +4,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var favIcon = require('serve-favicon');
 var methodOverride = require('method-override');
+const { promisify } = require('util');
 var notesHandler = require('./request-handlers/notes-handler');
 var appConfig = require('./app-config.json');
 
@@ -28,69 +29,46 @@ app.engine('js', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-app.get('/', (req, res) => {
-    fs.readFile(appConfig.bio.path, (error, bioMarkdown) => {
-        if (error) {
-            console.log(error);
-            return;
-        }
+const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath);
 
-        try {
-            res.render('index/index', { bio: bioMarkdown });
-        } catch (exception) {
-            console.log(exception);
-        }
-    });
+app.get('/', async (req, res) => {
+  try {
+    const bioMarkdown = await promiseReadFile(appConfig.bio.path);
+    res.render('index/index', { bio: bioMarkdown });
+  } catch (exception) {
+    console.error(exception);
+  }
 });
 
-app.get('/projects', (req, res) => {
-    fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'), (error, rawProjectData) => {
-        if (error) {
-            console.error(error);
-            return;
-        }
+app.get('/projects', async (req, res) => {
+  try {
+    const rawProjectData = await promiseReadFile(
+      path.join(appConfig.projectsLocation, 'projects.json'));
 
-        // inject the features markdown text into the project objects
-        Promise.all(JSON.parse(rawProjectData).map(project => {
-            return new Promise((resolve, reject) => {
-                var filePath = path.join(
-                  appConfig.projectsLocation,
-                  project.name,
-                  'features.md');
+    const projects = await Promise.all(JSON.parse(rawProjectData).map(async project => {
+      const filePath = path.join(
+        appConfig.projectsLocation,
+        project.name,
+        'features.md');
 
-                fs.readFile(filePath, 'utf8', (err, data) => {
-                    if (err) {
-                        reject(err);
-                        return;
-                    }
+      project.features = await promisify(fs.readFile)(filePath, 'utf8');
 
-                    project.features = data;
-                    resolve(project);
-                });
-            });
-        })).then(projects => {
-            try {
-                res.render('project/project-list', { projects: projects });
-            } catch (exception) {
-                console.error(exception);
-            }
-        }).catch(console.error);
-    });
+      return project;
+    }));
+
+    res.render('project/project-list', { projects: projects });
+  } catch (exception) {
+    console.error(exception);
+  }
 });
 
-app.get('/resume', (req, res) => {
-    fs.readFile(appConfig.resumeLocation, (error, resumeMarkdown) => {
-        if (error) {
-            console.log(error);
-            return;
-        }
-
-        try {
-            res.render('resume/resume', { resume: resumeMarkdown });
-        } catch (exception) {
-            console.log(exception);
-        }
-    });
+app.get('/resume', async (req, res) => {
+  try {
+    const resumeMarkdown = await promiseReadFile(appConfig.resumeLocation);
+    res.render('resume/resume', { resume: resumeMarkdown });
+  } catch (exception) {
+    console.log(exception);
+  }
 });
 
 notesHandler(app, appConfig.notes, environmentOpts);
