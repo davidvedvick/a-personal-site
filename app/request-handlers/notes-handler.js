@@ -13,104 +13,76 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     notesConfig.path = notesConfig.path || 'content/notes';
 
     const newLine = '\n';
+    const propMatch = /(^[a-zA-Z_]*)\:(.*)/;
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
-    const parseNote = (file) => {
-        parseNote.propMatch = parseNote.propMatch || /(^[a-zA-Z_]*)\:(.*)/;
-
+    async function parseNote(file) {
         parseNote.noteCache = parseNote.noteCache || {};
 
-        return new Promise((resolve, reject) => {
-            const fileName = path.basename(file, '.md');
+        const cacheNote = (note) => parseNote.noteCache[file] = note;
 
-            const cacheAndResolveNote = (note) => {
-                parseNote.noteCache[file] = note;
-                resolve(note);
-            };
+        const fileName = path.basename(file, '.md');
 
-            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                (error, latestCommit, stderr) => {
-                    if (error !== null) {
-                        reject(error);
-                        return;
-                    }
+        const latestCommit = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
 
-                    const cachedNote = parseNote.noteCache[file];
-                    if (cachedNote && cachedNote.commit === latestCommit) {
-                        resolve(cachedNote);
-                        return;
-                    }
+        const cachedNote = parseNote.noteCache[file];
+        if (cachedNote && cachedNote.commit === latestCommit) return cachedNote;
 
-                    const newNote = {
-                        created: null,
-                        pathYear: fileName.substring(0, 4),
-                        pathMonth: fileName.substring(4, 6),
-                        pathDay: fileName.substring(6, 8),
-                        pathTitle: fileName.substring(9),
-                        hash: fileName,
-                        text: null,
-                        commit: latestCommit
-                    };
+        const newNote = {
+            created: null,
+            pathYear: fileName.substring(0, 4),
+            pathMonth: fileName.substring(4, 6),
+            pathDay: fileName.substring(6, 8),
+            pathTitle: fileName.substring(9),
+            hash: fileName,
+            text: null,
+            commit: latestCommit
+        };
 
-                    const lineReader = readline.createInterface({ input: fs.createReadStream(file) });
-                    lineReader.on('line', (line) => {
-                        // `newNote.text` is not null, so we are now able to add text
-                        if (newNote.text != null) {
-                            newNote.text += line + newLine;
-                            return;
-                        }
+        const lineReader = readline.createInterface({ input: fs.createReadStream(file) });
+        lineReader.on('line', (line) => {
+            // `newNote.text` is not null, so we are now able to add text
+            if (newNote.text != null) {
+                newNote.text += line + newLine;
+                return;
+            }
 
-                        if (line.trim() === '---') {
-                            // Begin adding the text
-                            newNote.text = '';
-                            return;
-                        }
+            if (line.trim() === '---') {
+                // Begin adding the text
+                newNote.text = '';
+                return;
+            }
 
-                        const matches = parseNote.propMatch.exec(line);
-                        if (!matches) return;
+            const matches = propMatch.exec(line);
+            if (!matches) return;
 
-                        const propName = matches[1];
-                        const value = matches[2].trim();
+            const propName = matches[1];
+            const value = matches[2].trim();
 
-                        switch (propName) {
-                            case 'created_gmt':
-                                newNote.created = new Date(value);
-                                return;
-                            case 'title':
-                                newNote.title = value;
-                                return;
-                        }
-                    });
-
-                    lineReader.on('close', () => {
-                        if (newNote.created !== null) {
-                            cacheAndResolveNote(newNote);
-                            return;
-                        }
-
-                        if (!notesConfig.gitPath) {
-                            newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
-                            cacheAndResolveNote(newNote);
-                            return;
-                        }
-
-                        exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                            (error, stdout, stderr) => {
-                                if (error !== null) {
-                                    reject(error);
-                                    return;
-                                }
-
-                                newNote.created = new Date(stdout);
-                                cacheAndResolveNote(newNote);
-                            }
-                        );
-                    });
-                }
-            );
+            switch (propName) {
+                case 'created_gmt':
+                    newNote.created = new Date(value);
+                    return;
+                case 'title':
+                    newNote.title = value;
+                    return;
+            }
         });
-    };
+
+        await new Promise((resolve) => lineReader.on('close', resolve));
+
+        if (newNote.created !== null) return cacheNote(newNote);
+
+        if (!notesConfig.gitPath) {
+            newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
+            return cacheNote(newNote);
+        }
+
+        newNote.created = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
+
+        return cacheNote(newNote);
+    }
 
     async function getNotes(page) {
         const pageSize = 10;
