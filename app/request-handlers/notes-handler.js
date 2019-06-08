@@ -79,7 +79,9 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             return cacheNote(newNote);
         }
 
-        newNote.created = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
+        const outputDate = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
+
+        newNote.created = new Date(outputDate);
 
         return cacheNote(newNote);
     }
