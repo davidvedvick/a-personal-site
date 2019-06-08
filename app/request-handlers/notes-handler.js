@@ -6,7 +6,17 @@ const exec = require('child_process').exec;
 const readline = require('readline');
 const { promisify } = require('util');
 
-const promiseExec = (command) => promisify(exec)(command);
+const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
+    if (err) {
+        reject(err);
+    }
+
+    if (stderr) {
+        reject(stderr);
+    }
+
+    resolve(out);
+}));
 
 module.exports = (localApp, notesConfig, environmentOpts) => {
     environmentOpts = environmentOpts || {};
