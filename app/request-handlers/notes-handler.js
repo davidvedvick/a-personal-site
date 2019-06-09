@@ -151,9 +151,8 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             return;
         }
 
-        const promisedLatestRepoCommit = promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 | tail -1');
-
         try {
+            const promisedLatestRepoCommit = promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 | tail -1');
             const promisedNotes = getNotes(page);
 
             const latestRepoCommit = await promisedLatestRepoCommit;
