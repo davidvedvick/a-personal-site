@@ -151,8 +151,16 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             return;
         }
 
+        const promisedLatestRepoCommit = promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 | tail -1');
+
         try {
-            res.json(await getNotes(page));
+            const promisedNotes = getNotes(page);
+
+            const latestRepoCommit = await promisedLatestRepoCommit;
+            const etag = `"${latestRepoCommit.trim()}"`;
+            res.set('ETag', etag);
+            res.set('Cache-Control', 'public, max-age=0')
+            res.json(await promisedNotes);
         } catch (exception) {
             console.log(exception);
             res.status(500).send('An error occurred');

@@ -6,7 +6,7 @@ import jQuery from 'jquery';
 jQuery.ajax({
 	url: '/notes/1',
 	dataType: 'json',
-	cache: false,
+	cache: true,
 	success: function (data) {
 		ReactDOM.render(React.createElement(NotesList, { notes: data }), document.getElementById('notes-container'));
 	},
