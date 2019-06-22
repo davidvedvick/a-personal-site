@@ -132,13 +132,13 @@ function publishPublic() {
 function publishHtml() {
 	return gulp
 		.src('./build/public/**/*.html')
-		.pipe(gulpSsh().dest('/home/protected/app'));
+		.pipe(gulpSsh().dest('/home/protected/app/public'));
 }
 
 function publishImages() {
 	return gulp
-		.src('./build/public/imgs/**/*')
-		.pipe(gulpSsh().dest('/home/protected/app'));
+		.src('./build/public/**/*')
+		.pipe(gulpSsh().dest('/home/protected/app/public'));
 }
 
 const publishBiography = gulp.series(
