@@ -27,6 +27,15 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
+    async function getFileTag(file) {
+        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" log HEAD --format=%H -1 -- "${file.replace(notesConfig.path + '/', '')}" | tail -1`);
+        return `"${latestRepoCommit.trim()}"`;
+    }
+
+    function getNotesRepoTag() {
+        return getFileTag(notesConfig.gitPath);
+    }
+
     async function parseNote(file) {
         parseNote.noteCache = parseNote.noteCache || {};
 
@@ -34,7 +43,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
         const fileName = path.basename(file, '.md');
 
-        const latestCommit = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
+        const latestCommit = await getFileTag(file);
 
         const cachedNote = parseNote.noteCache[file];
         if (cachedNote && cachedNote.commit === latestCommit) return cachedNote;
@@ -120,7 +129,12 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
     localApp.get('/notes', async (req, res) => {
         try {
-            res.render('notes/notes-container', { notes: await getNotes(1) });
+            const promisedTag = getNotesRepoTag();
+            const promisedNotes = getNotes(1);
+
+            res.set('ETag', await promisedTag);
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('notes/notes-container', { notes: await promisedNotes });
         } catch (exception) {
             console.log(exception);
             res.status(500).send('An error occurred');
@@ -136,7 +150,12 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
         const filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
         try {
-            res.render('notes/note-container', { note: await parseNote(filePath) });
+            const promisedTag = getFileTag(filePath);
+            const promisedNote = parseNote(filePath);
+
+            res.set('ETag', await promisedTag);
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('notes/note-container', { note: await promisedNote });
         } catch (exception) {
             console.error(exception);
             res.status(500).send('An error occurred');
@@ -152,13 +171,11 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
         }
 
         try {
-            const promisedLatestRepoCommit = promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 | tail -1');
+            const promisedTag = getNotesRepoTag();
             const promisedNotes = getNotes(page);
 
-            const latestRepoCommit = await promisedLatestRepoCommit;
-            const etag = `"${latestRepoCommit.trim()}"`;
-            res.set('ETag', etag);
-            res.set('Cache-Control', 'public, max-age=0')
+            res.set('ETag', await promisedTag);
+            res.set('Cache-Control', 'public, max-age=0');
             res.json(await promisedNotes);
         } catch (exception) {
             console.log(exception);
