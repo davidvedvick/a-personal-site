@@ -28,7 +28,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
     async function getFileTag(file) {
-        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" log HEAD --format=%H -1 -- "${file.replace(notesConfig.path + '/', '')}" | tail -1`);
+        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" log HEAD --format=%H -1 -- "${file.replace(notesConfig.gitPath + '/', '')}" | tail -1`);
         return `"${latestRepoCommit.trim()}"`;
     }
 
