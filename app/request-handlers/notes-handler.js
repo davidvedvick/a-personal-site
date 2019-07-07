@@ -4,7 +4,6 @@ const glob = require('globby');
 const express = require('express');
 const exec = require('child_process').exec;
 const readline = require('readline');
-const { promisify } = require('util');
 
 const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
     if (err) {
