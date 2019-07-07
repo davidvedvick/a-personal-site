@@ -21,6 +21,7 @@ const { promisify } = require('util');
 const fs = require('fs');
 const debug = require('gulp-debug');
 const rename = require('gulp-rename');
+const envify = require('envify');
 
 const numberOfCpus = os.cpus().length;
 

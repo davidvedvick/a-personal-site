@@ -13,6 +13,7 @@ const os = require('os');
 const appConfig = require('./app-config.json');
 const markdownPdf = require('gulp-markdown-pdf');
 const path = require('path');
+const envify = require('envify');
 
 const npmSassAliases = {};
 /**
@@ -71,6 +72,7 @@ function buildJs() {
 		.pipe(parallel(
 			through2.obj((file, enc, next) =>
 				browserify(file.path, { extensions: '.jsx', debug: !production })
+					.transform(envify)
 					.transform('babelify', { presets: [ ['@babel/preset-env', {
 						"targets": {
 							"browsers": [
