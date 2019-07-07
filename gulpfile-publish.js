@@ -24,6 +24,8 @@ const rename = require('gulp-rename');
 
 const numberOfCpus = os.cpus().length;
 
+process.env.NODE_ENV = "production";
+
 // Register dynamic build tasks
 const appBuild = require('./app/gulpfile.js')({ production: true });
 
