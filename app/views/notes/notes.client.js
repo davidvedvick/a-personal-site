@@ -8,7 +8,7 @@ jQuery.ajax({
 	dataType: 'json',
 	cache: true,
 	success: function (data) {
-		ReactDOM.render(React.createElement(NotesList, { notes: data }), document.getElementById('notes-container'));
+		ReactDOM.hydrate(React.createElement(NotesList, { notes: data }), document.getElementById('notes-container'));
 	},
 	error: function (xhr, status, err) {
 		console.error(this.props.url, status, err.toString());

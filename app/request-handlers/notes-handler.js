@@ -4,7 +4,6 @@ const glob = require('globby');
 const express = require('express');
 const exec = require('child_process').exec;
 const readline = require('readline');
-const { promisify } = require('util');
 
 const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
     if (err) {
@@ -28,12 +27,12 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
     async function getFileTag(file) {
-        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" log HEAD --format=%H -1 -- "${file.replace(notesConfig.path + '/', '')}" | tail -1`);
+        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" rev-parse --short HEAD -- "${file.replace(notesConfig.path + '/', '')}"`);
         return `"${latestRepoCommit.trim()}"`;
     }
 
     async function getNotesRepoTag() {
-        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" log HEAD --format=%H -1 | tail -1`);
+        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" rev-parse --short HEAD`);
         return `"${latestRepoCommit.trim()}"`;
     }
 
