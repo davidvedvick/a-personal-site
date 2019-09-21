@@ -7,9 +7,19 @@ import { div, a, em, p, hh } from 'react-hyperscript-helpers';
 const Note = hh((props) => {
 	const note = props.note;
 	const routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);
+
+	const renderer = new marked.Renderer();
+	renderer.image = (href, title, text) => {
+		if (href.startsWith(./))
+			href = "/notes" + href.substring(2, href.length);
+
+		return `<image href="${href}" title="${title}" alt="${text}">`
+	}
+
 	const html = marked(note.text || '', {
 		sanitize: true,
-		highlight: (code) => highlightJs.highlightAuto(code).value
+		highlight: (code) => highlightJs.highlightAuto(code).value,
+		renderer: renderer
 	});
 
 	return div('.note', [
