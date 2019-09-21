@@ -18,7 +18,7 @@ class NotesList extends React.Component {
 			jQuery.ajax({
 				url: '/notes/' + (++this.page),
 				dataType: 'json',
-				cache: false,
+				cache: true,
 				success: (data) => {
 					if (data.length === 0) return;
 

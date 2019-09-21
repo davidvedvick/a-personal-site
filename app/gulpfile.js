@@ -1,10 +1,8 @@
 const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const browserify = require('browserify');
-const babelify = require('babelify');
-const uglify = require('gulp-uglify');
-const sass = require('gulp-sass');
-const cssnano = require('gulp-cssnano');
+const terser = require('gulp-terser');
+const cleanCss = require('gulp-clean-css');
 const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
@@ -15,61 +13,7 @@ const os = require('os');
 const appConfig = require('./app-config.json');
 const markdownPdf = require('gulp-markdown-pdf');
 const path = require('path');
-
-var production = false;
-
-var outputDir = __dirname;
-const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
-const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
-const nodeModuleDir = path.join(__dirname, '../node_modules');
-
-const numberOfCpus = os.cpus().length;
-
-// Dynamic build content
-
-gulp.task('clean-js', (cb) => { del([getOutputDir('public/js')]).then(() => cb()); });
-
-gulp.task('clean-css', function (cb) {
-	del([getOutputDir('public/css')]).then(() => { cb(); });
-});
-
-gulp.task('clean-images', (cb) => { del([getOutputDir('./public/images')]).then(() => cb()); });
-
-const clean = gulp.parallel('clean-js',	'clean-css', 'clean-images');
-
-gulp.task('client-js', () => {
-	const destDir = getOutputDir('public/js');
-
-	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
-		.pipe(parallel(
-			through2.obj((file, enc, next) =>
-				browserify(file.path, { extensions: '.jsx', debug: !production })
-					.transform(babelify, { presets: [ 'es2015', 'react' ] })
-					.bundle((err, res) => {
-						if (err) console.log(err);
-						// assumes file.contents is a Buffer
-						else file.contents = res;
-
-						next(null, file);
-					})),
-			numberOfCpus))
-		.pipe(rename({
-			dirname: '',
-			extname: '.js'
-		}));
-
-	pipe = production
-		? pipe.pipe(parallel(uglify(), numberOfCpus))
-		: pipe
-			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
-
-	return pipe.pipe(gulp.dest(destDir));
-});
-
-// copy slick carousel blobs
-gulp.task('slick-blobs', () =>
-	gulp.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`]).pipe(gulp.dest(getOutputDir('public/css'))));
+const envify = require('envify');
 
 const npmSassAliases = {};
 /**
@@ -93,27 +37,101 @@ function npmSassResolver(url, file, done) {
 	}
 }
 
+const sass = require('gulp-sass');
+const Fiber = require('fibers');
+const deSassify = () => sass(
+	{
+		importer: npmSassResolver,
+		fiber: Fiber
+	}).on('error', sass.logError);
+
+var production = false;
+
+var outputDir = __dirname;
+const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
+const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
+const nodeModuleDir = path.join(__dirname, '../node_modules');
+
+const numberOfCpus = os.cpus().length;
+
+sass.compiler = require('sass');
+
+// Dynamic build content
+
+function clean() {
+	return del([
+		getOutputDir('public/js'),
+		getOutputDir('public/css'),
+		getOutputDir('public/images')]);
+}
+
+function buildJs() {
+	const destDir = getOutputDir('public/js');
+
+	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
+		.pipe(parallel(
+			through2.obj((file, enc, next) =>
+				browserify(file.path, { extensions: '.jsx', debug: !production })
+					.transform(envify)
+					.transform('babelify', { presets: [ ['@babel/preset-env', {
+						"targets": {
+							"browsers": [
+								"last 2 versions"
+							]
+						}
+					}], '@babel/preset-react' ] })
+					.bundle((err, res) => {
+						if (err) console.log(err);
+						// assumes file.contents is a Buffer
+						else file.contents = res;
+
+						next(null, file);
+					})),
+			numberOfCpus))
+		.pipe(rename({
+			dirname: '',
+			extname: '.js'
+		}));
+
+	pipe = production
+		? pipe.pipe(parallel(terser(), numberOfCpus))
+		: pipe
+			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
+
+	return pipe.pipe(gulp.dest(destDir));
+};
+
+// copy slick carousel blobs
+function collectSlickBlobs() {
+	return gulp
+		.src([`${nodeModuleDir}/slick-carousel/slick/**/*.{woff,tff,gif,jpg,png}`])
+		.pipe(gulp.dest(getOutputDir('public/css')));
+}
+
 // Bundle SASS
-gulp.task('sass',
-	() =>
-		gulp.src(getInputDir('views/layout.scss'))
-			.pipe(sass({ importer: npmSassResolver }).on('error', sass.logError))
-			.pipe(cssnano())
-			.pipe(gulp.dest(getOutputDir('public/css'))));
+function transformSass() {
+	return gulp.src(getInputDir('views/layout.scss'))
+			.pipe(deSassify())
+			.pipe(cleanCss())
+			.pipe(gulp.dest(getOutputDir('public/css')));
+}
 
-const buildCss = gulp.series('slick-blobs', 'sass');
+const buildCss = gulp.parallel(collectSlickBlobs, transformSass);
 
-gulp.task('images', () => gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs'))));
+function buildPublicImages() {
+	return gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs')));
+}
 
-gulp.task('profile-image',
-	() =>
-		gulp
-			.src(appConfig.bio.authorPicture)
-			.pipe(imageResize({ width: 500 }))
-			.pipe(rename('profile-picture.jpg'))
-			.pipe(gulp.dest(getOutputDir('public/imgs'))));
+function buildProfileImage() {
+	return gulp
+		.src(appConfig.bio.authorPicture)
+		.pipe(imageResize({ width: 500 }))
+		.pipe(rename('profile-picture.jpg'))
+		.pipe(gulp.dest(getOutputDir('public/imgs')));
+}
 
-gulp.task('project-images', () => {
+function buildProjectImages() {
 	const destDir = getOutputDir('public/imgs/projects');
 	return gulp.src(getInputDir('content/projects/**/imgs/*'))
 			.pipe(changed(destDir))
@@ -122,39 +140,48 @@ gulp.task('project-images', () => {
 				os.cpus().length
 			))
 			.pipe(gulp.dest(destDir));
-});
+}
 
-const buildImages = gulp.parallel('images', 'profile-image', 'project-images'); 
+buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
-gulp.task('build-resume-pdf', [ 'sass' ],
-	() =>
-		gulp
-			.src(appConfig.resumeLocation)
-			.pipe(markdownPdf({
-				remarkable: { html: true, breaks: false },
-				cssPath: getOutputDir('public/css/layout.css'),
-				paperFormat: 'Letter'
-			}))
-			.pipe(rename({
-				extname: '.pdf'
-			}))
-			.pipe(gulp.dest(getOutputDir('public'))));
+function buildResumePdf() {
+	return gulp
+		.src(appConfig.resumeLocation)
+		.pipe(markdownPdf({
+			remarkable: { html: true, breaks: false },
+			//cssPath: getOutputDir('public/css/layout.css'),
+			paperFormat: 'Letter'
+		}))
+		.pipe(rename({
+			extname: '.pdf'
+		}))
+		.pipe(gulp.dest(getOutputDir('public')));
+}
 
-gulp.series(
+const buildSite = gulp.series(
 	clean,
-	'client-js')
+	gulp.parallel(
+		buildJs,
+		gulp.series(buildCss, buildResumePdf),
+		buildImages));
 
-gulp.task('build', ['images', 'project-images', 'profile-image', 'sass', 'client-js', 'slick-blobs', 'build-resume-pdf']);
+// gulp.task('watch', ['build'], () => {
+// 	gulp.watch('./views/**/*.scss', ['sass']);
+// 	gulp.watch('./imgs/**/*', ['images']);
+// 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
+// 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
+// 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
+// });
 
-gulp.task('watch', ['build'], () => {
-	gulp.watch('./views/**/*.scss', ['sass']);
-	gulp.watch('./imgs/**/*', ['images']);
-	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
-	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
-	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
-});
-
-module.exports = (options) => {
+module.exports = function(options) {
 	production = options.production || production;
 	outputDir = options.outputDir || outputDir;
+
+	return {
+		build: buildSite,
+		buildImages: gulp.series(clean, buildImages),
+		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
+	};
 };
+
+module.exports.default = buildSite;

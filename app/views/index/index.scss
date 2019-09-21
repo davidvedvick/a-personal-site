@@ -1,5 +1,5 @@
 div.bio {
-	@extend div.content;
+	@extend div, .content;
 
 	max-width: 1600px;
 	margin-left: auto;

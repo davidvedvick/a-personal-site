@@ -5,144 +5,143 @@ const express = require('express');
 const exec = require('child_process').exec;
 const readline = require('readline');
 
+const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
+    if (err) {
+        reject(err);
+    }
+
+    if (stderr) {
+        reject(stderr);
+    }
+
+    resolve(out);
+}));
+
 module.exports = (localApp, notesConfig, environmentOpts) => {
     environmentOpts = environmentOpts || {};
     notesConfig.path = notesConfig.path || 'content/notes';
 
     const newLine = '\n';
+    const propMatch = /(^[a-zA-Z_]*)\:(.*)/;
 
     localApp.use('/notes/content', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
 
-    const parseNote = (file) => {
-        parseNote.propMatch = parseNote.propMatch || /(^[a-zA-Z_]*)\:(.*)/;
+    async function getFileTag(file) {
+        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" rev-parse --short HEAD -- "${file.replace(notesConfig.path + '/', '')}"`);
+        return `"${latestRepoCommit.trim()}"`;
+    }
 
+    async function getNotesRepoTag() {
+        const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" rev-parse --short HEAD`);
+        return `"${latestRepoCommit.trim()}"`;
+    }
+
+    async function parseNote(file) {
         parseNote.noteCache = parseNote.noteCache || {};
 
-        return new Promise((resolve, reject) => {
-            const fileName = path.basename(file, '.md');
+        const cacheNote = (note) => parseNote.noteCache[file] = note;
 
-            const cacheAndResolveNote = (note) => {
-                parseNote.noteCache[file] = note;
-                resolve(note);
-            };
+        const fileName = path.basename(file, '.md');
 
-            exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%H -1 -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                (error, latestCommit, stderr) => {
-                    if (error !== null) {
-                        reject(error);
-                        return;
-                    }
+        const latestCommit = await getFileTag(file);
 
-                    const cachedNote = parseNote.noteCache[file];
-                    if (cachedNote && cachedNote.commit === latestCommit) {
-                        resolve(cachedNote);
-                        return;
-                    }
+        const cachedNote = parseNote.noteCache[file];
+        if (cachedNote && cachedNote.commit === latestCommit) return cachedNote;
 
-                    const newNote = {
-                        created: null,
-                        pathYear: fileName.substring(0, 4),
-                        pathMonth: fileName.substring(4, 6),
-                        pathDay: fileName.substring(6, 8),
-                        pathTitle: fileName.substring(9),
-                        hash: fileName,
-                        text: null,
-                        commit: latestCommit
-                    };
+        const newNote = {
+            created: null,
+            pathYear: fileName.substring(0, 4),
+            pathMonth: fileName.substring(4, 6),
+            pathDay: fileName.substring(6, 8),
+            pathTitle: fileName.substring(9),
+            hash: fileName,
+            text: null,
+            commit: latestCommit
+        };
 
-                    const lineReader = readline.createInterface({ input: fs.createReadStream(file) });
-                    lineReader.on('line', (line) => {
-                        // `newNote.text` is not null, so we are now able to add text
-                        if (newNote.text != null) {
-                            newNote.text += line + newLine;
-                            return;
-                        }
+        const lineReader = readline.createInterface({ input: fs.createReadStream(file) });
+        lineReader.on('line', (line) => {
+            // `newNote.text` is not null, so we are now able to add text
+            if (newNote.text != null) {
+                newNote.text += line + newLine;
+                return;
+            }
 
-                        if (line.trim() === '---') {
-                            // Begin adding the text
-                            newNote.text = '';
-                            return;
-                        }
+            if (line.trim() === '---') {
+                // Begin adding the text
+                newNote.text = '';
+                return;
+            }
 
-                        const matches = parseNote.propMatch.exec(line);
-                        if (!matches) return;
+            const matches = propMatch.exec(line);
+            if (!matches) return;
 
-                        const propName = matches[1];
-                        const value = matches[2].trim();
+            const propName = matches[1];
+            const value = matches[2].trim();
 
-                        switch (propName) {
-                            case 'created_gmt':
-                                newNote.created = new Date(value);
-                                return;
-                            case 'title':
-                                newNote.title = value;
-                                return;
-                        }
-                    });
-
-                    lineReader.on('close', () => {
-                        if (newNote.created !== null) {
-                            cacheAndResolveNote(newNote);
-                            return;
-                        }
-
-                        if (!notesConfig.gitPath) {
-                            newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
-                            cacheAndResolveNote(newNote);
-                            return;
-                        }
-
-                        exec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1',
-                            (error, stdout, stderr) => {
-                                if (error !== null) {
-                                    reject(error);
-                                    return;
-                                }
-
-                                newNote.created = new Date(stdout);
-                                cacheAndResolveNote(newNote);
-                            }
-                        );
-                    });
-                }
-            );
+            switch (propName) {
+                case 'created_gmt':
+                    newNote.created = new Date(value);
+                    return;
+                case 'title':
+                    newNote.title = value;
+                    return;
+            }
         });
-    };
 
-    const getNotes = (page) => {
+        await new Promise((resolve) => lineReader.on('close', resolve));
+
+        if (newNote.created !== null) return cacheNote(newNote);
+
+        if (!notesConfig.gitPath) {
+            newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
+            return cacheNote(newNote);
+        }
+
+        const outputDate = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
+
+        newNote.created = new Date(outputDate);
+
+        return cacheNote(newNote);
+    }
+
+    async function getNotes(page) {
         const pageSize = 10;
 
-        return glob(path.join(notesConfig.path, '*.md')).then((files) => {
-            const startIndex = (page - 1) * pageSize;
+        const files = await glob(path.join(notesConfig.path, '*.md'));
 
-            // really hacky way to pull files back for now
-            const filesToRead = files
-                                .sort()
-                                .reverse()
-                                .slice(startIndex, startIndex + pageSize);
+        const startIndex = (page - 1) * pageSize;
 
-            return Promise.all(filesToRead.map((f) => parseNote(f)))
-                .then((parsedNotes) =>
-                    parsedNotes
-                        .sort((a, b) =>
-                            isFinite(a.created) && isFinite(b.created) ?
-                                (a.created > b.created) - (a.created < b.created) :
-                                NaN)
-                        .reverse());
-        });
-    };
+        // really hacky way to pull files back for now
+        const filesToRead = files
+                            .sort()
+                            .reverse()
+                            .slice(startIndex, startIndex + pageSize);
 
-    localApp.get('/notes', (req, res) => {
-        getNotes(1).then((notes) => {
-            try {
-                res.render('notes/notes-container', { notes: notes });
-            } catch (exception) {
-                console.log(exception);
-            }
-        }).catch(console.error);
+        const parsedNotes = await Promise.all(filesToRead.map((f) => parseNote(f)));
+        return parsedNotes
+            .sort((a, b) =>
+                isFinite(a.created) && isFinite(b.created) ?
+                    (a.created > b.created) - (a.created < b.created) :
+                    NaN)
+            .reverse();
+    }
+
+    localApp.get('/notes', async (req, res) => {
+        try {
+            const promisedTag = getNotesRepoTag();
+            const promisedNotes = getNotes(1);
+
+            res.set('ETag', await promisedTag);
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('notes/notes-container', { notes: await promisedNotes });
+        } catch (exception) {
+            console.log(exception);
+            res.status(500).send('An error occurred');
+        }
     });
 
-    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, (req, res) => {
+    localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/(.*)/, async (req, res) => {
         const year = req.params[0];
         const month = req.params[1];
         const day = req.params[2];
@@ -150,16 +149,20 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
 
         const filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
-        parseNote(filePath).then((note) => {
-            try {
-                res.render('notes/note-container', { note: note });
-            } catch (exception) {
-                console.error(exception);
-            }
-        }).catch(console.error);
+        try {
+            const promisedTag = getFileTag(filePath);
+            const promisedNote = parseNote(filePath);
+
+            res.set('ETag', await promisedTag);
+            res.set('Cache-Control', 'public, max-age=0');
+            res.render('notes/note-container', { note: await promisedNote });
+        } catch (exception) {
+            console.error(exception);
+            res.status(500).send('An error occurred');
+        }
     });
 
-    localApp.get(/^\/notes\/([0-9]*)/, (req, res) => {
+    localApp.get(/^\/notes\/([0-9]*)/, async (req, res) => {
         const page = req.params[0];
 
         if (!page) {
@@ -167,12 +170,16 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
             return;
         }
 
-        getNotes(page).then((notes) => {
-            try {
-                res.json(notes);
-            } catch (exception) {
-                console.error(exception);
-            }
-        }).catch(console.error);
+        try {
+            const promisedTag = getNotesRepoTag();
+            const promisedNotes = getNotes(page);
+
+            res.set('ETag', await promisedTag);
+            res.set('Cache-Control', 'public, max-age=0');
+            res.json(await promisedNotes);
+        } catch (exception) {
+            console.log(exception);
+            res.status(500).send('An error occurred');
+        }
     });
 };
