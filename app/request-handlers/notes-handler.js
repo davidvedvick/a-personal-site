@@ -20,12 +20,12 @@ const promiseExec = (command) => new Promise((resolve, reject) => exec(command, 
 module.exports = (localApp, notesConfig, environmentOpts) => {
     environmentOpts = environmentOpts || {};
     notesConfig.path = notesConfig.path || 'content/notes';
-    notesConfig.content = notesConfig.content || notesConfig.path;
+    notesConfig.gitPath = notesConfig.gitPath || notesConfig.path;
 
     const newLine = '\n';
     const propMatch = /(^[a-zA-Z_]*)\:(.*)/;
 
-    localApp.use('/notes', express.static(notesConfig.content, { maxAge: environmentOpts.maxAge || 0 }));
+    localApp.use('/notes', express.static(notesConfig.path, { maxAge: environmentOpts.maxAge || 0 }));
 
     async function getFileTag(file) {
         const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" rev-parse --short HEAD -- "${file.replace(notesConfig.path + '/', '')}"`);
