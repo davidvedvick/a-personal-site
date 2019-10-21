@@ -19,7 +19,7 @@ const Note = hh((props) => {
 			returnTag += ` title="${title}"`;
 
 		if (text)
-			returnTag += `  alt="${text}"`;
+			returnTag += ` alt="${text}"`;
 		
 		returnTag += '>';
 
@@ -27,7 +27,6 @@ const Note = hh((props) => {
 	}
 
 	const html = marked(note.text || '', {
-		sanitize: true,
 		highlight: (code) => highlightJs.highlightAuto(code).value,
 		renderer: renderer
 	});
