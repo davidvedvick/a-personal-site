@@ -10,7 +10,7 @@ const Note = hh((props) => {
 
 	const renderer = new marked.Renderer();
 	renderer.image = (href, title, text) => {
-		if (href.startsWith(./))
+		if (href.startsWith('./'))
 			href = "/notes" + href.substring(2, href.length);
 
 		return `<image href="${href}" title="${title}" alt="${text}">`
