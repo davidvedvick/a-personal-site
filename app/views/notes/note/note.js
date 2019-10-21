@@ -11,9 +11,19 @@ const Note = hh((props) => {
 	const renderer = new marked.Renderer();
 	renderer.image = (href, title, text) => {
 		if (href.startsWith('./'))
-			href = "/notes" + href.substring(2, href.length);
+			href = '/notes/' + href.replace(/^\.\/+/, '');
 
-		return `<image href="${href}" title="${title}" alt="${text}">`
+		let returnTag = `<image src="${href}"`;
+		
+		if (title)
+			returnTag += ` title="${title}"`;
+
+		if (text)
+			returnTag += `  alt="${text}"`;
+		
+		returnTag += '>';
+
+		return returnTag;
 	}
 
 	const html = marked(note.text || '', {
