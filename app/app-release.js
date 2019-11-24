@@ -1,18 +1,20 @@
-var path = require('path');
-var express = require('express');
-var notesHandler = require('./request-handlers/notes-handler');
-var appConfig = require('./app-config.json');
-var compression = require('compression');
+const path = require('path');
+const express = require('express');
+const notesHandler = require('./request-handlers/notes-handler');
+const appConfig = require('./app-config.json');
+const compression = require('compression');
+const http = require('http');
+const https = require('https');
 
-var environmentOpts = {
+const environmentOpts = {
     maxAge: 86400 * 1000
 };
 
-var app = express();
+const app = express();
 app.set('env', 'production');
 
-var publicDir = path.join(__dirname, 'public');
-var maxAge = environmentOpts.maxAge;
+const publicDir = path.join(__dirname, 'public');
+const maxAge = environmentOpts.maxAge;
 
 app.use(compression());
 app.use('/', express.static(publicDir, { maxAge: maxAge }));
@@ -24,7 +26,7 @@ app.set('view engine', 'js');
 
 app.engine('js', require('express-react-views').createEngine({ transformViews: false }));
 
-var staticHtmlDir = path.join(publicDir, 'html');
+const staticHtmlDir = path.join(publicDir, 'html');
 
 app.get('/', function (req, res) {
     res.sendFile(path.join(staticHtmlDir, 'index.html'), { maxAge: maxAge });
@@ -40,6 +42,14 @@ app.get('/resume', function (req, res) {
 
 notesHandler(app, appConfig.notes, environmentOpts.maxAge);
 
-app.listen(3000);
+http.createServer(app).listen(3000);
 
 console.log('Server started: http://localhost:3000/');
+
+if (appConfig.ssl) {
+    const fs = require('fs');
+    const privateKey = fs.readFileSync(appConfig.ssl.privateKey);
+    const certificate = fs.readFileSync(appConfig.ssl.certificate);
+    https.createServer({ key: privateKey, cert: certificate }, app).listen(3433);
+    console.log('Server started: http://localhost:3433/');
+}
