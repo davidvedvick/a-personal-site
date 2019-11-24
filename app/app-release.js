@@ -19,6 +19,8 @@ const maxAge = environmentOpts.maxAge;
 app.use(compression());
 app.use('/', express.static(publicDir, { maxAge: maxAge }));
 
+if (appConfig.wellKnown) app.use('/.well-known', express.static(appConfig.wellKnown));
+
 // app.use(favIcon());
 // app.use(express.logger('dev'));
 
@@ -28,15 +30,15 @@ app.engine('js', require('express-react-views').createEngine({ transformViews: f
 
 const staticHtmlDir = path.join(publicDir, 'html');
 
-app.get('/', function (req, res) {
+app.get('/', (req, res) => {
     res.sendFile(path.join(staticHtmlDir, 'index.html'), { maxAge: maxAge });
 });
 
-app.get('/projects', function (req, res) {
+app.get('/projects', (req, res) => {
     res.sendFile(path.join(staticHtmlDir, 'project-list.html'), { maxAge: maxAge });
 });
 
-app.get('/resume', function (req, res) {
+app.get('/resume', (req, res) => {
 	res.sendFile(path.join(staticHtmlDir, 'resume.html'), { maxAge: maxAge });
 });
 
