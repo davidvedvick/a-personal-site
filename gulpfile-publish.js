@@ -109,6 +109,7 @@ const copyNodeProjectData = () => gulp.src(['./package.json', './app/start-serve
 const buildStatic = gulp.series(
 	cleanBuild,
 	gulp.parallel(
+		appBuild.copyPublicFonts,
 		gulp.series(
 			appBuild.build,
 			copyDynamicBuild),

@@ -123,6 +123,10 @@ function buildPublicImages() {
 	return gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs')));
 }
 
+function copyPublicFonts() {
+	return gulp.src(getInputDir('fonts/*')).pipe(gulp.dest(getOutputDir('public/fonts')));
+}
+
 function buildProfileImage() {
 	return gulp
 		.src(appConfig.bio.authorPicture)
@@ -163,7 +167,8 @@ const buildSite = gulp.series(
 	gulp.parallel(
 		buildJs,
 		gulp.series(buildCss, buildResumePdf),
-		buildImages));
+		buildImages,
+		copyPublicFonts));
 
 // gulp.task('watch', ['build'], () => {
 // 	gulp.watch('./views/**/*.scss', ['sass']);
@@ -180,6 +185,7 @@ module.exports = function(options) {
 	return {
 		build: buildSite,
 		buildImages: gulp.series(clean, buildImages),
+		copyPublicFonts: copyPublicFonts,
 		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
 	};
 };
