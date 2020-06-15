@@ -94,7 +94,7 @@ function buildJs() {
 		}));
 
 	pipe = production
-		? pipe.pipe(parallel(terser(), numberOfCpus))
+		? pipe.pipe(parallel(terser({ compress: { passes: 2, unsafe: true } }), numberOfCpus))
 		: pipe
 			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
 			.pipe(sourcemaps.write(getOutputDir())); // writes .map file

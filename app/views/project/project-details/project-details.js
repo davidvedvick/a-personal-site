@@ -8,12 +8,16 @@ const Title = props => h2('.title', props.title);
 const Description = props => h3('.description', props.description);
 
 const ProjectDetails = props => {
-	const baseImgPath = path.join('/', 'imgs', 'projects', props.project.name, 'imgs');
+	const image = props.project.image;
+
+	console.log(image);
+
+	const url = image ? image.url.replace("content", "imgs") : null;
 
 	const headerBackgroundStyle = {
 		backgroundImage: [
 			'url(\'/imgs/transparent-bg-pixel.png\')',
-			'url(\'' + path.join(baseImgPath, props.project.headlineImage.path || '') + '\')'
+			'url(\'' + (url || '') + '\')'
 		],
 		backgroundRepeat: [
 			'repeat',
@@ -22,14 +26,13 @@ const ProjectDetails = props => {
 	};
 
 	return div('.project', { style: headerBackgroundStyle }, [
-		Title({ title: props.project.prettyName || props.project.name }),
-		Description({ description: props.project.description }),
+		Title({ title: props.project.headline }),
+		Description({ description: props.project.summary }),
 		div('.project-details-container', [
-			Features({ features: props.project.features }),
+			Features({ features: props.project.body })/*,
 			ScreenshotList({
-				images: props.project.images,
-				base: baseImgPath
-			})
+				images: props.project.examples
+			})*/
 		])
 	]);
 };

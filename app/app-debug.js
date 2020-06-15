@@ -1,18 +1,19 @@
-var fs = require('fs');
-var path = require('path');
-var express = require('express');
-var bodyParser = require('body-parser');
-var favIcon = require('serve-favicon');
-var methodOverride = require('method-override');
+const fs = require('fs');
+const path = require('path');
+const express = require('express');
+const bodyParser = require('body-parser');
+const favIcon = require('serve-favicon');
+const methodOverride = require('method-override');
 const { promisify } = require('util');
-var notesHandler = require('./request-handlers/notes-handler');
-var appConfig = require('./app-config.json');
+const notesHandler = require('./request-handlers/notes-handler');
+const appConfig = require('./app-config.json');
+const portfolio = require('codefolio');
 
-var environmentOpts = {
+const environmentOpts = {
     maxAge: 0
 };
 
-var app = express();
+const app = express();
 app.use('/', express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
@@ -42,21 +43,32 @@ app.get('/', async (req, res) => {
 
 app.get('/projects', async (req, res) => {
   try {
-    const rawProjectData = await promiseReadFile(
-      path.join(appConfig.projectsLocation, 'projects.json'));
+    const rawProjectData = await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json'));
 
     const projects = await Promise.all(JSON.parse(rawProjectData).map(async project => {
-      const filePath = path.join(
-        appConfig.projectsLocation,
-        project.name,
-        'features.md');
+      const filePath = path.join(appConfig.projectsLocation, project.name);
 
-      project.features = await promisify(fs.readFile)(filePath, 'utf8');
+      console.log(project.headlineImage);
 
-      return project;
+      let logo = null;
+      if (project.headlineImage) {
+        logo = {
+          url: path.join('imgs', project.headlineImage.path),
+          alt: project.headlineImage.description,
+          title: project.headlineImage.description
+        }; 
+      }
+
+      return {
+        location: filePath,
+        bodyCopy: 'features.md',
+        logo: logo
+      };
     }));
 
-    res.render('project/project-list', { projects: projects });
+    const portfolios = await portfolio.promisePortfolios(projects);
+
+    res.render('project/project-list', { projects: portfolios });
   } catch (exception) {
     console.error(exception);
   }
