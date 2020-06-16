@@ -12,7 +12,7 @@ const ProjectDetails = props => {
 
 	console.log(image);
 
-	const url = image ? image.url.replace("content", "imgs") : null;
+	const url = image ? image.url : null;
 
 	const headerBackgroundStyle = {
 		backgroundImage: [

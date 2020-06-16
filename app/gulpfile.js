@@ -136,7 +136,7 @@ function buildProfileImage() {
 }
 
 function buildProjectImages() {
-	const destDir = getOutputDir('public/imgs/projects');
+	const destDir = getOutputDir('public/content/projects');
 	return gulp.src(getInputDir('content/projects/**/imgs/*'))
 			.pipe(changed(destDir))
 			.pipe(parallel(
