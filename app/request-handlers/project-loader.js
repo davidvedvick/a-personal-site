@@ -6,8 +6,6 @@ module.exports = (projectLocation) => async (projectData) => {
     const projects = await Promise.all(JSON.parse(projectData).map(async project => {
         const filePath = path.join(projectLocation, project.name);
   
-        console.log(project.headlineImage);
-  
         const examples = project.images.map(i => {
           return {
             url: path.join('imgs', i.path),

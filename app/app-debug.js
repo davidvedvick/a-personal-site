@@ -1,10 +1,9 @@
-const fs = require('fs');
+const fs = require('fs').promises;
 const path = require('path');
 const express = require('express');
 const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
-const { promisify } = require('util');
 const notesHandler = require('./request-handlers/notes-handler');
 const appConfig = require('./app-config.json');
 const projectLoader = require('./request-handlers/project-loader')(appConfig.projectsLocation);
@@ -30,11 +29,9 @@ app.engine('js', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath);
-
 app.get('/', async (req, res) => {
   try {
-    const bioMarkdown = await promiseReadFile(appConfig.bio.path);
+    const bioMarkdown = await fs.readFile(appConfig.bio.path);
     res.render('index/index', { bio: bioMarkdown });
   } catch (exception) {
     console.error(exception);
@@ -43,7 +40,7 @@ app.get('/', async (req, res) => {
 
 app.get('/projects', async (req, res) => {
   try {
-    const rawProjectData = await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json'));
+    const rawProjectData = await fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'));
 
     portfolios = await projectLoader(rawProjectData);
 
@@ -55,7 +52,7 @@ app.get('/projects', async (req, res) => {
 
 app.get('/resume', async (req, res) => {
   try {
-    const resumeMarkdown = await promiseReadFile(appConfig.resumeLocation);
+    const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
     res.render('resume/resume', { resume: resumeMarkdown });
   } catch (exception) {
     console.log(exception);

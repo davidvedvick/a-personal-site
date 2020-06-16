@@ -9,8 +9,6 @@ const Description = props => h3('.description', props.description);
 const ProjectDetails = props => {
 	const image = props.project.image;
 
-	console.log(image);
-
 	const url = image ? image.url : null;
 
 	const headerBackgroundStyle = {
