@@ -7,7 +7,7 @@ const methodOverride = require('method-override');
 const { promisify } = require('util');
 const notesHandler = require('./request-handlers/notes-handler');
 const appConfig = require('./app-config.json');
-const portfolio = require('codefolio');
+const projectLoader = require('./request-handlers/project-loader')(appConfig.projectsLocation);
 
 const environmentOpts = {
     maxAge: 0
@@ -45,28 +45,7 @@ app.get('/projects', async (req, res) => {
   try {
     const rawProjectData = await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json'));
 
-    const projects = await Promise.all(JSON.parse(rawProjectData).map(async project => {
-      const filePath = path.join(appConfig.projectsLocation, project.name);
-
-      console.log(project.headlineImage);
-
-      let logo = null;
-      if (project.headlineImage) {
-        logo = {
-          url: path.join('imgs', project.headlineImage.path),
-          alt: project.headlineImage.description,
-          title: project.headlineImage.description
-        }; 
-      }
-
-      return {
-        location: filePath,
-        bodyCopy: 'features.md',
-        logo: logo
-      };
-    }));
-
-    const portfolios = await portfolio.promisePortfolios(projects);
+    portfolios = await projectLoader(rawProjectData);
 
     res.render('project/project-list', { projects: portfolios });
   } catch (exception) {
