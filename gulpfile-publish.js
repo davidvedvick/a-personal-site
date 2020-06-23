@@ -170,8 +170,7 @@ const updateServerPackages = () =>
 		'npm update --production',
 		'npm prune --production',
 		'npm dedupe',
-		'rm -rf /home/tmp/npm*',
-		'npm cache clean'
+		'rm -rf /home/tmp/npm*'
 	]);
 
 const deploy = gulp.series(buildStatic, publish, updateServerPackages);

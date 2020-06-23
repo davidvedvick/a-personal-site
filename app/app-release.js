@@ -17,6 +17,7 @@ const maxAge = environmentOpts.maxAge;
 
 app.use(compression());
 app.use('/', express.static(publicDir, { maxAge: maxAge }));
+app.use('/app', express.static(publicDir, { maxAge: maxAge }));
 
 if (appConfig.wellKnownLocation) app.use('/.well-known', express.static(appConfig.wellKnownLocation));
 
