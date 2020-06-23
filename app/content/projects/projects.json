@@ -59,33 +59,5 @@
 				"description": "Progress bar thumbnail"
 			}
 		]
-	},
-	{
-		"name": "deliciouspc",
-		"description": "Design your own PC website",
-		"headlineImage":
-		{
-			"path": "deliciousPCLogoNew.png",
-			"description": "deliciouspc logo"
-		},
-		"images":
-		[
-			{
-				"path": "homepage.jpg",
-				"description": "deliciouspc homepage"
-			},
-			{
-				"path": "needs.jpg",
-				"description": "Select your needs"
-			},
-			{
-				"path": "budget.jpg",
-				"description": "Give your budget quote"
-			},
-			{
-				"path": "email.png",
-				"description": "Send us your e-mail to get an update on when a build is ready!"
-			}
-		]
 	}
 ]

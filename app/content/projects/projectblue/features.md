@@ -1,3 +1,5 @@
+# project blue
+
 - Reliable streaming from your home server running JRiver Media Center
 - Caching of audio files during playback
 - Synchronize audio from JRMC server to device

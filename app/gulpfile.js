@@ -94,7 +94,7 @@ function buildJs() {
 		}));
 
 	pipe = production
-		? pipe.pipe(parallel(terser(), numberOfCpus))
+		? pipe.pipe(parallel(terser({ compress: { passes: 2, unsafe: true } }), numberOfCpus))
 		: pipe
 			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
 			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
@@ -136,7 +136,7 @@ function buildProfileImage() {
 }
 
 function buildProjectImages() {
-	const destDir = getOutputDir('public/imgs/projects');
+	const destDir = getOutputDir('public/content/projects');
 	return gulp.src(getInputDir('content/projects/**/imgs/*'))
 			.pipe(changed(destDir))
 			.pipe(parallel(

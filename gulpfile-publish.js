@@ -19,9 +19,7 @@ const gulpBabel = require('gulp-babel');
 const del = require('del');
 const { promisify } = require('util');
 const fs = require('fs');
-const debug = require('gulp-debug');
-const rename = require('gulp-rename');
-const envify = require('envify');
+const projectLoader = require('./app/request-handlers/project-loader')(appConfig.projectsLocation);
 
 const numberOfCpus = os.cpus().length;
 
@@ -89,17 +87,13 @@ async function buildStaticIndex() {
 }
 
 async function buildStaticProjects() {
-	let projects = JSON.parse(await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json')));
+	const projects = await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json'));
 
-	projects = await Promise.all(projects.map(async project => {
-		const filePath = path.join(appConfig.projectsLocation, project.name, 'features.md');
-		project.features = await promiseReadFile(filePath);
-		return project;
-	}));
+	const portfolios = await projectLoader(projects);
 
 	await promiseStream(gulp
 		.src('./build/views/project/project-list.js')
-		.pipe(jsxToHtml({projects: projects}))
+		.pipe(jsxToHtml({projects: portfolios}))
 		.pipe(htmlmin())
 		.pipe(gulp.dest('./build/public/html')));
 }
