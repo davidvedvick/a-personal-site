@@ -73,13 +73,21 @@ function buildJs() {
 			through2.obj((file, enc, next) =>
 				browserify(file.path, { extensions: '.jsx', debug: !production })
 					.transform(envify)
-					.transform('babelify', { presets: [ ['@babel/preset-env', {
-						"targets": {
-							"browsers": [
-								"last 2 versions"
-							]
-						}
-					}], '@babel/preset-react' ] })
+					.transform('babelify', {
+						presets: [ 
+							[
+								'@babel/preset-env', {
+									"targets": {
+										"browsers": [
+											"last 2 versions"
+										]
+									}
+								}
+							],
+							'@babel/preset-react',
+						],
+						plugins: [ '@babel/transform-runtime' ]
+					})
 					.bundle((err, res) => {
 						if (err) console.log(err);
 						// assumes file.contents is a Buffer
