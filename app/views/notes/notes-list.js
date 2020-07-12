@@ -15,21 +15,15 @@ class NotesList extends React.Component {
 
 			jQuery(window).off('scroll', loadMoreNotesIfNecessary);
 
-			jQuery.ajax({
-				url: '/notes/' + (++this.page),
-				dataType: 'json',
-				cache: true,
-				success: (data) => {
+			fetch(`/notes/${++this.page}`)
+				.then(results => results.json())
+				.then(data => {
 					if (data.length === 0) return;
 
 					this.setState({notes: this.state.notes.concat(data)});
-					jQuery(window).on('scroll', loadMoreNotesIfNecessary);
-				},
-				error: (xhr, status, err) => {
-					console.error(err.toString());
-					jQuery(window).on('scroll', loadMoreNotesIfNecessary);
-				}
-			});
+				})
+				.catch(err => console.error(err.toString()))
+				.finally(() => jQuery(window).on('scroll', loadMoreNotesIfNecessary));
 		};
 
 		this.loadMoreNotesIfNecessary = loadMoreNotesIfNecessary;
