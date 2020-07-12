@@ -10,20 +10,21 @@ class NotesList extends React.Component {
 		this.page = 1;
 		this.state = { notes: this.props.notes || [] };
 
-		const loadMoreNotesIfNecessary = () => {
+		const loadMoreNotesIfNecessary = async () => {
 			if (jQuery(window).scrollTop() < jQuery('div.note:nth-last-child(5)').offset().top) return;
 
 			jQuery(window).off('scroll', loadMoreNotesIfNecessary);
 
-			fetch(`/notes/${++this.page}`)
-				.then(results => results.json())
-				.then(data => {
-					if (data.length === 0) return;
-
+			try {
+				const response = await fetch(`/notes/${++this.page}`);
+				const data = await response.json();
+				if (data.length > 0)
 					this.setState({notes: this.state.notes.concat(data)});
-				})
-				.catch(err => console.error(err.toString()))
-				.finally(() => jQuery(window).on('scroll', loadMoreNotesIfNecessary));
+			} catch (err) {
+				console.error(`There was an error getting the notes: ${err}.`)
+			} finally {
+				jQuery(window).on('scroll', loadMoreNotesIfNecessary)
+			}
 		};
 
 		this.loadMoreNotesIfNecessary = loadMoreNotesIfNecessary;
