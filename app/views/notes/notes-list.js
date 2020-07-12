@@ -1,6 +1,5 @@
 import React from 'react';
 import Note from './note/note';
-import jQuery from 'jquery';
 import { div, hh } from 'react-hyperscript-helpers';
 
 class NotesList extends React.Component {
@@ -10,10 +9,18 @@ class NotesList extends React.Component {
 		this.page = 1;
 		this.state = { notes: this.props.notes || [] };
 
-		const loadMoreNotesIfNecessary = async () => {
-			if (jQuery(window).scrollTop() < jQuery('div.note:nth-last-child(5)').offset().top) return;
+		const loadingThreshold = () => {
+			const fifthLastNote = document.querySelector('div.note:nth-last-child(5)');
+			if (!fifthLastNote) return -1;
+			
+			const rect = fifthLastNote.getBoundingClientRect();
+			return rect.top + window.scrollY;
+		}
 
-			jQuery(window).off('scroll', loadMoreNotesIfNecessary);
+		const loadMoreNotesIfNecessary = async () => {
+			if (window.scrollY < loadingThreshold()) return;
+
+			window.removeEventListener('scroll', loadMoreNotesIfNecessary);
 
 			try {
 				const response = await fetch(`/notes/${++this.page}`);
@@ -23,7 +30,7 @@ class NotesList extends React.Component {
 			} catch (err) {
 				console.error(`There was an error getting the notes: ${err}.`)
 			} finally {
-				jQuery(window).on('scroll', loadMoreNotesIfNecessary)
+				window.addEventListener('scroll', loadMoreNotesIfNecessary)
 			}
 		};
 
@@ -31,12 +38,8 @@ class NotesList extends React.Component {
 	}
 
 	componentDidMount () {
-		(($) => {
-			$(() => {
-				$(window).on('scroll', this.loadMoreNotesIfNecessary);
-				this.loadMoreNotesIfNecessary();
-			});
-		})(jQuery);
+		window.addEventListener('scroll', this.loadMoreNotesIfNecessary);
+		this.loadMoreNotesIfNecessary();
 	}
 
 	render () {
