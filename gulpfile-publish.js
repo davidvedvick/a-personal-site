@@ -170,7 +170,8 @@ const updateServerPackages = () =>
 		'npm update --production',
 		'npm prune --production',
 		'npm dedupe',
-		'rm -rf /home/tmp/npm*'
+		'rm -rf /home/tmp/npm*',
+		'nfsn signal-daemon Node hup'
 	]);
 
 const deploy = gulp.series(buildStatic, publish, updateServerPackages);
