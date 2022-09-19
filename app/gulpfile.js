@@ -37,13 +37,12 @@ function npmSassResolver(url, file, done) {
 	}
 }
 
-const sass = require('gulp-sass');
-const Fiber = require('fibers');
+const sass = require('gulp-sass')(require('sass'));
+
 const deSassify = () => sass(
 	{
-		importer: npmSassResolver,
-		fiber: Fiber
-	}).on('error', sass.logError);
+		importer: npmSassResolver
+	}).sync().on('error', sass.logError);
 
 var production = false;
 
