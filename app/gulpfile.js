@@ -42,7 +42,7 @@ const sass = require('gulp-sass')(require('sass'));
 const deSassify = () => sass(
 	{
 		importer: npmSassResolver
-	}).sync().on('error', sass.logError);
+	}).on('error', sass.logError);
 
 var production = false;
 
@@ -52,8 +52,6 @@ const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
 const nodeModuleDir = path.join(__dirname, '../node_modules');
 
 const numberOfCpus = os.cpus().length;
-
-sass.compiler = require('sass');
 
 // Dynamic build content
 

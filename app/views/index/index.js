@@ -1,6 +1,6 @@
 import { div, img } from 'react-hyperscript-helpers';
 import LayoutFactory from '../layout';
-import marked from 'marked';
+import { marked } from 'marked';
 
 const Index = (props) => LayoutFactory([
 	div('.bio', [
