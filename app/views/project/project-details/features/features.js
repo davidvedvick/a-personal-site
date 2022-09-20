@@ -1,4 +1,4 @@
-import marked from 'marked';
+import { marked } from 'marked';
 import { div, hh } from 'react-hyperscript-helpers';
 
 const Features = hh((props) =>

@@ -1,4 +1,4 @@
-import marked from 'marked';
+import { marked } from 'marked';
 import moment from 'moment-timezone';
 import path from 'path';
 import highlightJs from 'highlight.js';
