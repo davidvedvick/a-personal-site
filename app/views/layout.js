@@ -1,4 +1,4 @@
-import { html, head, meta, link, title, body, div, hh } from 'react-hyperscript-helpers';
+import { html, head, meta, link, title, body, div, hh, footer, a, img } from 'react-hyperscript-helpers';
 
 import Menu from './menu/menu';
 import Header from './header';
@@ -17,7 +17,13 @@ const Layout = (props) => {
 			]),
 			body([
 				div('.top', [ Header({subheader: subheader}), Menu() ]),
-				div('.content', Array.isArray(props.children) ? props.children : [ props.children ])
+				div('.content', Array.isArray(props.children) ? props.children : [ props.children ]),
+				footer([
+					div('.social-links', [
+						a('.linkedin', { href: 'https://www.linkedin.com/in/davidvedvick/' }, [ img({ src: '/imgs/linkedin.svg', title: 'LinkedIn', alt: 'LinkedIn' }) ]),
+						a('.mastodon', { href: 'https://fosstodon.org/@davidvedvick', rel: 'me' }, [ img({ src: '/imgs/mastodon.svg', title: 'Mastodon', alt: 'Mastodon' }) ]),
+					])
+				])
 			])
 		]);
 };
