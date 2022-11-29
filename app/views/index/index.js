@@ -1,4 +1,4 @@
-import { div, img } from 'react-hyperscript-helpers';
+import { i, div, img, a } from 'react-hyperscript-helpers';
 import LayoutFactory from '../layout';
 import { marked } from 'marked';
 
