@@ -23,7 +23,7 @@
     "jquery": "^3.5.0",
     "js-beautify": "^1.11.0",
     "marked": "^4.0.10",
-    "moment-timezone": "^0.5.25",
+    "moment-timezone": "^0.5.35",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-hyperscript-helpers": "^1.1.0",
