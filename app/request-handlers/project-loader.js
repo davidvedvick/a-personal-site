@@ -1,35 +1,8 @@
 const portfolio = require('codefolio');
 const path = require('path');
-const fs = require('fs').promises;
+const glob = require('globby');
 
-module.exports = (projectLocation) => async (projectData) => {
-    const projects = await Promise.all(JSON.parse(projectData).map(async project => {
-        const filePath = path.join(projectLocation, project.name);
-  
-        const examples = project.images.map(i => {
-          return {
-            url: path.join('imgs', i.path),
-            alt: i.description,
-            title: i.description
-          }
-        });
-
-        let logo = null;
-        if (project.headlineImage) {
-          logo = {
-            url: path.join('imgs', project.headlineImage.path),
-            alt: project.headlineImage.description,
-            title: project.headlineImage.description
-          };
-        }
-  
-        return {
-          location: filePath,
-          bodyCopy: 'features.md',
-          logo: logo,
-          examples: examples
-        };
-      }));
-  
-    return await portfolio.promisePortfolios(projects);
+module.exports = (projectLocation) => () => {
+  const projectReadmes = glob(path.join(projectLocation, "*", "README.md"));
+  return portfolio.promisePortfolios(projectReadmes);
 };
