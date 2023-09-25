@@ -11,9 +11,9 @@ const changed = require('gulp-changed');
 const imageResize = require('gulp-image-resize');
 const os = require('os');
 const appConfig = require('./app-config.json');
-const markdownPdf = require('gulp-markdown-pdf');
 const path = require('path');
 const envify = require('envify');
+const { mdToPdf } = require('md-to-pdf');
 
 const npmSassAliases = {};
 /**
@@ -154,17 +154,18 @@ function buildProjectImages() {
 buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
 function buildResumePdf() {
-	return gulp
-		.src(appConfig.resumeLocation)
-		.pipe(markdownPdf({
-			remarkable: { html: true, breaks: false },
-			//cssPath: getOutputDir('public/css/layout.css'),
-			paperFormat: 'Letter'
-		}))
-		.pipe(rename({
-			extname: '.pdf'
-		}))
-		.pipe(gulp.dest(getOutputDir('public')));
+	const resumeLocation = appConfig.resumeLocation;
+	const fileName = path.basename(resumeLocation, "md");
+
+	return mdToPdf(
+		{ path: resumeLocation },
+		{
+			dest: path.join(getOutputDir('public'), fileName) + "pdf",
+			pdf_options: {
+				format: 'Letter',
+			}
+		}
+	);
 }
 
 const buildSite = gulp.series(

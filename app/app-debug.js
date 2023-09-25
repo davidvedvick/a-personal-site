@@ -29,7 +29,7 @@ app.engine('js', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-app.get('/', async (req, res) => {
+app.get('/', async (_req, res) => {
   try {
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
     res.render('index/index', { bio: bioMarkdown });
@@ -40,11 +40,9 @@ app.get('/', async (req, res) => {
 
 app.get('/projects', async (req, res) => {
   try {
-    const rawProjectData = await fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'));
+    const projects = await projectLoader(appConfig.projectsLocation);
 
-    portfolios = await projectLoader(rawProjectData);
-
-    res.render('project/project-list', { projects: portfolios });
+    res.render('project/project-list', { projects: projects });
   } catch (exception) {
     console.error(exception);
   }
