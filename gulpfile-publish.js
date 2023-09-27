@@ -19,7 +19,7 @@ const gulpBabel = require('gulp-babel');
 const del = require('del');
 const { promisify } = require('util');
 const fs = require('fs');
-const projectLoader = require('./app/request-handlers/project-loader')(appConfig.projectsLocation);
+const projectLoader = require('./app/request-handlers/project-loader');
 
 const numberOfCpus = os.cpus().length;
 

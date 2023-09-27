@@ -1,27 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="90534c55-9406-402d-855c-57ac5ecf5db7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/deployment.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/last_hope_enterprises_node_modules.xml" />
+      <change afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/test/java/com/lasthopesoftware/bluewater/client/playback/engine/GivenAHaltedPlaybackEngine/WhenClearingThePlaylist.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app-debug.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/app-debug.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/codefolio/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/codefolio/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/codefolio/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/codefolio/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/codefolio/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/codefolio/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/ChangePlaylistFiles.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/ChangePlaylistFiles.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/PlaybackEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/PlaybackEngine.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/NowPlayingView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/NowPlayingView.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/viewmodels/playlist/NowPlayingPlaylistViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/viewmodels/playlist/NowPlayingPlaylistViewModel.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/service/PlaybackServiceController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/service/PlaybackServiceController.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/shared/observables/MutableStateObservable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/shared/observables/MutableStateObservable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/gulpfile.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/request-handlers/project-loader.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/request-handlers/project-loader.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/project/project-details/project-details.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/project/project-details/project-details.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gulpfile-publish.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile-publish.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
-    <ignored path="last_hope_enterprises.iws" />
-    <ignored path=".idea/workspace.xml" />
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
-    <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="repository" />
+    </option>
+  </component>
   <component name="CreatePatchCommitExecutor">
     <option name="PATCH_PATH" value="" />
-  </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
-  <component name="FavoritesManager">
-    <favorites_list name="last_hope_enterprises" />
   </component>
   <component name="FileEditorManager">
     <leaf>
@@ -96,24 +116,18 @@
       </GulpfileState>
     </gulpfiles>
   </component>
-  <component name="NamedScopeManager">
-    <order />
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 2
+}]]></component>
   <component name="ProjectFrameBounds">
     <option name="x" value="3839" />
     <option name="width" value="1922" />
     <option name="height" value="1080" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
-    <OptionsSetting value="true" id="Add" />
-    <OptionsSetting value="true" id="Remove" />
-    <OptionsSetting value="true" id="Checkout" />
-    <OptionsSetting value="true" id="Update" />
-    <OptionsSetting value="true" id="Status" />
-    <OptionsSetting value="true" id="Edit" />
-    <ConfirmationsSetting value="0" id="Add" />
-    <ConfirmationsSetting value="0" id="Remove" />
-  </component>
+  <component name="ProjectId" id="2VujIQCnsIK7a1DLqeUET1VAz3m" />
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
@@ -207,29 +221,33 @@
       <pane id="Scope" />
     </panes>
   </component>
-  <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="HbShouldOpenHtmlAsHb" value="" />
-    <property name="JavaScriptLanguageLevel" value="JSX" />
-    <property name="FullScreen" value="false" />
-    <property name="recentsLimit" value="5" />
-    <property name="restartRequiresConfirmation" value="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
-  <component name="RunManager" selected="Node.js.app.js">
-    <configuration default="false" name="app.js" type="NodeJSConfigurationType" factoryName="Node.js" temporary="true" path-to-node="/usr/bin/node" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
-      <method />
-    </configuration>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "feature/publish-projects-by-convention",
+    "javascript.nodejs.core.library.configured.version": "20.7.0",
+    "javascript.nodejs.core.library.typings.version": "20.7.0",
+    "last_opened_file_path": "/home/david/workspace/codefolio",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "ts.external.directory.path": "/home/david/workspace/a-personal-site/app/content/projects/codefolio/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager" selected="npm.debug">
     <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
       <method />
     </configuration>
     <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
-      <method />
-    </configuration>
-    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
       <method />
     </configuration>
     <configuration default="true" type="JsTestDriver-test-runner" factoryName="JsTestDriver">
@@ -239,34 +257,40 @@
       <setting name="preferredDebugBrowser" value="Chrome" />
       <method />
     </configuration>
-    <configuration default="true" type="NodeJSConfigurationType" factoryName="Node.js" working-dir="">
-      <method />
+    <configuration name="app.js" type="NodeJSConfigurationType" temporary="true" path-to-node="/usr/bin/node" path-to-js-file="app.js" working-dir="$PROJECT_DIR$">
+      <method v="2" />
     </configuration>
-    <configuration default="true" type="cucumber.js" factoryName="Cucumber.js">
-      <option name="cucumberJsArguments" value="" />
-      <option name="executablePath" />
-      <option name="filePath" />
-      <method />
-    </configuration>
-    <configuration default="true" type="js.build_tools.gulp" factoryName="Gulp.js">
+    <configuration default="true" type="js.build_tools.gulp">
+      <node-interpreter>project</node-interpreter>
       <node-options />
       <gulpfile />
       <tasks />
       <arguments />
       <pass-parent-envs>true</pass-parent-envs>
-      <envs />
-      <method />
+      <method v="2" />
     </configuration>
-    <list size="1">
-      <item index="0" class="java.lang.String" itemvalue="Node.js.app.js" />
+    <configuration name="debug" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="debug" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Node.js.app.js" />
+      <item itemvalue="npm.debug" />
     </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Node.js.app.js" />
+      <list>
+        <item itemvalue="npm.debug" />
+        <item itemvalue="Node.js.app.js" />
       </list>
     </recent_temporary>
   </component>
-  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -275,7 +299,9 @@
       <changelist id="90534c55-9406-402d-855c-57ac5ecf5db7" name="Default" comment="" />
       <created>1431096569815</created>
       <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
       <updated>1431096569815</updated>
+      <workItem from="1695692779940" duration="15014000" />
     </task>
     <servers />
   </component>
@@ -303,6 +329,9 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
       <collection />
@@ -311,14 +340,17 @@
       <collection />
     </option>
   </component>
-  <component name="VcsContentAnnotationSettings">
-    <option name="myLimit" value="2678400000" />
-  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="5" />
+      <breakpoints>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/content/projects/codefolio/app/Index.ts</url>
+          <line>15</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
     </breakpoint-manager>
-    <watches-manager />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/node_modules/body-parser/package.json">

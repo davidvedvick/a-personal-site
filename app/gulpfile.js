@@ -7,13 +7,14 @@ const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
 const parallel = require('concurrent-transform');
-const changed = require('gulp-changed');
 const imageResize = require('gulp-image-resize');
 const os = require('os');
 const appConfig = require('./app-config.json');
 const path = require('path');
 const envify = require('envify');
 const { mdToPdf } = require('md-to-pdf');
+const Jimp = require("jimp");
+const projectLoader = require("./request-handlers/project-loader");
 
 const npmSassAliases = {};
 /**
@@ -44,9 +45,9 @@ const deSassify = () => sass(
 		importer: npmSassResolver
 	}).on('error', sass.logError);
 
-var production = false;
+let production = false;
+let outputDir = __dirname;
 
-var outputDir = __dirname;
 const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
 const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
 const nodeModuleDir = path.join(__dirname, '../node_modules');
@@ -56,56 +57,51 @@ const numberOfCpus = os.cpus().length;
 // Dynamic build content
 
 function clean() {
-	return del([
-		getOutputDir('public/js'),
-		getOutputDir('public/css'),
-		getOutputDir('public/images')]);
+	return del([getOutputDir('public')]);
 }
 
 function buildJs() {
 	const destDir = getOutputDir('public/js');
 
-	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
-		.pipe(parallel(
-			through2.obj((file, enc, next) =>
-				browserify(file.path, { extensions: '.jsx', debug: !production })
-					.transform(envify)
-					.transform('babelify', {
-						presets: [ 
-							[
-								'@babel/preset-env', {
-									"targets": {
-										"browsers": [
-											"last 2 versions"
-										]
-									}
-								}
-							],
-							'@babel/preset-react',
-						],
-						plugins: [ '@babel/transform-runtime' ]
-					})
-					.bundle((err, res) => {
-						if (err) console.log(err);
-						// assumes file.contents is a Buffer
-						else file.contents = res;
+  let pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
+    .pipe(parallel(
+      through2.obj((file, enc, next) =>
+        browserify(file.path, {extensions: '.jsx', debug: !production})
+          .transform(envify)
+          .transform('babelify', {
+            presets: [
+              [
+                '@babel/preset-env', {
+                  "targets": {
+                    "browsers": ["last 2 versions"]
+                  }
+                }
+              ],
+              '@babel/preset-react',
+            ],
+            plugins: ['@babel/transform-runtime', '@babel/plugin-proposal-optional-chaining']
+          })
+          .bundle((err, res) => {
+            if (err) console.log(err);
+            // assumes file.contents is a Buffer
+            else file.contents = res;
 
-						next(null, file);
-					})),
-			numberOfCpus))
-		.pipe(rename({
-			dirname: '',
-			extname: '.js'
-		}));
+            next(null, file);
+          })),
+      numberOfCpus))
+    .pipe(rename({
+      dirname: '',
+      extname: '.js'
+    }));
 
-	pipe = production
+  pipe = production
 		? pipe.pipe(parallel(terser({ compress: { passes: 2, unsafe: true } }), numberOfCpus))
 		: pipe
-			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+			// .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
 			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
 
 	return pipe.pipe(gulp.dest(destDir));
-};
+}
 
 // copy slick carousel blobs
 function collectSlickBlobs() {
@@ -140,15 +136,21 @@ function buildProfileImage() {
 		.pipe(gulp.dest(getOutputDir('public/imgs')));
 }
 
-function buildProjectImages() {
+async function buildProjectImages() {
+  const projects = await projectLoader();
+
+  const inputDir = getInputDir("content/projects");
 	const destDir = getOutputDir('public/content/projects');
-	return gulp.src(getInputDir('content/projects/**/imgs/*'))
-			.pipe(changed(destDir))
-			.pipe(parallel(
-				imageResize({ height: 300 }),
-				os.cpus().length
-			))
-			.pipe(gulp.dest(destDir));
+	await Promise.all(projects
+    .flatMap(p => [p.image?.url, ...p.examples.map(i => i.url)])
+    .map(async uri => {
+      if (!uri) return;
+
+      const image = await Jimp.read(uri);
+      const resizedImage = image.resize(Jimp.AUTO, 300);
+      const destination = path.join(destDir, path.relative(inputDir, uri));
+      await resizedImage.write(destination);
+    }));
 }
 
 buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);

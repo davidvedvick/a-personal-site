@@ -1,5 +1,7 @@
 .settings
 .metadata
+.idea
+/app/content/projects/
 /node_modules/
 /npm-debug.log
 /bower_components/

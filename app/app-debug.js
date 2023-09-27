@@ -6,7 +6,7 @@ const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
 const notesHandler = require('./request-handlers/notes-handler');
 const appConfig = require('./app-config.json');
-const projectLoader = require('./request-handlers/project-loader')(appConfig.projectsLocation);
+const projectLoader = require('./request-handlers/project-loader');
 
 const environmentOpts = {
     maxAge: 0
@@ -40,7 +40,7 @@ app.get('/', async (_req, res) => {
 
 app.get('/projects', async (req, res) => {
   try {
-    const projects = await projectLoader(appConfig.projectsLocation);
+    const projects = await projectLoader();
 
     res.render('project/project-list', { projects: projects });
   } catch (exception) {
