@@ -27,7 +27,11 @@ module.exports = async () => {
 
         const additionalExamples = await glob(path.join(portfolioDir, "examples", "*.{png,svg}"));
 
-        portfolio.examples = portfolio.examples.concat(additionalExamples);
+        portfolio.examples = portfolio.examples.concat(additionalExamples.map(p => {
+          return {
+            url: p
+          }
+        }));
       }
 
       return portfolios;

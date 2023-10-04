@@ -4,29 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90534c55-9406-402d-855c-57ac5ecf5db7" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.editorconfig" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/test/java/com/lasthopesoftware/bluewater/client/playback/engine/GivenAHaltedPlaybackEngine/WhenClearingThePlaylist.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="90534c55-9406-402d-855c-57ac5ecf5db7" name="Default" comment="Load projects by convention">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app-debug.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/app-debug.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/codefolio/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/codefolio/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/codefolio/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/codefolio/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/codefolio/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/codefolio/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/content/projects/handoff/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/handoff/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/ChangePlaylistFiles.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/ChangePlaylistFiles.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/PlaybackEngine.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/engine/PlaybackEngine.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/NowPlayingView.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/NowPlayingView.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/viewmodels/playlist/NowPlayingPlaylistViewModel.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/nowplaying/view/viewmodels/playlist/NowPlayingPlaylistViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/service/PlaybackServiceController.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/client/playback/service/PlaybackServiceController.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/shared/observables/MutableStateObservable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/content/projects/projectBlue/projectBlueWater/src/main/java/com/lasthopesoftware/bluewater/shared/observables/MutableStateObservable.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/gulpfile.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/gulpfile.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/request-handlers/project-loader.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/request-handlers/project-loader.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/views/project/project-details/features/features.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/project/project-details/features/features.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/views/project/project-details/project-details.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/views/project/project-details/project-details.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gulpfile-publish.js" beforeDir="false" afterPath="$PROJECT_DIR$/gulpfile-publish.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
@@ -119,9 +104,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2
+}</component>
   <component name="ProjectFrameBounds">
     <option name="x" value="3839" />
     <option name="width" value="1922" />
@@ -231,8 +216,8 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
     "git-widget-placeholder": "feature/publish-projects-by-convention",
-    "javascript.nodejs.core.library.configured.version": "20.7.0",
-    "javascript.nodejs.core.library.typings.version": "20.7.0",
+    "javascript.nodejs.core.library.configured.version": "20.8.0",
+    "javascript.nodejs.core.library.typings.version": "20.8.0",
     "last_opened_file_path": "/home/david/workspace/codefolio",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -301,8 +286,19 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1431096569815</updated>
-      <workItem from="1695692779940" duration="15014000" />
+      <workItem from="1695692779940" duration="15803000" />
+      <workItem from="1696383369167" duration="1364000" />
+      <workItem from="1696425368897" duration="884000" />
     </task>
+    <task id="LOCAL-00001" summary="Load projects by convention">
+      <option name="closed" value="true" />
+      <created>1695784669903</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1695784669903</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -332,6 +328,17 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.History.Properties">
+    <option name="COLUMN_ID_ORDER">
+      <list>
+        <option value="Default.Root" />
+        <option value="Default.Author" />
+        <option value="Default.Date" />
+        <option value="Default.Subject" />
+        <option value="Space.CommitStatus" />
+      </list>
+    </option>
+  </component>
   <component name="Vcs.Log.UiProperties">
     <option name="RECENTLY_FILTERED_USER_GROUPS">
       <collection />
@@ -340,14 +347,23 @@
       <collection />
     </option>
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Load projects by convention" />
+    <option name="LAST_COMMIT_MESSAGE" value="Load projects by convention" />
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/app/content/projects/codefolio/app/Index.ts</url>
           <line>15</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="javascript">
+          <url>file://$PROJECT_DIR$/app/gulpfile.js</url>
+          <line>149</line>
+          <properties lambdaOrdinal="-1" />
+          <option name="timeStamp" value="7" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

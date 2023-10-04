@@ -143,8 +143,9 @@ async function buildProjectImages() {
 	const destDir = getOutputDir('public/content/projects');
 	await Promise.all(projects
     .flatMap(p => [p.image?.url, ...p.examples.map(i => i.url)])
+    .filter(uri => uri)
     .map(async uri => {
-      if (!uri) return;
+      if (!uri || uri.startsWith("http://") || uri.startsWith("https://")) return;
 
       const image = await Jimp.read(uri);
       const resizedImage = image.resize(Jimp.AUTO, 300);
