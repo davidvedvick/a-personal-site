@@ -3,7 +3,7 @@ import ScreenshotList from './screenshots/screenshot-list/screenshot-list';
 import { div, hh } from 'react-hyperscript-helpers';
 
 const ProjectDetails = props => {
-	const image = props.project.image;
+  const { image, body, examples } = props.project;
 
 	const url = image?.url;
 
@@ -19,12 +19,17 @@ const ProjectDetails = props => {
 	};
 
 	return div('.project', { style: headerBackgroundStyle }, [
-		div('.project-details-container', [
-			Features({ features: props.project.body }),
-			ScreenshotList({
-				images: props.project.examples
-			})
-		])
+		div('.project-details-container', examples.length > 0
+      ? [
+        Features({ features: body }),
+        ScreenshotList({
+          images: examples
+        })
+      ]
+      : [
+        Features({ features: body })
+      ]
+    )
 	]);
 };
 
