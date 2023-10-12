@@ -3,4 +3,8 @@ div.features {
 	vertical-align: top;
 	width: 33%;               /* For old syntax, otherwise collapses. */
 	flex: 1;
+
+  pre {
+    overflow-x: auto;
+  }
 }

@@ -28,6 +28,7 @@ const Note = hh((props) => {
 
 	const html = marked(note.text || '', {
 		highlight: (code) => highlightJs.highlightAuto(code).value,
+    sanitize: true,
 		renderer: renderer
 	});
 

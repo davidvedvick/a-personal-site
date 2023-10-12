@@ -33,20 +33,21 @@ const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 const promiseStream = (gulpStream) => new Promise((resolve, reject) => gulpStream.on('end', resolve).on('error', reject));
 
 // Static build tasks
-var jsxToHtml = (options) =>
-	through2.obj(function (file, enc, cb) {
-		require('node-jsx').install({extension: '.jsx'});
+function jsxToHtml(options) {
+  return through2.obj(function (file, enc, cb) {
+    require('node-jsx').install({extension: '.jsx'});
 
-		var component = require(file.path);
-		component = component.default || component;
-		const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
-		file.contents = new Buffer(markup);
-		file.path = gutil.replaceExtension(file.path, '.html');
+    var component = require(file.path);
+    component = component.default || component;
+    const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
+    file.contents = new Buffer(markup);
+    file.path = gutil.replaceExtension(file.path, '.html');
 
-		this.push(file);
+    this.push(file);
 
-		cb();
-	});
+    cb();
+  });
+}
 
 const cleanBuild = () => del(['build']);
 
@@ -59,7 +60,7 @@ function buildServerJs() {
 		.src([ './app/**/*.js', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*', '!./**/gulpfile*.js' ], { allowEmpty: true })
 		.pipe(parallel(gulpBabel({ presets: [ ['@babel/preset-env', {
 			"targets": {
-				"node": "v8.15.1"
+				"node": "v16.19.0"
 			}
 		}] ] }), numberOfCpus))
 		.pipe(parallel(terser(), numberOfCpus))
@@ -87,9 +88,7 @@ async function buildStaticIndex() {
 }
 
 async function buildStaticProjects() {
-	const projects = await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json'));
-
-	const portfolios = await projectLoader(projects);
+	const portfolios = await projectLoader();
 
 	await promiseStream(gulp
 		.src('./build/views/project/project-list.js')
