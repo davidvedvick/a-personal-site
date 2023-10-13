@@ -1,8 +1,5 @@
 version: "3.7"
 
 services:
-  package-build:
+  npm:
     build: .
-    entrypoint: npm run build
-    volumes:
-      - ./:/src

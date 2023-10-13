@@ -154,7 +154,7 @@ const publishResume = gulp.series(
 
 const publishProjects = gulp.series(
 	cleanBuild,
-	appBuild.buildImages,
+	appBuild.buildProjectImages,
 	copyDynamicBuild,
 	buildServerJs,
 	buildStaticProjects,

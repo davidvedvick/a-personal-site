@@ -194,6 +194,7 @@ module.exports = function(options) {
 	return {
 		build: buildSite,
 		buildImages: gulp.series(clean, buildImages),
+    buildProjectImages: buildProjectImages,
 		copyPublicFonts: copyPublicFonts,
 		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
 	};
