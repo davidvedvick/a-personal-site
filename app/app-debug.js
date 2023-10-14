@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
 const notesHandler = require('./request-handlers/notes-handler');
-const appConfig = require('./app-config.json');
+const appConfig = require('./app-config-loader.js');
 const projectLoader = require('./request-handlers/project-loader');
 
 const environmentOpts = {
@@ -31,6 +31,7 @@ if ('development' === app.get('env'))
 
 app.get('/', async (_req, res) => {
   try {
+    const appConfig = await promisedAppConfig;
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
     res.render('index/index', { bio: bioMarkdown });
   } catch (exception) {
@@ -50,6 +51,7 @@ app.get('/projects', async (req, res) => {
 
 app.get('/resume', async (req, res) => {
   try {
+    const appConfig = await promisedAppConfig;
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
     res.render('resume/resume', { resume: resumeMarkdown });
   } catch (exception) {

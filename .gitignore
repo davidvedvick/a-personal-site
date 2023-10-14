@@ -14,3 +14,4 @@
 ssh-config.json
 app-config.json
 report.*.json
+.env

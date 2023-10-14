@@ -9,7 +9,7 @@ const rename = require('gulp-rename');
 const parallel = require('concurrent-transform');
 const imageResize = require('gulp-image-resize');
 const os = require('os');
-const appConfig = require('./app-config.json');
+const appConfig = require('./app-config-loader');
 const path = require('path');
 const envify = require('envify');
 const { mdToPdf } = require('md-to-pdf');
@@ -156,11 +156,11 @@ async function buildProjectImages() {
 
 buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
-function buildResumePdf() {
+async function buildResumePdf() {
 	const resumeLocation = appConfig.resumeLocation;
 	const fileName = path.basename(resumeLocation, "md");
 
-	return mdToPdf(
+	return await mdToPdf(
 		{ path: resumeLocation },
 		{
 			dest: path.join(getOutputDir('public'), fileName) + "pdf",

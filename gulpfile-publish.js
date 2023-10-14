@@ -6,13 +6,21 @@ const parallel = require('concurrent-transform');
 const os = require('os');
 const React = require('react');
 const ReactDomServer = require('react-dom/server');
-const appConfig = Object.assign(require('./app/app-config.json'), require('./app-config.json'));
-const path = require('path');
+const appConfig = require("./app/app-config-loader");
 const GulpSsh = require('gulp-ssh');
+let sshConfig = {
+
+};
+try {
+  sshConfig = require('./ssh-config.json');
+} catch (e) {
+  // ignored
+}
+
 const gulpSsh = () => new GulpSsh({
 	ignoreErrors: false,
 	// set this from a config file
-	sshConfig: require('./ssh-config.json')
+	sshConfig: sshConfig
 });
 const htmlmin = require('gulp-htmlmin');
 const gulpBabel = require('gulp-babel');
@@ -37,7 +45,7 @@ function jsxToHtml(options) {
   return through2.obj(function (file, enc, cb) {
     require('node-jsx').install({extension: '.jsx'});
 
-    var component = require(file.path);
+    let component = require(file.path);
     component = component.default || component;
     const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
     file.contents = new Buffer(markup);
@@ -134,7 +142,7 @@ function publishHtml() {
 
 function publishImages() {
 	return gulp
-		.src('./build/public/**/*')
+		.src('./build/public/**/*.{png,jpg,svg}')
 		.pipe(gulpSsh().dest('/home/protected/app/public'));
 }
 
