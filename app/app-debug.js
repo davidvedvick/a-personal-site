@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
 const notesHandler = require('./request-handlers/notes-handler');
-const appConfig = require('./app-config-loader.js');
+const appConfig = require('./app-config.js');
 const projectLoader = require('./request-handlers/project-loader');
 
 const environmentOpts = {

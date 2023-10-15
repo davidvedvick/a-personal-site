@@ -1,11 +1,9 @@
 const path = require('path');
 const express = require('express');
 const notesHandler = require('./request-handlers/notes-handler');
-const appConfig = require('./app-config-loader.js');
+const appConfig = require('./app-config.js');
 const compression = require('compression');
 const http = require('http');
-const fs = require("fs");
-const https = require("https");
 
 const environmentOpts = {
     maxAge: 86400 * 1000

@@ -6,16 +6,9 @@ const parallel = require('concurrent-transform');
 const os = require('os');
 const React = require('react');
 const ReactDomServer = require('react-dom/server');
-const appConfig = require("./app/app-config-loader");
+const appConfig = require("./app/app-config");
 const GulpSsh = require('gulp-ssh');
-let sshConfig = {
-
-};
-try {
-  sshConfig = require('./ssh-config.json');
-} catch (e) {
-  // ignored
-}
+const sshConfig = require('./ssh-config');
 
 const gulpSsh = () => new GulpSsh({
 	ignoreErrors: false,

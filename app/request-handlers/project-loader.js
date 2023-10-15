@@ -1,7 +1,7 @@
 const portfolio = require('codefolio');
 const path = require('path');
 const glob = require('globby');
-const appConfig = require("../app-config-loader");
+const appConfig = require("../app-config");
 
 module.exports = async () => {
   const pattern = path.join(appConfig.projectsLocation, "*", "README.md");
