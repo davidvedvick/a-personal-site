@@ -15,6 +15,8 @@ const envify = require('envify');
 const { mdToPdf } = require('md-to-pdf');
 const Jimp = require("jimp");
 const projectLoader = require("./request-handlers/project-loader");
+const {promisify} = require("util");
+const fs = require("fs");
 
 const npmSassAliases = {};
 /**
@@ -48,6 +50,9 @@ const deSassify = () => sass(
 let production = false;
 let outputDir = __dirname;
 
+const promiseMkDir = promisify(fs.mkdir);
+
+const promiseCopyFile = promisify(fs.copyFile);
 const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
 const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
 const nodeModuleDir = path.join(__dirname, '../node_modules');
@@ -147,9 +152,16 @@ async function buildProjectImages() {
     .map(async uri => {
       if (!uri || uri.startsWith("http://") || uri.startsWith("https://")) return;
 
+      const destination = path.join(destDir, path.relative(inputDir, uri));
+      if (path.extname(destination) === ".svg") {
+        const directory = path.dirname(destination);
+        await promiseMkDir(directory, { recursive: true })
+        await promiseCopyFile(uri, destination)
+        return;
+      }
+
       const image = await Jimp.read(uri);
       const resizedImage = image.resize(Jimp.AUTO, 300);
-      const destination = path.join(destDir, path.relative(inputDir, uri));
       await resizedImage.write(destination);
     }));
 }

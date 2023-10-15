@@ -7,13 +7,15 @@ const ProjectDetails = props => {
 
 	const url = image?.url;
 
+  const backgroundTransparency = '#ffffff99';
+
 	const headerBackgroundStyle = {
 		backgroundImage: [
-			'url(\'/imgs/transparent-bg-pixel.png\')',
+			`linear-gradient(${backgroundTransparency}, ${backgroundTransparency})`,
 			'url(\'' + (url || '') + '\')'
 		],
 		backgroundRepeat: [
-			'repeat',
+			'no-repeat',
 			'no-repeat'
 		]
 	};
@@ -26,9 +28,7 @@ const ProjectDetails = props => {
           images: examples
         })
       ]
-      : [
-        Features({ features: body })
-      ]
+      : [Features({ features: body })]
     )
 	]);
 };
