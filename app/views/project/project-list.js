@@ -3,7 +3,7 @@ import ProjectDetails from './project-details/project-details';
 import Layout from '../layout';
 
 function boundedToOne(number) {
-  return Math.max(Math.min(number, 1), -1);
+  return Math.min(number, 1);
 }
 
 const Index = hh((props) =>
@@ -16,6 +16,9 @@ const Index = hh((props) =>
       .sort((a, b) => {
         const examplesFirst = boundedToOne(b.examples.length) - boundedToOne(a.examples.length);
         if (examplesFirst !== 0) return examplesFirst;
+
+        const headlinesNext = (b.image ? 1 : 0) - (a.image ? 1 : 0)
+        if (headlinesNext !== 0) return headlinesNext;
 
         return a.body.localeCompare(b.body);
       })

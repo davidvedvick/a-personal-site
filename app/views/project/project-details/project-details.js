@@ -7,7 +7,7 @@ const ProjectDetails = props => {
 
 	const url = image?.url;
 
-  const backgroundTransparency = '#ffffff99';
+  const backgroundTransparency = '#fffc';
 
 	const headerBackgroundStyle = {
 		backgroundImage: [
