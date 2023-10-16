@@ -5,6 +5,7 @@ try {
   // ignored
 }
 module.exports = {
+  host: process.env.SSH_HOST ?? sshConfig.host,
   username: process.env.SSH_USERNAME ?? sshConfig.username,
   password: process.env.SSH_PASSWORD ?? sshConfig.password,
   privateKey: process.env.PRIVATE_KEY ?? sshConfig.privateKey,
