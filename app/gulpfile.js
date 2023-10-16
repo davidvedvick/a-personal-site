@@ -145,7 +145,7 @@ async function buildProjectImages() {
   const projects = await projectLoader();
 
   const inputDir = appConfig.projectsLocation;
-	const destDir = getOutputDir('public/content/projects');
+	const destDir = getOutputDir('public/projects');
 	await Promise.all(projects
     .flatMap(p => [p.image?.url, ...p.examples.map(i => i.url)])
     .filter(uri => uri)
