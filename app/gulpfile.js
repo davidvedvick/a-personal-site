@@ -144,7 +144,7 @@ function buildProfileImage() {
 async function buildProjectImages() {
   const projects = await projectLoader();
 
-  const inputDir = getInputDir("content/projects");
+  const inputDir = appConfig.projectsLocation;
 	const destDir = getOutputDir('public/content/projects');
 	await Promise.all(projects
     .flatMap(p => [p.image?.url, ...p.examples.map(i => i.url)])
@@ -155,6 +155,7 @@ async function buildProjectImages() {
       const destination = path.join(destDir, path.relative(inputDir, uri));
       if (path.extname(destination) === ".svg") {
         const directory = path.dirname(destination);
+        console.log(`Making directory ${directory}.`);
         await promiseMkDir(directory, { recursive: true })
         await promiseCopyFile(uri, destination)
         return;
