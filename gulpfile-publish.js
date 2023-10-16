@@ -153,12 +153,15 @@ const publishResume = gulp.series(
 	buildStaticResume,
 	publishPublic);
 
-const publishProjects = gulp.series(
-	cleanBuild,
-	appBuild.buildProjectImages,
-	copyDynamicBuild,
-	buildServerJs,
-	buildStaticProjects,
+const buildPortfolio = gulp.series(
+  cleanBuild,
+  appBuild.buildProjectImages,
+  copyDynamicBuild,
+  buildServerJs,
+  buildStaticProjects);
+
+const publishPortfolio = gulp.series(
+  buildPortfolio,
 	publishHtml,
 	publishImages);
 
@@ -180,4 +183,5 @@ module.exports.deploy = deploy;
 module.exports.buildStatic = buildStatic;
 module.exports.publishBiography = publishBiography;
 module.exports.publishResume = publishResume;
-module.exports.publishProjects = publishProjects;
+module.exports.publishPortfolio = publishPortfolio;
+module.exports.buildPortfolio = buildPortfolio;
