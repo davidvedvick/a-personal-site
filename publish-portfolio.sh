@@ -9,7 +9,8 @@ docker compose build && docker compose run --rm \
 
 EXIT_CODE=${PIPESTATUS[0]}
 
-scp ./build/public/**/*.html "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app/public
-scp ./build/public/**/*.{png,jpg,svg} "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app/public
+rsync -avzh --include='*.html' --include='*.png' --include='*.svg' --include='*.jpg' --include='*/' --exclude='*' ./build/public/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app/public
+
+EXIT_CODE=${PIPESTATUS[0]}
 
 exit "${EXIT_CODE}"
