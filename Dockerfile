@@ -1,7 +1,6 @@
 FROM node:20.8.0
 
-ENV NODE_PATH=/packages/node_modules
-WORKDIR /packages
+WORKDIR /src
 
 COPY package.json .
 COPY package-lock.json .
