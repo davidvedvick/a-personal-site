@@ -3,3 +3,6 @@ version: "3.7"
 services:
   npm:
     build: .
+    environment:
+      PROJECTS_LOCATION: ${PROJECTS_LOCATION}
+      SSH_USER: ${SSH_USER}
