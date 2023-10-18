@@ -10,8 +10,8 @@
     "deploy": "gulp --gulpfile=gulpfile-publish.js deploy",
     "publish-biography": "gulp --gulpfile=gulpfile-publish.js publishBiography",
     "publish-resume": "gulp --gulpfile=gulpfile-publish.js publishResume",
-    "publish-portfolio": "gulp --gulpfile=gulpfile-publish.js publishPortfolio",
-    "build-portfolio": "gulp --gulpfile=gulpfile-publish.js buildPortfolio"
+    "build-portfolio": "gulp --gulpfile=gulpfile-publish.js buildPortfolio",
+    "build-release": "gulp --gulpfile gulpfile-publish.js buildStatic"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.4",
@@ -51,7 +51,6 @@
     "gulp-concat": "^2.5.2",
     "gulp-debug": "^4.0.0",
     "gulp-htmlmin": "^4.0.0",
-    "gulp-image-resize": "^0.13.0",
     "gulp-less": "^4.0.1",
     "gulp-rename": "^1.4.0",
     "gulp-sass": "^5.1.0",

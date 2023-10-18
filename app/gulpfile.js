@@ -7,7 +7,6 @@ const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
 const parallel = require('concurrent-transform');
-const imageResize = require('gulp-image-resize');
 const os = require('os');
 const appConfig = require('./app-config');
 const path = require('path');
@@ -133,12 +132,11 @@ function copyPublicFonts() {
 	return gulp.src(getInputDir('fonts/*')).pipe(gulp.dest(getOutputDir('public/fonts')));
 }
 
-function buildProfileImage() {
-	return gulp
-		.src(appConfig.bio.authorPicture)
-		.pipe(imageResize({ width: 500 }))
-		.pipe(rename('profile-picture.jpg'))
-		.pipe(gulp.dest(getOutputDir('public/imgs')));
+async function buildProfileImage() {
+  const sourceProfilePicture = appConfig.bio.authorPicture;
+  const image = await Jimp.read(sourceProfilePicture);
+  const resizedImage = image.resize(Jimp.AUTO, 500);
+  await resizedImage.write(path.join(getOutputDir('public/imgs'), 'profile-picture.jpg'));
 }
 
 async function buildProjectImages() {

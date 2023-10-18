@@ -3,13 +3,20 @@
 docker compose build && docker compose run --rm \
   -v "$(pwd)":/src/site \
   -v "$(realpath "${PROJECTS_LOCATION}")":/projects -e PROJECTS_LOCATION=/projects \
-  -v "$(realpath ~/.ssh)":/home/node/.ssh:ro \
   -w /src/site -u "$(id -u)":"$(id -g)" \
   npm run build-portfolio
 
 EXIT_CODE=${PIPESTATUS[0]}
 
-rsync -avzh --include='*.html' --include='*.png' --include='*.svg' --include='*.jpg' --include='*/' --exclude='*' --prune-empty-dirs ./build/public/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app/public
+rsync -avzh \
+  --include='*.html' \
+  --include='*.png' \
+  --include='*.svg' \
+  --include='*.jpg' \
+  --include='*/' \
+  --exclude='*' \
+  --prune-empty-dirs \
+  ./build/public/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app/public
 
 EXIT_CODE=${PIPESTATUS[0]}
 
