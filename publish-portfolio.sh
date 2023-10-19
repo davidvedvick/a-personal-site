@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 docker compose build && docker compose run --rm \
-  -v "$(pwd)":/src/site \
+  -v "$(pwd)":/src \
   -v "$(realpath "${PROJECTS_LOCATION}")":/projects -e PROJECTS_LOCATION=/projects \
-  -w /src/site -u "$(id -u)":"$(id -g)" \
+  -w /src -u "$(id -u)":"$(id -g)" \
   npm run build-portfolio
 
 EXIT_CODE=${PIPESTATUS[0]}
