@@ -5,6 +5,7 @@ docker compose build && docker compose run --rm \
   -v "$(realpath "${PROJECTS_LOCATION}")":/projects -e PROJECTS_LOCATION=/projects \
   -v "$(realpath "${BIO_PATH}")":/bio -e BIO_PATH=/bio \
   -e BIO_AUTHOR_PICTURE="/bio/${BIO_AUTHOR_PICTURE}" \
+  -e RESUME_LOCATION="/bio/resume.md" \
   -w /src -u "$(id -u)":"$(id -g)" \
   npm run build-release
 

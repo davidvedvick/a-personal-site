@@ -2,15 +2,9 @@ version: "3.7"
 
 services:
   npm:
-    image: node:20.8.0
-#    volumes:
-#      - node-modules:/home/node/.npm
+    build: .
     environment:
       PROJECTS_LOCATION: ${PROJECTS_LOCATION}
       BIO_PATH: ${BIO_PATH}
       BIO_AUTHOR_PICTURE: ${BIO_AUTHOR_PICTURE:-${BIO_PATH}/profile-pic.jpg}
-      RESUME_LOCATION: ${BIO_PATH}/${RESUME_LOCATION:-resume.md}
-    entrypoint: ["npm"]
-
-volumes:
-  node-modules:
+      RESUME_LOCATION: ${RESUME_LOCATION:-${BIO_PATH}/resume.md}

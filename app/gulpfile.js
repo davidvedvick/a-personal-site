@@ -177,7 +177,10 @@ async function buildResumePdf() {
 			dest: path.join(getOutputDir('public'), fileName) + "pdf",
 			pdf_options: {
 				format: 'Letter',
-			}
+			},
+      launch_options: {
+        args: process.env.CHROMIUM_FLAGS.split(" ")
+      }
 		}
 	);
 }
