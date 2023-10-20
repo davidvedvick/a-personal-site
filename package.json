@@ -4,14 +4,15 @@
   "description": "Home page for David Vedvick.",
   "main": "app/app-debug.js",
   "scripts": {
+    "clean": "rm -rf build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && node app-release.js",
     "debug": "cd app && gulp && node app-debug.js",
     "deploy": "gulp --gulpfile=gulpfile-publish.js deploy",
     "publish-biography": "gulp --gulpfile=gulpfile-publish.js publishBiography",
-    "publish-resume": "gulp --gulpfile=gulpfile-publish.js publishResume",
-    "build-portfolio": "gulp --gulpfile=gulpfile-publish.js buildPortfolio",
-    "build-release": "gulp --gulpfile gulpfile-publish.js buildStatic"
+    "publish-resume": "npm run clean && npm install && gulp --gulpfile=gulpfile-publish.js publishResume",
+    "build-portfolio": "npm run clean && npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",
+    "build-release": "npm run clean && npm install && gulp --gulpfile gulpfile-publish.js buildStatic"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.4",
