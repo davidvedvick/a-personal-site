@@ -50,7 +50,7 @@ function jsxToHtml(options) {
   });
 }
 
-const cleanBuild = () => del(['build']);
+const cleanBuild = () => del(['build', 'staging']);
 
 function copyDynamicBuild() {
 	return gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public'));
@@ -115,28 +115,28 @@ const buildStatic = gulp.series(
 				buildStaticIndex,
 				buildStaticProjects))));
 
-function publish() {
+function publishToStaging() {
 	return gulp
 		.src(['./build/**/*', './package.json'])
-		.pipe(gulpSsh().dest('/home/protected/app'));
+		.pipe(gulp.dest('./staging'));
 }
 
 function publishPublic() {
 	return gulp
 		.src('./build/public/**/*')
-		.pipe(gulpSsh().dest('/home/protected/app/public'));
+		.pipe(gulpSsh().dest('./staging/public'));
 }
 
 function publishHtml() {
 	return gulp
 		.src('./build/public/**/*.html')
-		.pipe(gulpSsh().dest('/home/protected/app/public'));
+		.pipe(gulp.dest('./staging/public'));
 }
 
 function publishImages() {
 	return gulp
 		.src('./build/public/**/*.{png,jpg,svg}')
-		.pipe(gulpSsh().dest('/home/protected/app/public'));
+		.pipe(gulp.dest('./staging/public'));
 }
 
 const publishBiography = gulp.series(
@@ -177,11 +177,14 @@ const updateServerPackages = () =>
 		'nfsn signal-daemon Node hup'
 	]);
 
-const deploy = gulp.series(buildStatic, publish, updateServerPackages);
+const stageSite = gulp.series(buildStatic, publishToStaging);
+const deploy = gulp.series(stageSite, updateServerPackages);
 
 module.exports.deploy = deploy;
 module.exports.buildStatic = buildStatic;
+module.exports.stageSite = stageSite;
 module.exports.publishBiography = publishBiography;
 module.exports.publishResume = publishResume;
 module.exports.publishPortfolio = publishPortfolio;
 module.exports.buildPortfolio = buildPortfolio;
+

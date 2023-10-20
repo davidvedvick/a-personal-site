@@ -3,8 +3,9 @@
 docker compose build && docker compose run --rm \
   -v "$(pwd)":/src \
   -v "$(realpath "${PROJECTS_LOCATION}")":/projects -e PROJECTS_LOCATION=/projects \
-  -v "$(realpath "${BIO_PATH}")":/bio -e BIO_PATH=/bio \
-  -e BIO_AUTHOR_PICTURE="/bio/${BIO_AUTHOR_PICTURE}" \
+  -v "$(realpath "${BIO_LOCATION}")":/bio \
+  -e BIO_PATH=/bio/bio.md \
+  -e BIO_AUTHOR_PICTURE="/bio/profile-pic.jpg" \
   -e RESUME_LOCATION="/bio/resume.md" \
   -w /src -u "$(id -u)":"$(id -g)" \
   npm run build-release
@@ -12,7 +13,7 @@ docker compose build && docker compose run --rm \
 EXIT_CODE=${PIPESTATUS[0]}
 
 rsync -avzh --delete --log-file=rsync-log \
-  ./build/public/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app/public
+  ./staging "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
 EXIT_CODE=${PIPESTATUS[0]}
 
