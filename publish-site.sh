@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+rm rsync-log
+
 docker compose build && docker compose run --rm \
   -v "$(pwd)":/src \
   -v "$(realpath "${PROJECTS_LOCATION}")":/projects -e PROJECTS_LOCATION=/projects \
@@ -13,7 +15,7 @@ docker compose build && docker compose run --rm \
 EXIT_CODE=${PIPESTATUS[0]}
 
 rsync -avzh --delete --log-file=rsync-log \
-  ./staging "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
+  ./staging/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
 EXIT_CODE=${PIPESTATUS[0]}
 
