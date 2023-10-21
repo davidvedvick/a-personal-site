@@ -7,13 +7,15 @@ const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
 const parallel = require('concurrent-transform');
-const changed = require('gulp-changed');
-const imageResize = require('gulp-image-resize');
 const os = require('os');
-const appConfig = require('./app-config.json');
-const markdownPdf = require('gulp-markdown-pdf');
+const appConfig = require('./app-config');
 const path = require('path');
 const envify = require('envify');
+const { mdToPdf } = require('md-to-pdf');
+const Jimp = require("jimp");
+const projectLoader = require("./request-handlers/project-loader");
+const {promisify} = require("util");
+const fs = require("fs");
 
 const npmSassAliases = {};
 /**
@@ -44,9 +46,12 @@ const deSassify = () => sass(
 		importer: npmSassResolver
 	}).on('error', sass.logError);
 
-var production = false;
+let production = false;
+let outputDir = __dirname;
 
-var outputDir = __dirname;
+const promiseMkDir = promisify(fs.mkdir);
+
+const promiseCopyFile = promisify(fs.copyFile);
 const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
 const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
 const nodeModuleDir = path.join(__dirname, '../node_modules');
@@ -56,56 +61,51 @@ const numberOfCpus = os.cpus().length;
 // Dynamic build content
 
 function clean() {
-	return del([
-		getOutputDir('public/js'),
-		getOutputDir('public/css'),
-		getOutputDir('public/images')]);
+	return del([getOutputDir('public')]);
 }
 
 function buildJs() {
 	const destDir = getOutputDir('public/js');
 
-	var pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
-		.pipe(parallel(
-			through2.obj((file, enc, next) =>
-				browserify(file.path, { extensions: '.jsx', debug: !production })
-					.transform(envify)
-					.transform('babelify', {
-						presets: [ 
-							[
-								'@babel/preset-env', {
-									"targets": {
-										"browsers": [
-											"last 2 versions"
-										]
-									}
-								}
-							],
-							'@babel/preset-react',
-						],
-						plugins: [ '@babel/transform-runtime' ]
-					})
-					.bundle((err, res) => {
-						if (err) console.log(err);
-						// assumes file.contents is a Buffer
-						else file.contents = res;
+  let pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
+    .pipe(parallel(
+      through2.obj((file, enc, next) =>
+        browserify(file.path, {extensions: '.jsx', debug: !production})
+          .transform(envify)
+          .transform('babelify', {
+            presets: [
+              [
+                '@babel/preset-env', {
+                  "targets": {
+                    "browsers": ["last 2 versions"]
+                  }
+                }
+              ],
+              '@babel/preset-react',
+            ],
+            plugins: ['@babel/transform-runtime', '@babel/plugin-proposal-optional-chaining']
+          })
+          .bundle((err, res) => {
+            if (err) console.log(err);
+            // assumes file.contents is a Buffer
+            else file.contents = res;
 
-						next(null, file);
-					})),
-			numberOfCpus))
-		.pipe(rename({
-			dirname: '',
-			extname: '.js'
-		}));
+            next(null, file);
+          })),
+      numberOfCpus))
+    .pipe(rename({
+      dirname: '',
+      extname: '.js'
+    }));
 
-	pipe = production
+  pipe = production
 		? pipe.pipe(parallel(terser({ compress: { passes: 2, unsafe: true } }), numberOfCpus))
 		: pipe
-			.pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+			// .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
 			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
 
 	return pipe.pipe(gulp.dest(destDir));
-};
+}
 
 // copy slick carousel blobs
 function collectSlickBlobs() {
@@ -132,39 +132,57 @@ function copyPublicFonts() {
 	return gulp.src(getInputDir('fonts/*')).pipe(gulp.dest(getOutputDir('public/fonts')));
 }
 
-function buildProfileImage() {
-	return gulp
-		.src(appConfig.bio.authorPicture)
-		.pipe(imageResize({ width: 500 }))
-		.pipe(rename('profile-picture.jpg'))
-		.pipe(gulp.dest(getOutputDir('public/imgs')));
+async function buildProfileImage() {
+  const sourceProfilePicture = appConfig.bio.authorPicture;
+  const image = await Jimp.read(sourceProfilePicture);
+  const resizedImage = image.resize(Jimp.AUTO, 500);
+  await resizedImage.write(path.join(getOutputDir('public/imgs'), 'profile-picture.jpg'));
 }
 
-function buildProjectImages() {
-	const destDir = getOutputDir('public/content/projects');
-	return gulp.src(getInputDir('content/projects/**/imgs/*'))
-			.pipe(changed(destDir))
-			.pipe(parallel(
-				imageResize({ height: 300 }),
-				os.cpus().length
-			))
-			.pipe(gulp.dest(destDir));
+async function buildProjectImages() {
+  const projects = await projectLoader();
+
+  const inputDir = appConfig.projectsLocation;
+	const destDir = getOutputDir('public/projects');
+	await Promise.all(projects
+    .flatMap(p => [p.image?.url, ...p.examples.map(i => i.url)])
+    .filter(uri => uri)
+    .map(async uri => {
+      if (!uri || uri.startsWith("http://") || uri.startsWith("https://")) return;
+
+      const destination = path.join(destDir, path.relative(inputDir, uri));
+      if (path.extname(destination) === ".svg") {
+        const directory = path.dirname(destination);
+        console.log(`Making directory ${directory}.`);
+        await promiseMkDir(directory, { recursive: true })
+        await promiseCopyFile(uri, destination)
+        return;
+      }
+
+      const image = await Jimp.read(uri);
+      const resizedImage = image.resize(Jimp.AUTO, 300);
+      await resizedImage.write(destination);
+    }));
 }
 
 buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
-function buildResumePdf() {
-	return gulp
-		.src(appConfig.resumeLocation)
-		.pipe(markdownPdf({
-			remarkable: { html: true, breaks: false },
-			//cssPath: getOutputDir('public/css/layout.css'),
-			paperFormat: 'Letter'
-		}))
-		.pipe(rename({
-			extname: '.pdf'
-		}))
-		.pipe(gulp.dest(getOutputDir('public')));
+async function buildResumePdf() {
+	const resumeLocation = appConfig.resumeLocation;
+	const fileName = path.basename(resumeLocation, "md");
+
+	return await mdToPdf(
+		{ path: resumeLocation },
+		{
+			dest: path.join(getOutputDir('public'), fileName) + "pdf",
+			pdf_options: {
+				format: 'Letter',
+			},
+      launch_options: {
+        args: process.env.CHROMIUM_FLAGS.split(" ")
+      }
+		}
+	);
 }
 
 const buildSite = gulp.series(
@@ -190,6 +208,7 @@ module.exports = function(options) {
 	return {
 		build: buildSite,
 		buildImages: gulp.series(clean, buildImages),
+    buildProjectImages: buildProjectImages,
 		copyPublicFonts: copyPublicFonts,
 		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
 	};

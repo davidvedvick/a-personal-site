@@ -5,8 +5,8 @@ const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
 const notesHandler = require('./request-handlers/notes-handler');
-const appConfig = require('./app-config.json');
-const projectLoader = require('./request-handlers/project-loader')(appConfig.projectsLocation);
+const appConfig = require('./app-config.js');
+const projectLoader = require('./request-handlers/project-loader');
 
 const environmentOpts = {
     maxAge: 0
@@ -29,8 +29,9 @@ app.engine('js', require('express-react-views').createEngine());
 if ('development' === app.get('env'))
     app.use(require('errorhandler')());
 
-app.get('/', async (req, res) => {
+app.get('/', async (_req, res) => {
   try {
+    const appConfig = await promisedAppConfig;
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
     res.render('index/index', { bio: bioMarkdown });
   } catch (exception) {
@@ -40,11 +41,9 @@ app.get('/', async (req, res) => {
 
 app.get('/projects', async (req, res) => {
   try {
-    const rawProjectData = await fs.readFile(path.join(appConfig.projectsLocation, 'projects.json'));
+    const projects = await projectLoader();
 
-    portfolios = await projectLoader(rawProjectData);
-
-    res.render('project/project-list', { projects: portfolios });
+    res.render('project/project-list', { projects: projects });
   } catch (exception) {
     console.error(exception);
   }
@@ -52,6 +51,7 @@ app.get('/projects', async (req, res) => {
 
 app.get('/resume', async (req, res) => {
   try {
+    const appConfig = await promisedAppConfig;
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
     res.render('resume/resume', { resume: resumeMarkdown });
   } catch (exception) {

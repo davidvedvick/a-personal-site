@@ -6,20 +6,21 @@ const parallel = require('concurrent-transform');
 const os = require('os');
 const React = require('react');
 const ReactDomServer = require('react-dom/server');
-const appConfig = Object.assign(require('./app/app-config.json'), require('./app-config.json'));
-const path = require('path');
+const appConfig = require("./app/app-config");
 const GulpSsh = require('gulp-ssh');
+const sshConfig = require('./ssh-config');
+
 const gulpSsh = () => new GulpSsh({
 	ignoreErrors: false,
 	// set this from a config file
-	sshConfig: require('./ssh-config.json')
+	sshConfig: sshConfig
 });
 const htmlmin = require('gulp-htmlmin');
 const gulpBabel = require('gulp-babel');
 const del = require('del');
 const { promisify } = require('util');
 const fs = require('fs');
-const projectLoader = require('./app/request-handlers/project-loader')(appConfig.projectsLocation);
+const projectLoader = require('./app/request-handlers/project-loader');
 
 const numberOfCpus = os.cpus().length;
 
@@ -33,22 +34,23 @@ const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 const promiseStream = (gulpStream) => new Promise((resolve, reject) => gulpStream.on('end', resolve).on('error', reject));
 
 // Static build tasks
-var jsxToHtml = (options) =>
-	through2.obj(function (file, enc, cb) {
-		require('node-jsx').install({extension: '.jsx'});
+function jsxToHtml(options) {
+  return through2.obj(function (file, enc, cb) {
+    require('node-jsx').install({extension: '.jsx'});
 
-		var component = require(file.path);
-		component = component.default || component;
-		const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
-		file.contents = new Buffer(markup);
-		file.path = gutil.replaceExtension(file.path, '.html');
+    let component = require(file.path);
+    component = component.default || component;
+    const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
+    file.contents = new Buffer(markup);
+    file.path = gutil.replaceExtension(file.path, '.html');
 
-		this.push(file);
+    this.push(file);
 
-		cb();
-	});
+    cb();
+  });
+}
 
-const cleanBuild = () => del(['build']);
+const cleanBuild = () => del(['build', 'staging']);
 
 function copyDynamicBuild() {
 	return gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public'));
@@ -59,7 +61,7 @@ function buildServerJs() {
 		.src([ './app/**/*.js', '!./**/app-debug.js', '!./app/**/*.client.{.js,jsx}', '!./**/public/**/*', '!./**/gulpfile*.js' ], { allowEmpty: true })
 		.pipe(parallel(gulpBabel({ presets: [ ['@babel/preset-env', {
 			"targets": {
-				"node": "v8.15.1"
+				"node": "v16.19.0"
 			}
 		}] ] }), numberOfCpus))
 		.pipe(parallel(terser(), numberOfCpus))
@@ -87,9 +89,7 @@ async function buildStaticIndex() {
 }
 
 async function buildStaticProjects() {
-	const projects = await promiseReadFile(path.join(appConfig.projectsLocation, 'projects.json'));
-
-	const portfolios = await projectLoader(projects);
+	const portfolios = await projectLoader();
 
 	await promiseStream(gulp
 		.src('./build/views/project/project-list.js')
@@ -115,28 +115,28 @@ const buildStatic = gulp.series(
 				buildStaticIndex,
 				buildStaticProjects))));
 
-function publish() {
+function publishToStaging() {
 	return gulp
-		.src(['./build/**/*', './package.json'])
-		.pipe(gulpSsh().dest('/home/protected/app'));
+		.src(['./build/**/*', './package.json', './package-lock.json'])
+		.pipe(gulp.dest('./staging'));
 }
 
 function publishPublic() {
 	return gulp
 		.src('./build/public/**/*')
-		.pipe(gulpSsh().dest('/home/protected/app/public'));
+		.pipe(gulpSsh().dest('./staging/public'));
 }
 
 function publishHtml() {
 	return gulp
 		.src('./build/public/**/*.html')
-		.pipe(gulpSsh().dest('/home/protected/app/public'));
+		.pipe(gulp.dest('./staging/public'));
 }
 
 function publishImages() {
 	return gulp
-		.src('./build/public/**/*')
-		.pipe(gulpSsh().dest('/home/protected/app/public'));
+		.src('./build/public/**/*.{png,jpg,svg}')
+		.pipe(gulp.dest('./staging/public'));
 }
 
 const publishBiography = gulp.series(
@@ -153,12 +153,15 @@ const publishResume = gulp.series(
 	buildStaticResume,
 	publishPublic);
 
-const publishProjects = gulp.series(
-	cleanBuild,
-	appBuild.buildImages,
-	copyDynamicBuild,
-	buildServerJs,
-	buildStaticProjects,
+const buildPortfolio = gulp.series(
+  cleanBuild,
+  appBuild.buildProjectImages,
+  copyDynamicBuild,
+  buildServerJs,
+  buildStaticProjects);
+
+const publishPortfolio = gulp.series(
+  buildPortfolio,
 	publishHtml,
 	publishImages);
 
@@ -174,10 +177,14 @@ const updateServerPackages = () =>
 		'nfsn signal-daemon Node hup'
 	]);
 
-const deploy = gulp.series(buildStatic, publish, updateServerPackages);
+const stageSite = gulp.series(buildStatic, publishToStaging);
+const deploy = gulp.series(stageSite, updateServerPackages);
 
 module.exports.deploy = deploy;
 module.exports.buildStatic = buildStatic;
+module.exports.stageSite = stageSite;
 module.exports.publishBiography = publishBiography;
 module.exports.publishResume = publishResume;
-module.exports.publishProjects = publishProjects;
+module.exports.publishPortfolio = publishPortfolio;
+module.exports.buildPortfolio = buildPortfolio;
+
