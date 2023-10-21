@@ -14,21 +14,16 @@ docker compose build && docker compose run --rm \
 
 EXIT_CODE=${PIPESTATUS[0]}
 
-rsync -avzh --delete --log-file=rsync-log \
+rsync -avzh --delete --log-file=rsync-log --exclude=node_modules \
   ./staging/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
 EXIT_CODE=${PIPESTATUS[0]}
 
-if grep -q rsync-log ">f++++++ package.*\.json"; then
+if grep -q rsync-log ">f[+tp]{1,6} package.*\.json"; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
   -t "cd /home/protected/app/
     && chmod +x start-server.sh
-    && npm install --production
-    && npm update --production
-    && npm prune --production
-    && npm dedupe
-    && rm -rf /home/tmp/npm*
-    && nfsn signal-daemon Node hup",
+    && npm install --omit=dev && npm prune --omit=dev && npm dedupe && rm -rf /home/tmp/npm* && nfsn signal-daemon Node hup",
 fi
 
 exit "${EXIT_CODE}"
