@@ -21,9 +21,11 @@ EXIT_CODE=${PIPESTATUS[0]}
 
 if grep -q -E '<f[\.tp]+[[:blank:]]package.*\.json' rsync-log; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
-  -t "cd /home/protected/app/
-    && chmod +x start-server.sh
-    && npm install --omit=dev && npm prune --omit=dev && npm dedupe && rm -rf /home/tmp/npm* && nfsn signal-daemon Node hup",
+  -t "cd /home/protected/app/ \
+    && chmod +x start-server.sh \
+    && npm install --omit=dev && npm prune --omit=dev && npm dedupe \
+    && rm -rf /home/tmp/npm* \
+    && nfsn signal-daemon Node hup",
 fi
 
 exit "${EXIT_CODE}"
