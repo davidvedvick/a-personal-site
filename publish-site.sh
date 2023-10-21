@@ -14,7 +14,7 @@ docker compose build && docker compose run --rm \
 
 EXIT_CODE=${PIPESTATUS[0]}
 
-rsync -avzh --delete --log-file=rsync-log --exclude=node_modules \
+rsync -avzh --delete --log-file=rsync-log --exclude=node_modules --exclude app-config.json \
   ./staging/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
 EXIT_CODE=${PIPESTATUS[0]}
