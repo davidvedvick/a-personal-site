@@ -14,10 +14,20 @@ docker compose build && docker compose run --rm \
 
 EXIT_CODE=${PIPESTATUS[0]}
 
+if [ "$EXIT_CODE" -ne 0 ]; then
+  exit "${EXIT_CODE}"
+fi
+
 rsync -avzh --delete --log-file=rsync-log --exclude=node_modules --exclude app-config.json \
   ./staging/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
-EXIT_CODE=${PIPESTATUS[0]}
+EXIT_CODE=$?
+
+if [ "$EXIT_CODE" -ne 0 ]; then
+  exit "${EXIT_CODE}"
+fi
+
+cat rsync-log
 
 if grep -q -E '<f[\.tp]+[[:blank:]]package.*\.json' rsync-log; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
@@ -27,5 +37,7 @@ if grep -q -E '<f[\.tp]+[[:blank:]]package.*\.json' rsync-log; then
     && rm -rf /home/tmp/npm* \
     && nfsn signal-daemon Node hup",
 fi
+
+EXIT_CODE=$?
 
 exit "${EXIT_CODE}"
