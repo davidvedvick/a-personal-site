@@ -19,7 +19,7 @@ rsync -avzh --delete --log-file=rsync-log --exclude=node_modules \
 
 EXIT_CODE=${PIPESTATUS[0]}
 
-if grep -q rsync-log ">f[+tp]{1,6} package.*\.json"; then
+if grep -q -E '<f[\.tp]+[[:blank:]]package.*\.json' rsync-log; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
   -t "cd /home/protected/app/
     && chmod +x start-server.sh

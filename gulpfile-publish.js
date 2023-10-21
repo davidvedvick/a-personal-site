@@ -117,7 +117,7 @@ const buildStatic = gulp.series(
 
 function publishToStaging() {
 	return gulp
-		.src(['./build/**/*', './package.json'])
+		.src(['./build/**/*', './package.json', './package-lock.json'])
 		.pipe(gulp.dest('./staging'));
 }
 
