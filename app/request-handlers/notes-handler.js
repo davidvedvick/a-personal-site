@@ -23,7 +23,7 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
     notesConfig.gitPath = notesConfig.gitPath || notesConfig.path;
 
     const newLine = '\n';
-    const propMatch = /(^[a-zA-Z_]*)\:(.*)/;
+    const propMatch = /(^[a-zA-Z_]*):(.*)/;
 
     localApp.use('/notes', express.static(notesConfig.path, { maxAge: environmentOpts.maxAge || 0 }));
 

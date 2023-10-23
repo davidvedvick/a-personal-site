@@ -2,7 +2,7 @@ import { marked } from 'marked';
 import { div, hh } from 'react-hyperscript-helpers';
 import highlightJs from "highlight.js";
 
-const Features = hh((props) =>
+export default hh((props) =>
 	div(
     '.features',
     {
@@ -18,5 +18,3 @@ const Features = hh((props) =>
     }
   )
 );
-
-module.exports = Features;
