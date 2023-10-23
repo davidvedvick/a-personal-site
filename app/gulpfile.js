@@ -180,7 +180,7 @@ async function buildResumePdf() {
 			},
 			launch_options: {
 				args: (process.env.CHROMIUM_FLAGS ?? "").split(" "),
-				timeout: 60_000
+				timeout: 60_000,
 			},
 		},
 	);
