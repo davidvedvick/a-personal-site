@@ -18,7 +18,7 @@ if [ "$EXIT_CODE" -ne 0 ]; then
   exit "${EXIT_CODE}"
 fi
 
-rsync -avzh --delete --log-file=rsync-log --exclude=node_modules --exclude app-config.json \
+rsync -avzh --delete --log-file=rsync-log --exclude app-config.json \
   ./build/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
 EXIT_CODE=$?
