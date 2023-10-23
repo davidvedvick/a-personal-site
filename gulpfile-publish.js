@@ -125,7 +125,7 @@ async function buildStaticProjects() {
 		.pipe(gulp.dest('./build/public/html')));
 }
 
-const copyNodeProjectData = () => gulp.src(['./package.json', './app/start-server.sh']).pipe(gulp.dest('./build'));
+const copyNodeProjectData = () => gulp.src(['./app/start-server.sh']).pipe(gulp.dest('./build'));
 
 const buildStatic = gulp.series(
 	cleanBuild,
@@ -141,12 +141,6 @@ const buildStatic = gulp.series(
 		buildStaticProjects,
   )
 );
-
-function publishToStaging() {
-	return gulp
-		.src('./build/**/*')
-		.pipe(gulp.dest('./staging'));
-}
 
 function publishPublic() {
 	return gulp
@@ -204,12 +198,10 @@ const updateServerPackages = () =>
 		'nfsn signal-daemon Node hup'
 	]);
 
-const stageSite = gulp.series(buildStatic, publishToStaging);
-const deploy = gulp.series(stageSite, updateServerPackages);
+const deploy = gulp.series(buildStatic, updateServerPackages);
 
 module.exports.deploy = deploy;
 module.exports.buildStatic = buildStatic;
-module.exports.stageSite = stageSite;
 module.exports.publishBiography = publishBiography;
 module.exports.publishResume = publishResume;
 module.exports.publishPortfolio = publishPortfolio;

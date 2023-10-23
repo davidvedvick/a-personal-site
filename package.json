@@ -11,7 +11,7 @@
     "publish-biography": "gulp --gulpfile=gulpfile-publish.js publishBiography",
     "publish-resume": "npm install && gulp --gulpfile=gulpfile-publish.js publishResume",
     "build-portfolio": "npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",
-    "build-release": "npm install && gulp --gulpfile gulpfile-publish.js stageSite"
+    "build-release": "npm install && gulp --gulpfile gulpfile-publish.js buildStatic"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.4",
