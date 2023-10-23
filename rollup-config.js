@@ -11,7 +11,7 @@ const babelOptions = {
     }],
     '@babel/preset-react'
   ],
-  plugins: ['@babel/transform-runtime', '@babel/plugin-proposal-optional-chaining'/*, '@babel/plugin-transform-modules-commonjs', '@babel/plugin-syntax-dynamic-import'*/],
+  plugins: ['@babel/transform-runtime', '@babel/plugin-proposal-optional-chaining'],
   parserOpts: {
     allowImportExportEverywhere: true
   }
@@ -19,8 +19,13 @@ const babelOptions = {
 
 module.exports = {
   plugins: [
-    commonjs({ ignoreDynamicRequires: true }),
-    nodeResolve({ preferBuiltins: true }),
+    commonjs({
+      ignoreDynamicRequires: true,
+    }),
+    nodeResolve({
+      preferBuiltins: true,
+      // include: "node_modules/**",
+    }),
     json(),
     babel.getBabelOutputPlugin(babelOptions)
   ]
