@@ -179,9 +179,10 @@ async function buildResumePdf() {
 				format: 'Letter',
 			},
 			launch_options: {
-				args: (process.env.CHROMIUM_FLAGS ?? "").split(" ")
-			}
-		}
+				args: (process.env.CHROMIUM_FLAGS ?? "").split(" "),
+				timeout: 60_000
+			},
+		},
 	);
 }
 
