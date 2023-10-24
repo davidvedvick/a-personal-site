@@ -28,6 +28,7 @@ export default function (localApp, notesConfig, environmentOpts) {
 
   const newLine = '\n';
   const propMatch = /(^[a-zA-Z_]*):(.*)/;
+  const cachedHtml = new Map();
 
   localApp.use('/notes', express.static(notesConfig.path, {maxAge: environmentOpts.maxAge || 0}));
 
@@ -131,16 +132,26 @@ export default function (localApp, notesConfig, environmentOpts) {
 
   localApp.get('/notes', async (req, res) => {
     try {
-      const promisedTag = getNotesRepoTag();
-      const promisedNotes = getNotes(1);
-
-      res.set('ETag', await promisedTag);
+      const cacheTag = await getNotesRepoTag();
+      res.set('ETag', cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
 
-      const component = NotesContainer.default || NotesContainer;
+      const cachedPageTagPair = cachedHtml.get(req.path);
+      if (cachedPageTagPair) {
+        const [cachedTag, cachedPage] = cachedPageTagPair;
+        if (cacheTag === cachedTag) {
+          res.send(cachedPage);
+          return;
+        }
+      }
+
+      const promisedNotes = getNotes(1);
+      const component = NotesContainer;
 
       let markup = '<!DOCTYPE html>';
       markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {notes: await promisedNotes}));
+
+      cachedHtml.set(req.path, [cacheTag, markup]);
 
       res.send(markup);
     } catch (exception) {
@@ -149,7 +160,7 @@ export default function (localApp, notesConfig, environmentOpts) {
     }
   });
 
-  localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/([\\w]*)/, async (req, res) => {
+  localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/([\w\-]*)/, async (req, res) => {
     const year = req.params[0];
     const month = req.params[1];
     const day = req.params[2];
@@ -158,15 +169,26 @@ export default function (localApp, notesConfig, environmentOpts) {
     const filePath = path.join(notesConfig.path, year + month + day + '-' + title + '.md');
 
     try {
-      const promisedTag = getFileTag(filePath);
-      const promisedNote = parseNote(filePath);
-
-      res.set('ETag', await promisedTag);
+      const cacheTag = await getFileTag(filePath);
+      res.set('ETag', cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
 
+      const cachedPageTagPair = cachedHtml.get(req.path);
+      if (cachedPageTagPair) {
+        const [cachedTag, cachedPage] = cachedPageTagPair;
+        if (cacheTag === cachedTag) {
+          res.send(cachedPage);
+          return;
+        }
+      }
+
+      const promisedNote = parseNote(filePath);
+
       let markup = '<!DOCTYPE html>';
-      const component = NoteContainer.default || NoteContainer;
+      const component = NoteContainer;
       markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {note: await promisedNote}));
+
+      cachedHtml.set(req.path, [cacheTag, markup]);
 
       res.send(markup);
     } catch (exception) {
