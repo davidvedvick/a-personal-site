@@ -1,29 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const glob = require('globby');
-const express = require('express');
-const exec = require('child_process').exec;
-const readline = require('readline');
-const ReactDOMServer = require("react-dom/server");
-const React = require("react");
-
-require("@babel/register")({
-  presets: [
-    [
-      '@babel/preset-env',
-      {
-        targets: {
-          "node": 16
-        },
-      }
-    ],
-    '@babel/preset-react'
-  ],
-  plugins: ['@babel/transform-flow-strip-types'],
-});
-
-const NoteContainer = require('../views/notes/note-container');
-const NotesContainer = require("../views/notes/notes-container");
+import fs from 'fs';
+import path from 'path';
+import glob from 'globby';
+import express from 'express';
+import {exec} from 'child_process';
+import readline from 'readline';
+import ReactDOMServer from "react-dom/server";
+import React from "react";
+import NoteContainer from '../views/notes/note-container';
+import NotesContainer from "../views/notes/notes-container";
 
 const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
   if (err) {
@@ -37,7 +21,7 @@ const promiseExec = (command) => new Promise((resolve, reject) => exec(command, 
   resolve(out);
 }));
 
-module.exports = (localApp, notesConfig, environmentOpts) => {
+export default function (localApp, notesConfig, environmentOpts) {
   environmentOpts = environmentOpts || {};
   notesConfig.path = notesConfig.path || 'content/notes';
   notesConfig.gitPath = notesConfig.gitPath || notesConfig.path;

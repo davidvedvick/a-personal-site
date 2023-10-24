@@ -4,6 +4,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
+
+require("@babel/register")({
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          "node": 16
+        },
+      }
+    ],
+    '@babel/preset-react'
+  ],
+  plugins: ['@babel/transform-flow-strip-types'],
+});
+
 const notesHandler = require('./request-handlers/notes-handler');
 const appConfig = require('./app-config.js');
 const projectLoader = require('./request-handlers/project-loader');
@@ -58,7 +74,7 @@ app.get('/resume', async (req, res) => {
   }
 });
 
-notesHandler(app, appConfig.notes, environmentOpts);
+notesHandler.default(app, appConfig.notes, environmentOpts);
 
 app.listen(3000);
 
