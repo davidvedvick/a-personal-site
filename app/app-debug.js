@@ -25,13 +25,13 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'js');
 app.engine('js', require('express-react-views').createEngine());
 
+app.set('env', 'development');
+
 // development only
-if ('development' === app.get('env'))
-    app.use(require('errorhandler')());
+app.use(require('errorhandler')());
 
 app.get('/', async (_req, res) => {
   try {
-    const appConfig = await promisedAppConfig;
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
     res.render('index/index', { bio: bioMarkdown });
   } catch (exception) {
@@ -51,7 +51,6 @@ app.get('/projects', async (req, res) => {
 
 app.get('/resume', async (req, res) => {
   try {
-    const appConfig = await promisedAppConfig;
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
     res.render('resume/resume', { resume: resumeMarkdown });
   } catch (exception) {

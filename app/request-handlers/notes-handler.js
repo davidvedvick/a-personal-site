@@ -5,7 +5,23 @@ const express = require('express');
 const exec = require('child_process').exec;
 const readline = require('readline');
 const ReactDOMServer = require("react-dom/server");
-const react = require("react");
+const React = require("react");
+
+require("@babel/register")({
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          "node": 16
+        },
+      }
+    ],
+    '@babel/preset-react'
+  ],
+  plugins: ['@babel/transform-flow-strip-types'],
+});
+
 const NoteContainer = require('../views/notes/note-container');
 const NotesContainer = require("../views/notes/notes-container");
 
@@ -137,8 +153,10 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
       res.set('ETag', await promisedTag);
       res.set('Cache-Control', 'public, max-age=0');
 
+      const component = NotesContainer.default || NotesContainer;
+
       let markup = '<!DOCTYPE html>';
-      markup += ReactDOMServer.renderToString(react.createElement(NotesContainer, {note: await promisedNotes}));
+      markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {notes: await promisedNotes}));
 
       res.send(markup);
     } catch (exception) {
@@ -163,7 +181,8 @@ module.exports = (localApp, notesConfig, environmentOpts) => {
       res.set('Cache-Control', 'public, max-age=0');
 
       let markup = '<!DOCTYPE html>';
-      markup += ReactDOMServer.renderToString(react.createElement(NoteContainer, {note: await promisedNote}));
+      const component = NoteContainer.default || NoteContainer;
+      markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {note: await promisedNote}));
 
       res.send(markup);
     } catch (exception) {
