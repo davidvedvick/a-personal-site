@@ -129,11 +129,10 @@ const copyNodeProjectData = () => gulp.src(['./app/start-server.sh']).pipe(gulp.
 
 const buildStatic = gulp.series(
 	cleanBuild,
+	appBuild.build,
 	gulp.parallel(
 		appBuild.copyPublicFonts,
-		gulp.series(
-			appBuild.build,
-			copyDynamicBuild),
+		copyDynamicBuild,
 		copyNodeProjectData,
 		buildServerJs,
 		buildStaticIndex,
