@@ -4,6 +4,22 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
+
+require("@babel/register")({
+  presets: [
+    [
+      '@babel/preset-env',
+      {
+        targets: {
+          "node": 16
+        },
+      }
+    ],
+    '@babel/preset-react'
+  ],
+  plugins: ['@babel/transform-flow-strip-types'],
+});
+
 const notesHandler = require('./request-handlers/notes-handler');
 const appConfig = require('./app-config.js');
 const projectLoader = require('./request-handlers/project-loader');
@@ -25,13 +41,13 @@ app.set('views', __dirname + '/views');
 app.set('view engine', 'js');
 app.engine('js', require('express-react-views').createEngine());
 
+app.set('env', 'development');
+
 // development only
-if ('development' === app.get('env'))
-    app.use(require('errorhandler')());
+app.use(require('errorhandler')());
 
 app.get('/', async (_req, res) => {
   try {
-    const appConfig = await promisedAppConfig;
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
     res.render('index/index', { bio: bioMarkdown });
   } catch (exception) {
@@ -51,7 +67,6 @@ app.get('/projects', async (req, res) => {
 
 app.get('/resume', async (req, res) => {
   try {
-    const appConfig = await promisedAppConfig;
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
     res.render('resume/resume', { resume: resumeMarkdown });
   } catch (exception) {
@@ -59,7 +74,7 @@ app.get('/resume', async (req, res) => {
   }
 });
 
-notesHandler(app, appConfig.notes, environmentOpts);
+notesHandler.default(app, appConfig.notes, environmentOpts);
 
 app.listen(3000);
 

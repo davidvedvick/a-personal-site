@@ -172,16 +172,17 @@ async function buildResumePdf() {
 	const fileName = path.basename(resumeLocation, "md");
 
 	return await mdToPdf(
-		{ path: resumeLocation },
+		{path: resumeLocation},
 		{
 			dest: path.join(getOutputDir('public'), fileName) + "pdf",
 			pdf_options: {
 				format: 'Letter',
 			},
-      launch_options: {
-        args: process.env.CHROMIUM_FLAGS.split(" ")
-      }
-		}
+			launch_options: {
+				args: (process.env.CHROMIUM_FLAGS ?? "").split(" "),
+				timeout: 60_000,
+			},
+		},
 	);
 }
 
@@ -208,7 +209,7 @@ module.exports = function(options) {
 	return {
 		build: buildSite,
 		buildImages: gulp.series(clean, buildImages),
-    buildProjectImages: buildProjectImages,
+		buildProjectImages: buildProjectImages,
 		copyPublicFonts: copyPublicFonts,
 		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
 	};

@@ -18,8 +18,8 @@ if [ "$EXIT_CODE" -ne 0 ]; then
   exit "${EXIT_CODE}"
 fi
 
-rsync -avzh --delete --log-file=rsync-log --exclude=node_modules --exclude app-config.json \
-  ./staging/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
+rsync -avzh --delete --log-file=rsync-log --exclude app-config.json \
+  ./build/ "$SSH_USERNAME"@"$SSH_HOST":/home/protected/app
 
 EXIT_CODE=$?
 
@@ -29,13 +29,11 @@ fi
 
 cat rsync-log
 
-if grep -q -E '<f[\.tp]+[[:blank:]]package.*\.json' rsync-log; then
+if grep -q -E '<f[\.\+stp]+[[:blank:]]app-release.js' rsync-log; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
   -t "cd /home/protected/app/ \
     && chmod +x start-server.sh \
-    && npm install --omit=dev && npm prune --omit=dev && npm dedupe --omit=dev \
-    && rm -rf /home/tmp/npm* \
-    && nfsn signal-daemon Node hup",
+    && nfsn signal-daemon Node term",
 fi
 
 EXIT_CODE=$?

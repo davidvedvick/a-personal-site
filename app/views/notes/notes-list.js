@@ -43,8 +43,7 @@ class NotesList extends React.Component {
 	}
 
 	render () {
-		// notes objects should look like "{title, date, text}". don't include private
-		// ones
+		// notes objects should look like "{title, date, text}". don't include private ones
 		const noteNodes = (this.state.notes || [])
 			.map((note) => Note({ note: note, key: note.hash }));
 
