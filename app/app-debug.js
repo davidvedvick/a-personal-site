@@ -4,6 +4,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const favIcon = require('serve-favicon');
 const methodOverride = require('method-override');
+const ReactDOMServer = require("react-dom/server");
+const appConfig = require('./app-config.js');
+const projectLoader = require('./request-handlers/project-loader');
 
 require("@babel/register")({
   presets: [
@@ -19,10 +22,10 @@ require("@babel/register")({
   ],
   plugins: ['@babel/transform-flow-strip-types'],
 });
-
 const notesHandler = require('./request-handlers/notes-handler');
-const appConfig = require('./app-config.js');
-const projectLoader = require('./request-handlers/project-loader');
+const index = require('./views/index/index');
+const projectList = require('./views/project/project-list');
+const resume = require('./views/resume/resume');
 
 const environmentOpts = {
     maxAge: 0
@@ -39,17 +42,22 @@ app.use(methodOverride());
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'js');
-app.engine('js', require('express-react-views').createEngine());
 
 app.set('env', 'development');
 
 // development only
 app.use(require('errorhandler')());
 
+const docType = '<!DOCTYPE html>';
+function renderElement(element, options) {
+  const markup = ReactDOMServer.renderToStaticMarkup(React.createElement(element, options));
+  return docType + markup;
+}
+
 app.get('/', async (_req, res) => {
   try {
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
-    res.render('index/index', { bio: bioMarkdown });
+    res.send(renderElement(index.default, { bio: bioMarkdown }));
   } catch (exception) {
     console.error(exception);
   }
@@ -58,8 +66,7 @@ app.get('/', async (_req, res) => {
 app.get('/projects', async (req, res) => {
   try {
     const projects = await projectLoader();
-
-    res.render('project/project-list', { projects: projects });
+    res.send(renderElement(projectList.default, { projects: projects }))
   } catch (exception) {
     console.error(exception);
   }
@@ -68,7 +75,7 @@ app.get('/projects', async (req, res) => {
 app.get('/resume', async (req, res) => {
   try {
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
-    res.render('resume/resume', { resume: resumeMarkdown });
+    res.send(renderElement(resume.default, { resume: resumeMarkdown }))
   } catch (exception) {
     console.log(exception);
   }

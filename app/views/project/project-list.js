@@ -25,4 +25,4 @@ const Index = hh((props) =>
         .map((project) => ProjectDetails({ project: project }))
     ]));
 
-module.exports = Index;
+export default Index;

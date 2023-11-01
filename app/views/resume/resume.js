@@ -11,4 +11,4 @@ const Resume = hh((props) => LayoutFactory({ subheader: 'Resume' }, [
 	])
 ]));
 
-module.exports = Resume;
+export default Resume;
