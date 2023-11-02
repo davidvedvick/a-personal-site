@@ -1,3 +1,6 @@
+import { createRequire } from "module"
+const require = createRequire(import.meta.url);
+
 const gulp = require('gulp');
 const through2 = require('through2');
 const React = require('react');
@@ -140,22 +143,9 @@ const buildStatic = gulp.series(
 		buildStaticProjects,
   )
 );
-
-function publishPublic() {
-	return gulp
-		.src('./build/public/**/*')
-		.pipe(gulpSsh().dest('./staging/public'));
-}
-
 function publishHtml() {
 	return gulp
 		.src('./build/public/**/*.html')
-		.pipe(gulp.dest('./staging/public'));
-}
-
-function publishImages() {
-	return gulp
-		.src('./build/public/**/*.{png,jpg,svg}')
 		.pipe(gulp.dest('./staging/public'));
 }
 
@@ -165,13 +155,12 @@ const publishBiography = gulp.series(
 	buildStaticIndex,
 	publishHtml);
 
-const publishResume = gulp.series(
-	cleanBuild,
-	appBuild.buildResumePdf,
-	copyDynamicBuild,
-	buildServerJs,
-	buildStaticResume,
-	publishPublic);
+const buildResume = gulp.series(
+  cleanBuild,
+  appBuild.buildResumePdf,
+  copyDynamicBuild,
+  buildServerJs,
+  buildStaticResume);
 
 const buildPortfolio = gulp.series(
   cleanBuild,
@@ -179,11 +168,6 @@ const buildPortfolio = gulp.series(
   copyDynamicBuild,
   buildServerJs,
   buildStaticProjects);
-
-const publishPortfolio = gulp.series(
-  buildPortfolio,
-	publishHtml,
-	publishImages);
 
 const updateServerPackages = () =>
 	gulpSsh().shell([
@@ -202,7 +186,6 @@ const deploy = gulp.series(buildStatic, updateServerPackages);
 module.exports.deploy = deploy;
 module.exports.buildStatic = buildStatic;
 module.exports.publishBiography = publishBiography;
-module.exports.publishResume = publishResume;
-module.exports.publishPortfolio = publishPortfolio;
 module.exports.buildPortfolio = buildPortfolio;
+module.exports.buildResume = buildResume;
 

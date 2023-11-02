@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "Home page for David Vedvick.",
   "main": "app/app-debug.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && node app-release.js",
     "debug": "cd app && gulp && node app-debug.js",
     "deploy": "gulp --gulpfile=gulpfile-publish.js deploy",
     "publish-biography": "gulp --gulpfile=gulpfile-publish.js publishBiography",
-    "publish-resume": "npm install && gulp --gulpfile=gulpfile-publish.js publishResume",
+    "build-resume": "npm install && gulp --gulpfile=gulpfile-publish.js buildResume",
     "build-portfolio": "npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",
     "build-release": "npm install && gulp --gulpfile gulpfile-publish.js buildStatic"
   },
