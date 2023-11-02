@@ -1,9 +1,9 @@
-const portfolio = require('codefolio');
-const path = require('path');
-const glob = require('globby');
-const appConfig = require("../app-config");
+import portfolio from 'codefolio';
+import path from 'path';
+import glob from 'globby';
+import appConfig from "../app-config.js";
 
-module.exports = async () => {
+export default async () => {
   const pattern = path.join(appConfig.projectsLocation, "*", "README.md");
 
   console.log("Searching for projects using `%s`...", pattern);

@@ -4,10 +4,10 @@ import glob from 'globby';
 import express from 'express';
 import {exec} from 'child_process';
 import readline from 'readline';
-import ReactDOMServer from "react-dom/server";
+import ReactDOMServer from "react-dom/server.node.js";
 import React from "react";
-import NoteContainer from '../views/notes/note-container';
-import NotesContainer from "../views/notes/notes-container";
+import NoteContainer from '../views/notes/note-container.js';
+import NotesContainer from "../views/notes/notes-container.js";
 
 const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
   if (err) {

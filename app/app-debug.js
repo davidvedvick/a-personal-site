@@ -1,31 +1,24 @@
-const fs = require('fs').promises;
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const favIcon = require('serve-favicon');
-const methodOverride = require('method-override');
-const ReactDOMServer = require("react-dom/server");
-const appConfig = require('./app-config.js');
-const projectLoader = require('./request-handlers/project-loader');
+import { promises as fs } from 'fs';
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import favIcon from 'serve-favicon';
+import methodOverride from 'method-override';
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+import errorHandler from 'errorhandler';
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+import React from "react";
+import ReactDOMServer from "react-dom/server.node.js";
 
-require("@babel/register")({
-  presets: [
-    [
-      '@babel/preset-env',
-      {
-        targets: {
-          "node": 16
-        },
-      }
-    ],
-    '@babel/preset-react'
-  ],
-  plugins: ['@babel/transform-flow-strip-types'],
-});
-const notesHandler = require('./request-handlers/notes-handler');
-const index = require('./views/index/index');
-const projectList = require('./views/project/project-list');
-const resume = require('./views/resume/resume');
+import notesHandler from './request-handlers/notes-handler.js';
+import appConfig from './app-config.js';
+import projectLoader from './request-handlers/project-loader.js';
+import index from './views/index/index.js';
+import projectList from './views/project/project-list.js';
+import resume from './views/resume/resume.js';
+
 
 const environmentOpts = {
     maxAge: 0
@@ -46,7 +39,7 @@ app.set('view engine', 'js');
 app.set('env', 'development');
 
 // development only
-app.use(require('errorhandler')());
+app.use(errorHandler());
 
 const docType = '<!DOCTYPE html>';
 function renderElement(element, options) {
@@ -57,7 +50,7 @@ function renderElement(element, options) {
 app.get('/', async (_req, res) => {
   try {
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
-    res.send(renderElement(index.default, { bio: bioMarkdown }));
+    res.send(renderElement(index, { bio: bioMarkdown }));
   } catch (exception) {
     console.error(exception);
   }
@@ -66,7 +59,7 @@ app.get('/', async (_req, res) => {
 app.get('/projects', async (req, res) => {
   try {
     const projects = await projectLoader();
-    res.send(renderElement(projectList.default, { projects: projects }))
+    res.send(renderElement(projectList, { projects: projects }))
   } catch (exception) {
     console.error(exception);
   }
@@ -75,13 +68,13 @@ app.get('/projects', async (req, res) => {
 app.get('/resume', async (req, res) => {
   try {
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
-    res.send(renderElement(resume.default, { resume: resumeMarkdown }))
+    res.send(renderElement(resume, { resume: resumeMarkdown }))
   } catch (exception) {
     console.log(exception);
   }
 });
 
-notesHandler.default(app, appConfig.notes, environmentOpts);
+notesHandler(app, appConfig.notes, environmentOpts);
 
 app.listen(3000);
 

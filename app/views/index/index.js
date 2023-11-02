@@ -1,5 +1,7 @@
-import { i, div, img, a } from 'react-hyperscript-helpers';
-import LayoutFactory from '../layout';
+import pkg from 'react-hyperscript-helpers';
+const {  div, img } = pkg;
+
+import LayoutFactory from '../layout.js';
 import { marked } from 'marked';
 
 const Index = (props) => LayoutFactory([

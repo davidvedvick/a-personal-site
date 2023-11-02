@@ -1,6 +1,7 @@
-import { div, a, img, hh } from 'react-hyperscript-helpers';
-import LayoutFactory from '../layout';
+import LayoutFactory from '../layout.js';
 import { marked } from 'marked';
+import pkg from 'react-hyperscript-helpers';
+const { div, a, img, hh } = pkg;
 
 const Resume = hh((props) => LayoutFactory({ subheader: 'Resume' }, [
 	div('.resume', [
