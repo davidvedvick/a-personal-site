@@ -13,7 +13,7 @@ import React from "react";
 import ReactDOMServer from "react-dom/server.node.js";
 
 import notesHandler from './request-handlers/notes-handler.js';
-import appConfig from './app-config.js';
+import appConfig from './app-config.cjs';
 import projectLoader from './request-handlers/project-loader.js';
 import index from './views/index/index.js';
 import projectList from './views/project/project-list.js';

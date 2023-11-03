@@ -1,5 +1,5 @@
-import requireGlob from 'require-glob';
-import path from "path";
+const requireGlob = require('require-glob');
+const path = require('path');
 
 // Load the app configs, starting from the working directory of the process
 function loadConfigs() {
@@ -44,4 +44,4 @@ function loadConfigs() {
   };
 }
 
-export default loadConfigs();
+module.exports = loadConfigs();

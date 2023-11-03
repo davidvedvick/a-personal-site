@@ -2,7 +2,7 @@ import { createRequire } from "module"
 const require = createRequire(import.meta.url);
 
 import projectLoader from "./request-handlers/project-loader.js";
-import appConfig from './app-config.js';
+import appConfig from './app-config.cjs';
 
 import gulp from 'gulp';
 import sourcemaps from 'gulp-sourcemaps';
@@ -213,19 +213,17 @@ const buildSite = gulp.series(
 // 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
 // });
 
-// module.exports = function(options) {
-// 	production = options.production || production;
-// 	outputDir = options.outputDir || outputDir;
-//
-// 	return {
-// 		build: buildSite,
-// 		buildImages: gulp.series(clean, buildImages),
-// 		buildProjectImages: buildProjectImages,
-// 		copyPublicFonts: copyPublicFonts,
-// 		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
-// 	};
-// };
-//
-// module.exports.default = buildSite;
+export function include(options) {
+  production = options.production || production;
+	outputDir = options.outputDir || outputDir;
+
+  return {
+    build: buildSite,
+    buildImages: gulp.series(clean, buildImages),
+    buildProjectImages: buildProjectImages,
+    copyPublicFonts: copyPublicFonts,
+    buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
+  };
+}
 
 export default buildSite;

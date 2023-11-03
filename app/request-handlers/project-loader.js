@@ -1,7 +1,7 @@
-import portfolio from 'codefolio';
+import * as portfolio from 'codefolio';
 import path from 'path';
 import glob from 'globby';
-import appConfig from "../app-config.js";
+import appConfig from "../app-config.cjs";
 
 export default async () => {
   const pattern = path.join(appConfig.projectsLocation, "*", "README.md");
