@@ -29,7 +29,7 @@ fi
 
 cat rsync-log
 
-if grep -q -E '<f[\.\+stp]+[[:blank:]]app-release.js' rsync-log; then
+if grep -q -E '<f[\.\+stp]+[[:blank:]]app-release.[cm]?js' rsync-log; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
   -t "cd /home/protected/app/ \
     && chmod +x start-server.sh \
