@@ -1,5 +1,6 @@
-import ScreenshotDetails from './../screenshot-details/screenshot-details';
-import { div, hh } from 'react-hyperscript-helpers';
+import ScreenshotDetails from './../screenshot-details/screenshot-details.js';
+import pkg from 'react-hyperscript-helpers';
+const { div, hh } = pkg;
 
 export default hh((props) => {
   const screenshotNodes = props.images.map(image => {

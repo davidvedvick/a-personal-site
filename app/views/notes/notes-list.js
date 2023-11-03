@@ -1,6 +1,7 @@
 import React from 'react';
-import Note from './note/note';
-import { div, hh } from 'react-hyperscript-helpers';
+import Note from './note/note.js';
+import pkg from 'react-hyperscript-helpers';
+const { div, hh } = pkg;
 
 class NotesList extends React.Component {
 	constructor (props) {

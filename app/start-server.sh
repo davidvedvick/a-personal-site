@@ -1,1 +1,1 @@
-node app-release.js
+node app-release.cjs

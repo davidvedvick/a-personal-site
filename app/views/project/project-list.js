@@ -1,6 +1,7 @@
-import {hh, script} from 'react-hyperscript-helpers';
-import ProjectDetails from './project-details/project-details';
-import Layout from '../layout';
+import ProjectDetails from './project-details/project-details.js';
+import Layout from '../layout.js';
+import pkg from 'react-hyperscript-helpers';
+const {hh, script} = pkg;
 
 function boundedToOne(number) {
   return Math.min(number, 1);
@@ -25,4 +26,4 @@ const Index = hh((props) =>
         .map((project) => ProjectDetails({ project: project }))
     ]));
 
-module.exports = Index;
+export default Index;
