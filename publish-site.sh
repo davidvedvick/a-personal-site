@@ -31,9 +31,7 @@ cat rsync-log
 
 if grep -q -E '<f[\.\+stp]+[[:blank:]]app-release.[cm]?js' rsync-log; then
   ssh "$SSH_USERNAME"@"$SSH_HOST" \
-  -t "cd /home/protected/app/ \
-    && chmod +x start-server.sh \
-    && nfsn signal-daemon Node term",
+  -t "chmod +x /home/protected/app/start-server.sh && nfsn signal-daemon 'Node' term",
 fi
 
 EXIT_CODE=$?
