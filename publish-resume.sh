@@ -2,8 +2,9 @@
 
 docker compose build && docker compose run --rm \
   -v "$(pwd)":/src \
-  -v "$(realpath "${PROJECTS_LOCATION}")":/projects -e PROJECTS_LOCATION=/projects \
+  -v "$(realpath "${BIO_LOCATION}")":/bio \
   -w /src -u "$(id -u)":"$(id -g)" \
+  -e RESUME_LOCATION="/bio/resume.md" \
   npm run build-resume
 
 EXIT_CODE=${PIPESTATUS[0]}
