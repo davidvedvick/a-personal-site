@@ -37,13 +37,13 @@ function jsxToHtml(options) {
     if (file.contents) {
       const js = file.contents.toString();
       const script = new vm.Script(`
-((module) => {
+((module, require) => {
 ${js}
 
 return module.exports;
 });
 `);
-      component = script.runInThisContext()(require('node:module'));
+      component = script.runInThisContext()(require('node:module'), require);
     }
 
     if (!component) {
@@ -52,7 +52,7 @@ return module.exports;
     }
 
     const markup = '<!doctype html>' + ReactDomServer.renderToStaticMarkup(React.createElement(component, options));
-    file.contents = new Buffer(markup);
+    file.contents = Buffer.from(markup);
     file.path = file.path.replace(path.extname(file.path), '.html');
 
     this.push(file);
@@ -78,7 +78,7 @@ function bundleJs() {
 
       const { output } = await bundle.generate({format: 'cjs'});
 
-      file.contents = new Buffer(output[0].code);
+      file.contents = Buffer.from(output[0].code);
       file.path = file.path.replace(path.extname(file.path), '.cjs');
 
       this.push(file);
