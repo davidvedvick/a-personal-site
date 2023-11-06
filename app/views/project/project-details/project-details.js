@@ -1,6 +1,7 @@
-import Features from './features/features';
-import ScreenshotList from './screenshots/screenshot-list/screenshot-list';
-import { div, hh } from 'react-hyperscript-helpers';
+import Features from './features/features.js';
+import ScreenshotList from './screenshots/screenshot-list/screenshot-list.js';
+import pkg from 'react-hyperscript-helpers';
+const { div, hh } = pkg;
 
 const ProjectDetails = props => {
   const { image, body, examples } = props.project;

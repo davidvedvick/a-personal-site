@@ -1,28 +1,24 @@
-const fs = require('fs').promises;
-const path = require('path');
-const express = require('express');
-const bodyParser = require('body-parser');
-const favIcon = require('serve-favicon');
-const methodOverride = require('method-override');
+import { promises as fs } from 'fs';
+import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import favIcon from 'serve-favicon';
+import methodOverride from 'method-override';
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+import errorHandler from 'errorhandler';
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+import React from "react";
+import ReactDOMServer from "react-dom/server.node.js";
 
-require("@babel/register")({
-  presets: [
-    [
-      '@babel/preset-env',
-      {
-        targets: {
-          "node": 16
-        },
-      }
-    ],
-    '@babel/preset-react'
-  ],
-  plugins: ['@babel/transform-flow-strip-types'],
-});
+import notesHandler from './request-handlers/notes-handler.js';
+import appConfig from './app-config.cjs';
+import projectLoader from './request-handlers/project-loader.js';
+import index from './views/index/index.js';
+import projectList from './views/project/project-list.js';
+import resume from './views/resume/resume.js';
 
-const notesHandler = require('./request-handlers/notes-handler');
-const appConfig = require('./app-config.js');
-const projectLoader = require('./request-handlers/project-loader');
 
 const environmentOpts = {
     maxAge: 0
@@ -39,17 +35,22 @@ app.use(methodOverride());
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'js');
-app.engine('js', require('express-react-views').createEngine());
 
 app.set('env', 'development');
 
 // development only
-app.use(require('errorhandler')());
+app.use(errorHandler());
+
+const docType = '<!DOCTYPE html>';
+function renderElement(element, options) {
+  const markup = ReactDOMServer.renderToStaticMarkup(React.createElement(element, options));
+  return docType + markup;
+}
 
 app.get('/', async (_req, res) => {
   try {
     const bioMarkdown = await fs.readFile(appConfig.bio.path);
-    res.render('index/index', { bio: bioMarkdown });
+    res.send(renderElement(index, { bio: bioMarkdown }));
   } catch (exception) {
     console.error(exception);
   }
@@ -58,8 +59,7 @@ app.get('/', async (_req, res) => {
 app.get('/projects', async (req, res) => {
   try {
     const projects = await projectLoader();
-
-    res.render('project/project-list', { projects: projects });
+    res.send(renderElement(projectList, { projects: projects }))
   } catch (exception) {
     console.error(exception);
   }
@@ -68,13 +68,13 @@ app.get('/projects', async (req, res) => {
 app.get('/resume', async (req, res) => {
   try {
     const resumeMarkdown = await fs.readFile(appConfig.resumeLocation);
-    res.render('resume/resume', { resume: resumeMarkdown });
+    res.send(renderElement(resume, { resume: resumeMarkdown }))
   } catch (exception) {
     console.log(exception);
   }
 });
 
-notesHandler.default(app, appConfig.notes, environmentOpts);
+notesHandler(app, appConfig.notes, environmentOpts);
 
 app.listen(3000);
 

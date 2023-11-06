@@ -1,5 +1,5 @@
 const requireGlob = require('require-glob');
-const path = require("path");
+const path = require('path');
 
 // Load the app configs, starting from the working directory of the process
 function loadConfigs() {

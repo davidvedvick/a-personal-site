@@ -1,5 +1,6 @@
-import { div, img, hh } from 'react-hyperscript-helpers';
+import pkg from 'react-hyperscript-helpers';
+const { div, img, hh } = pkg;
 
-var ScreenshotDetails = hh((props) => div('.screenshot-details-container', [ img('.screenshot-details', { src: props.url }) ]));
+const ScreenshotDetails = hh((props) => div('.screenshot-details-container', [ img('.screenshot-details', { src: props.url }) ]));
 
 export default ScreenshotDetails;

@@ -1,7 +1,6 @@
-import { li, a, hh } from 'react-hyperscript-helpers';
+import pkg from 'react-hyperscript-helpers';
+const { li, a, hh } = pkg;
 
-const MenuItem = hh((props) => li('.menu-item', [
+export default hh((props) => li('.menu-item', [
 	a({ href: props.menuItem.link }, props.menuItem.caption)
 ]));
-
-export default MenuItem;

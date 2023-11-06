@@ -1,5 +1,17 @@
-const gulp = require('gulp');
-const sourcemaps = require('gulp-sourcemaps');
+import { createRequire } from "module"
+const require = createRequire(import.meta.url);
+
+import projectLoader from "./request-handlers/project-loader.js";
+import appConfig from './app-config.cjs';
+
+import gulp from 'gulp';
+import sourcemaps from 'gulp-sourcemaps';
+
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
 const browserify = require('browserify');
 const terser = require('gulp-terser');
 const cleanCss = require('gulp-clean-css');
@@ -7,13 +19,12 @@ const del = require('del');
 const through2 = require('through2');
 const rename = require('gulp-rename');
 const parallel = require('concurrent-transform');
+
 const os = require('os');
-const appConfig = require('./app-config');
 const path = require('path');
 const envify = require('envify');
 const { mdToPdf } = require('md-to-pdf');
 const Jimp = require("jimp");
-const projectLoader = require("./request-handlers/project-loader");
 const {promisify} = require("util");
 const fs = require("fs");
 
@@ -165,7 +176,7 @@ async function buildProjectImages() {
     }));
 }
 
-buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
+const buildImages = gulp.parallel(buildPublicImages, buildProjectImages, buildProfileImage);
 
 async function buildResumePdf() {
 	const resumeLocation = appConfig.resumeLocation;
@@ -202,17 +213,17 @@ const buildSite = gulp.series(
 // 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
 // });
 
-module.exports = function(options) {
-	production = options.production || production;
+export function include(options) {
+  production = options.production || production;
 	outputDir = options.outputDir || outputDir;
 
-	return {
-		build: buildSite,
-		buildImages: gulp.series(clean, buildImages),
-		buildProjectImages: buildProjectImages,
-		copyPublicFonts: copyPublicFonts,
-		buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
-	};
-};
+  return {
+    build: buildSite,
+    buildImages: gulp.series(clean, buildImages),
+    buildProjectImages: buildProjectImages,
+    copyPublicFonts: copyPublicFonts,
+    buildResumePdf: gulp.series(clean, buildCss, buildResumePdf)
+  };
+}
 
-module.exports.default = buildSite;
+export default buildSite;

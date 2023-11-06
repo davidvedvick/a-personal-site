@@ -1,6 +1,7 @@
 import { marked } from 'marked';
-import { div, hh } from 'react-hyperscript-helpers';
 import highlightJs from "highlight.js";
+import pkg from 'react-hyperscript-helpers';
+const { div, hh } = pkg;
 
 export default hh((props) =>
 	div(

@@ -2,7 +2,8 @@ import {marked} from 'marked';
 import moment from 'moment-timezone';
 import path from 'path';
 import highlightJs from 'highlight.js';
-import {div, a, em, p, hh} from 'react-hyperscript-helpers';
+import pkg from 'react-hyperscript-helpers';
+const {div, a, em, p, hh} = pkg;
 
 const renderer = new marked.Renderer();
 renderer.image = (href, title, text) => {

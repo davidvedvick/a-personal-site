@@ -1,7 +1,8 @@
-import { html, head, meta, link, title, body, div, hh, footer, a, img } from 'react-hyperscript-helpers';
+import pkg from 'react-hyperscript-helpers';
+const { html, head, meta, link, title, body, div, hh, footer, a, img } = pkg;
 
-import Menu from './menu/menu';
-import Header from './header';
+import Menu from './menu/menu.js';
+import Header from './header.js';
 
 const Layout = (props) => {
 	const subheader = props.subheader || "It's been coded";

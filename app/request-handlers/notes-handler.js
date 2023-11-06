@@ -4,10 +4,10 @@ import glob from 'globby';
 import express from 'express';
 import {exec} from 'child_process';
 import readline from 'readline';
-import ReactDOMServer from "react-dom/server";
+import ReactDOMServer from "react-dom/server.node.js";
 import React from "react";
-import NoteContainer from '../views/notes/note-container';
-import NotesContainer from "../views/notes/notes-container";
+import NoteContainer from '../views/notes/note-container.js';
+import NotesContainer from "../views/notes/notes-container.js";
 
 const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
   if (err) {
@@ -32,6 +32,16 @@ export default function (localApp, notesConfig, environmentOpts) {
 
   localApp.use('/notes', express.static(notesConfig.path, {maxAge: environmentOpts.maxAge || 0}));
 
+  async function isFileAccessible(file) {
+    try {
+      await fs.promises.access(file, fs.constants.R_OK);
+      return true;
+    } catch (e) {
+      console.warn(`An error occurred checking if ${file} is accessible.`, e);
+      return false;
+    }
+  }
+
   async function getFileTag(file) {
     const latestRepoCommit = await promiseExec(`git -C "${notesConfig.gitPath}" rev-parse --short HEAD -- "${file.replace(notesConfig.path + '/', '')}"`);
     return `"${latestRepoCommit.trim()}"`;
@@ -47,12 +57,16 @@ export default function (localApp, notesConfig, environmentOpts) {
 
     const cacheNote = (note) => parseNote.noteCache[file] = note;
 
-    const fileName = path.basename(file, '.md');
-
     const latestCommit = await getFileTag(file);
 
     const cachedNote = parseNote.noteCache[file];
     if (cachedNote && cachedNote.commit === latestCommit) return cachedNote;
+
+    if (!await isFileAccessible(file)) {
+      return null;
+    }
+
+    const fileName = path.basename(file, '.md');
 
     const newNote = {
       created: null,
@@ -95,7 +109,10 @@ export default function (localApp, notesConfig, environmentOpts) {
       }
     });
 
-    await new Promise((resolve) => lineReader.on('close', resolve));
+    await new Promise((resolve, reject) => {
+      lineReader.on('error', reject)
+      lineReader.on('close', resolve)
+    });
 
     if (newNote.created !== null) return cacheNote(newNote);
 
@@ -126,6 +143,7 @@ export default function (localApp, notesConfig, environmentOpts) {
 
     const parsedNotes = await Promise.all(filesToRead.map((f) => parseNote(f)));
     return parsedNotes
+      .filter(n => n != null)
       .sort((a, b) => isFinite(a.created) && isFinite(b.created) ? (a.created > b.created) - (a.created < b.created) : NaN)
       .reverse();
   }
@@ -182,11 +200,15 @@ export default function (localApp, notesConfig, environmentOpts) {
         }
       }
 
-      const promisedNote = parseNote(filePath);
+      const note = await parseNote(filePath);
+      if (!note) {
+        res.status(404).send("Where are you going?");
+        return;
+      }
 
       let markup = '<!DOCTYPE html>';
       const component = NoteContainer;
-      markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {note: await promisedNote}));
+      markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {note: note}));
 
       cachedHtml.set(req.path, [cacheTag, markup]);
 

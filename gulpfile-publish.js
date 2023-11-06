@@ -1,33 +1,27 @@
 import { createRequire } from "module"
 const require = createRequire(import.meta.url);
 
-const gulp = require('gulp');
-const through2 = require('through2');
-const React = require('react');
-const ReactDomServer = require('react-dom/server');
-const appConfig = require("./app/app-config");
-const GulpSsh = require('gulp-ssh');
-const sshConfig = require('./ssh-config');
-
-const gulpSsh = () => new GulpSsh({
-	ignoreErrors: false,
-	// set this from a config file
-	sshConfig: sshConfig
-});
-const htmlmin = require('gulp-htmlmin');
-const del = require('del');
-const { promisify } = require('util');
-const fs = require('fs');
-const projectLoader = require('./app/request-handlers/project-loader');
-const rollup = require('rollup');
-const rollupConfig = require('./rollup-config.js');
-const path = require("path");
-const terser = require("gulp-terser");
+import gulp from 'gulp';
+import through2 from 'through2';
+import React from 'react';
+import ReactDomServer from 'react-dom/server.js';
+import appConfig from "./app/app-config.cjs";
+import htmlmin from 'gulp-htmlmin';
+import del from 'del';
+import { promisify } from 'util';
+import fs from 'fs';
+import projectLoader from './app/request-handlers/project-loader.js';
+import { rollup } from 'rollup';
+import rollupConfig from './rollup-config.js';
+import path from "path";
+import terser from "gulp-terser";
+import { include } from './app/gulpfile.js'
+import * as vm from "vm";
 
 process.env.NODE_ENV = "production";
 
 // Register dynamic build tasks
-const appBuild = require('./app/gulpfile.js')({ production: true });
+const appBuild = include({ production: true });
 
 const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 
@@ -41,8 +35,15 @@ function jsxToHtml(options) {
     let component = {};
 
     if (file.contents) {
-      const js = file.contents.toString("utf8", 0, file.contents.length);
-      component = eval(js);
+      const js = file.contents.toString();
+      const script = new vm.Script(`
+((module) => {
+${js}
+
+return module.exports;
+});
+`);
+      component = script.runInThisContext()(require('node:module'));
     }
 
     if (!component) {
@@ -66,11 +67,10 @@ function copyDynamicBuild() {
 	return gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public'));
 }
 
-// noinspection JSIgnoredPromiseFromCall
 function bundleJs() {
   return through2.obj(async function (file, enc, cb) {
     try {
-      const bundle = await rollup.rollup(Object.assign(
+      const bundle = await rollup(Object.assign(
         rollupConfig,
         {
           input: file.path,
@@ -79,6 +79,7 @@ function bundleJs() {
       const { output } = await bundle.generate({format: 'cjs'});
 
       file.contents = new Buffer(output[0].code);
+      file.path = file.path.replace(path.extname(file.path), '.cjs');
 
       this.push(file);
       cb();
@@ -143,17 +144,6 @@ const buildStatic = gulp.series(
 		buildStaticProjects,
   )
 );
-function publishHtml() {
-	return gulp
-		.src('./build/public/**/*.html')
-		.pipe(gulp.dest('./staging/public'));
-}
-
-const publishBiography = gulp.series(
-	cleanBuild,
-	buildServerJs,
-	buildStaticIndex,
-	publishHtml);
 
 const buildResume = gulp.series(
   cleanBuild,
@@ -169,23 +159,8 @@ const buildPortfolio = gulp.series(
   buildServerJs,
   buildStaticProjects);
 
-const updateServerPackages = () =>
-	gulpSsh().shell([
-		'cd /home/protected/app/',
-		'chmod +x start-server.sh',
-		'npm install --production',
-		'npm update --production',
-		'npm prune --production',
-		'npm dedupe',
-		'rm -rf /home/tmp/npm*',
-		'nfsn signal-daemon Node hup'
-	]);
-
-const deploy = gulp.series(buildStatic, updateServerPackages);
-
-module.exports.deploy = deploy;
-module.exports.buildStatic = buildStatic;
-module.exports.publishBiography = publishBiography;
-module.exports.buildPortfolio = buildPortfolio;
-module.exports.buildResume = buildResume;
-
+export {
+  buildStatic,
+  buildResume,
+  buildPortfolio,
+};

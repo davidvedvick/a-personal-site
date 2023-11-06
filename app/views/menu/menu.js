@@ -1,23 +1,23 @@
-import { ul, hh } from 'react-hyperscript-helpers';
-import MenuItem from './menu-item';
+import pkg from 'react-hyperscript-helpers';
+const { ul, hh } = pkg;
 
-var Menu = hh(() => {
-	var menuNodes = [
-		{
-			'link': '/projects',
-			'caption': 'Side Projects'
-		},
-		{
-			'link': '/resume',
-			'caption': 'Resume'
-		},
-		{
-			'link': '/notes',
-			'caption': 'Notes'
-		}
-	].map(menuNode => MenuItem({ menuItem: menuNode }));
+import MenuItem from './menu-item.js';
 
-	return ul('.menu-list', menuNodes);
+export default hh(() => {
+  const menuNodes = [
+    {
+      'link': '/projects',
+      'caption': 'Side Projects'
+    },
+    {
+      'link': '/resume',
+      'caption': 'Resume'
+    },
+    {
+      'link': '/notes',
+      'caption': 'Notes'
+    }
+  ].map(menuNode => MenuItem({menuItem: menuNode}));
+
+  return ul('.menu-list', menuNodes);
 });
-
-export default Menu;

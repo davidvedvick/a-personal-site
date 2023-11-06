@@ -1,13 +1,13 @@
-const json = require('@rollup/plugin-json');
-const commonjs = require('@rollup/plugin-commonjs')
-const nodeResolve = require("@rollup/plugin-node-resolve");
-const babel = require('@rollup/plugin-babel');
+import json from '@rollup/plugin-json';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from "@rollup/plugin-node-resolve";
+import {getBabelOutputPlugin} from '@rollup/plugin-babel';
 
 const babelOptions = {
   presets: [
     ['@babel/preset-env', {
       "targets": "node 16",
-      "modules": 'cjs',
+      "modules": 'auto',
     }],
     '@babel/preset-react'
   ],
@@ -17,7 +17,7 @@ const babelOptions = {
   }
 };
 
-module.exports = {
+export default {
   plugins: [
     commonjs({
       ignoreDynamicRequires: true,
@@ -27,6 +27,6 @@ module.exports = {
       // include: "node_modules/**",
     }),
     json(),
-    babel.getBabelOutputPlugin(babelOptions)
+    getBabelOutputPlugin(babelOptions)
   ]
 };
