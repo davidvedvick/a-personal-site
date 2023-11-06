@@ -145,14 +145,20 @@ const buildStatic = gulp.series(
   )
 );
 
+const buildResume = gulp.series(
+  cleanBuild,
+  appBuild.buildResumePdf,
+  copyDynamicBuild,
+  buildStaticResume);
+
 const buildPortfolio = gulp.series(
   cleanBuild,
   appBuild.buildProjectImages,
   copyDynamicBuild,
-  buildServerJs,
   buildStaticProjects);
 
 export {
   buildStatic,
+  buildResume,
   buildPortfolio,
 };

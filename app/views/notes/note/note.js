@@ -2,6 +2,7 @@ import {marked} from 'marked';
 import moment from 'moment-timezone';
 import path from 'path';
 import highlightJs from 'highlight.js';
+import sanitizeHtml from 'sanitize-html';
 import pkg from 'react-hyperscript-helpers';
 const {div, a, em, p, hh} = pkg;
 
@@ -27,11 +28,10 @@ const Note = hh((props) => {
     const note = props.note;
     const routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);
 
-    const html = marked(note.text || '', {
+    const html = sanitizeHtml(marked(note.text || '', {
         highlight: (code) => highlightJs.highlightAuto(code).value,
-        sanitize: true,
         renderer: renderer
-    });
+    }));
 
     return div('.note', [
         div('.note-text', {dangerouslySetInnerHTML: {__html: html}}),
