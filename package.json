@@ -8,8 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && ./start-server.sh",
     "debug": "cd app && gulp && node app-debug.js",
-    "deploy": "gulp --gulpfile=gulpfile-publish.js deploy",
-    "publish-biography": "gulp --gulpfile=gulpfile-publish.js publishBiography",
     "build-resume": "npm install && gulp --gulpfile=gulpfile-publish.js buildResume",
     "build-portfolio": "npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",
     "build-release": "npm install && gulp --gulpfile gulpfile-publish.js buildStatic"
@@ -29,6 +27,7 @@
     "react-dom": "^16.8.6",
     "react-hyperscript-helpers": "^1.1.0",
     "require-glob": "^4.1.0",
+    "sanitize-html": "^2.11.0",
     "serve-favicon": "^2.2.0",
     "slick-carousel": "^1.5.5"
   },

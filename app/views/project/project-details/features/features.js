@@ -1,5 +1,6 @@
 import { marked } from 'marked';
 import highlightJs from "highlight.js";
+import sanitizeHtml from 'sanitize-html';
 import pkg from 'react-hyperscript-helpers';
 const { div, hh } = pkg;
 
@@ -8,13 +9,12 @@ export default hh((props) =>
     '.features',
     {
       dangerouslySetInnerHTML: {
-        __html: marked(
+        __html: sanitizeHtml(marked(
           props.features || '',
           {
-            sanitize: true,
             highlight: (code) => highlightJs.highlightAuto(code).value,
           }
-        )
+        ))
       }
     }
   )
