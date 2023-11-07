@@ -9,6 +9,13 @@ import React from "react";
 import NoteContainer from '../views/notes/note-container.js';
 import NotesContainer from "../views/notes/notes-container.js";
 
+const eTagKey = 'ETag'
+const ifNoneMatchKey = 'If-None-Match';
+
+function getMatchTag(req) {
+  return req.get(ifNoneMatchKey);
+}
+
 const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
   if (err) {
     reject(err);
@@ -151,7 +158,12 @@ export default function (localApp, notesConfig, environmentOpts) {
   localApp.get('/notes', async (req, res) => {
     try {
       const cacheTag = await getNotesRepoTag();
-      res.set('ETag', cacheTag);
+      if (getMatchTag(req) === cacheTag) {
+        res.status(304).send();
+        return;
+      }
+
+      res.set(eTagKey, cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
 
       const cachedPageTagPair = cachedHtml.get(req.path);
@@ -188,7 +200,12 @@ export default function (localApp, notesConfig, environmentOpts) {
 
     try {
       const cacheTag = await getFileTag(filePath);
-      res.set('ETag', cacheTag);
+      if (getMatchTag(req) === cacheTag) {
+        res.status(304).send();
+        return;
+      }
+
+      res.set(eTagKey, cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
 
       const cachedPageTagPair = cachedHtml.get(req.path);
@@ -219,7 +236,7 @@ export default function (localApp, notesConfig, environmentOpts) {
     }
   });
 
-  localApp.get(/^\/notes\/([0-9]*)/, async (req, res) => {
+  localApp.get(/^\/notes\/([0-9]+)/, async (req, res) => {
     const page = req.params[0];
 
     if (!page) {
@@ -228,10 +245,15 @@ export default function (localApp, notesConfig, environmentOpts) {
     }
 
     try {
-      const promisedTag = getNotesRepoTag();
+      const cacheTag = await getNotesRepoTag();
+      if (getMatchTag(req) === cacheTag) {
+        res.status(304).send();
+        return;
+      }
+
       const promisedNotes = getNotes(page);
 
-      res.set('ETag', await promisedTag);
+      res.set(eTagKey, cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
       res.json(await promisedNotes);
     } catch (exception) {
