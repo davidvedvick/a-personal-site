@@ -193,10 +193,9 @@ async function buildResumePdf() {
     sassPath,
     {
       loadPaths: [ path.resolve(path.dirname(sassPath)) ],
-      importer: npmSassResolver,
-      functions: {
+      // importer: npmSassResolver
+     /* functions: {
         'url($url)': async function(url) {
-
           const unresolvedUrl = url[0].assertString('url').text;
           const dataPrefix = 'data:font/woff;base64,';
           try {
@@ -212,7 +211,7 @@ async function buildResumePdf() {
             return new sass.SassString(dataPrefix + base64);
           }
         }
-      }
+      }*/
     });
 
   const html = `
@@ -229,26 +228,42 @@ ${css}
 </html>
 `;
 
-  const printer = new Printer({
-    // styles: ['public/css/layout.css'],
-    allowLocal: true,
-    allowRemote: true,
-    headless: true,
-  });
+  const intermediateOutputDir = getOutputDir('public/pdf');
+
+  await fs.promises.mkdir(intermediateOutputDir)
 
   try {
-    await printer.setup();
 
-    const file = await printer.pdf(
-      {html: html, url: 'dummy:'},
-      {
-        outlineTags: ["h1", "h2", "h3"],
-      });
+    const intermediateFileName = path.join(intermediateOutputDir, 'resume.html');
+    await fs.promises.writeFile(intermediateFileName, html);
 
-    const target = path.resolve(path.join(getOutputDir('public'), fileName) + 'pdf');
-    await fs.promises.writeFile(target, file);
+    const printer = new Printer({
+      // styles: ['public/css/layout.css'],
+      allowLocal: true,
+      allowRemote: true,
+      headless: true,
+    });
+
+    try {
+      await printer.setup();
+
+      const debugHtml = await printer.html(intermediateFileName, true);
+      const intermediateDebugHtmlName = path.join(intermediateOutputDir, 'paged-resume.html');
+      await fs.promises.writeFile(intermediateDebugHtmlName, debugHtml);
+
+      const file = await printer.pdf(
+        intermediateFileName,
+        {
+          outlineTags: ["h1", "h2", "h3"],
+        });
+
+      const target = path.resolve(path.join(getOutputDir('public'), fileName) + 'pdf');
+      await fs.promises.writeFile(target, file);
+    } finally {
+      await printer.close();
+    }
   } finally {
-    await printer.close();
+    await fs.promises.rm(intermediateOutputDir, { recursive: true, force: true });
   }
 }
 

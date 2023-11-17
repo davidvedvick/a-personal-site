@@ -12,16 +12,20 @@ div.resume {
 	}
 
   section {
-    page-break-inside: avoid;
+    break-inside: avoid;
   }
 
   section#skills {
     > ul, > ol {
       column-count: 2;
+
+      li {
+        break-inside: avoid;
+      }
     }
   }
 
-  header {
+  div.headline {
     display: flex;
     justify-content: space-between;
 

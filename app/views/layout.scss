@@ -1,13 +1,13 @@
+// lib imports
+//@forward "slick-carousel/slick/slick.scss";
+//@forward "slick-carousel/slick/slick-theme.scss";
+
 @font-face {
     font-family: 'Open Sans';
-    src: url('/fonts/OpenSans-Regular-webfont.woff') format('woff');
+    src: local('Open Sans'), url('../fonts/OpenSans-Regular-webfont.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
-
-// lib imports
-//@import "slick-carousel/slick/slick.scss";
-//@import "slick-carousel/slick/slick-theme.scss";
 
 body {
 	color: #000;
