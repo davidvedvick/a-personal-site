@@ -59,7 +59,9 @@ div.content {
 	color: #000;
 	overflow: auto;
 	p {
-		font-size: medium;
+    @media screen {
+      font-size: medium;
+    }
 	}
 
 	// Stylish way to add a Horizontal rule-like looking element
@@ -78,6 +80,10 @@ div.content {
 
 code, pre {
 	line-height: 1.25;
+}
+
+.pagedjs_area {
+  overflow: hidden;
 }
 
 @import "./notes/note/note";

@@ -247,9 +247,9 @@ ${css}
     try {
       await printer.setup();
 
-      const debugHtml = await printer.html(intermediateFileName, true);
-      const intermediateDebugHtmlName = path.join(intermediateOutputDir, 'paged-resume.html');
-      await fs.promises.writeFile(intermediateDebugHtmlName, debugHtml);
+      // const debugHtml = await printer.html(intermediateFileName, true);
+      // const intermediateDebugHtmlName = path.join(intermediateOutputDir, 'paged-resume.html');
+      // await fs.promises.writeFile(intermediateDebugHtmlName, debugHtml);
 
       const file = await printer.pdf(
         intermediateFileName,

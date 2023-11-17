@@ -33,4 +33,12 @@ div.resume {
       text-align: right;
     }
   }
+
+  @media print {
+    height: 100% !important;
+    overflow: visible;;
+    display: block;
+    background-color: #fff;
+    font-size: 7pt;
+  }
 }
