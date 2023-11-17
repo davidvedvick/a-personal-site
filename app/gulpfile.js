@@ -9,6 +9,10 @@ import sourcemaps from 'gulp-sourcemaps';
 
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
+
+import {marked} from "marked";
+import Printer from "pagedjs-cli";
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -23,7 +27,6 @@ const parallel = require('concurrent-transform');
 const os = require('os');
 const path = require('path');
 const envify = require('envify');
-const { mdToPdf } = require('md-to-pdf');
 const Jimp = require("jimp");
 const {promisify} = require("util");
 const fs = require("fs");
@@ -50,12 +53,14 @@ function npmSassResolver(url, file, done) {
 	}
 }
 
-const sass = require('gulp-sass')(require('sass'));
+const sass = require('sass');
 
-const deSassify = () => sass(
+const gulpSass = require('gulp-sass')(sass);
+
+const deSassify = () => gulpSass(
 	{
 		importer: npmSassResolver
-	}).on('error', sass.logError);
+	}).on('error', gulpSass.logError);
 
 let production = false;
 let outputDir = __dirname;
@@ -182,19 +187,69 @@ async function buildResumePdf() {
 	const resumeLocation = appConfig.resumeLocation;
 	const fileName = path.basename(resumeLocation, "md");
 
-	return await mdToPdf(
-		{path: resumeLocation},
-		{
-			dest: path.join(getOutputDir('public'), fileName) + "pdf",
-			pdf_options: {
-				format: 'Letter',
-			},
-			launch_options: {
-				args: (process.env.CHROMIUM_FLAGS ?? "").split(" "),
-				timeout: 60_000,
-			},
-		},
-	);
+  const sassPath = getInputDir('views/layout.scss');
+
+  const { css } = await sass.compileAsync(
+    sassPath,
+    {
+      loadPaths: [ path.resolve(path.dirname(sassPath)) ],
+      importer: npmSassResolver,
+      functions: {
+        'url($url)': async function(url) {
+
+          const unresolvedUrl = url[0].assertString('url').text;
+          const dataPrefix = 'data:font/woff;base64,';
+          try {
+            const response = await fetch(unresolvedUrl);
+            const blob = await response.blob();
+            const buffer = await blob.arrayBuffer();
+            const base64 = buffer.toString('base64');
+            return new sass.SassString(dataPrefix + base64);
+          } catch (e) {
+            const localPath = path.join(__dirname, unresolvedUrl);
+            const buffer = await fs.promises.readFile(localPath);
+            const base64 = buffer.toString('base64');
+            return new sass.SassString(dataPrefix + base64);
+          }
+        }
+      }
+    });
+
+  const html = `
+<html lang="en">
+<!--<link href="public/css/layout.css" type="text/css" rel="stylesheet" />-->
+<style>
+${css}
+</style>
+<body>
+    <div class="resume">
+        ${marked((await fs.promises.readFile(resumeLocation)).toString())}
+    </div>
+</body>
+</html>
+`;
+
+  const printer = new Printer({
+    // styles: ['public/css/layout.css'],
+    allowLocal: true,
+    allowRemote: true,
+    headless: true,
+  });
+
+  try {
+    await printer.setup();
+
+    const file = await printer.pdf(
+      {html: html, url: 'dummy:'},
+      {
+        outlineTags: ["h1", "h2", "h3"],
+      });
+
+    const target = path.resolve(path.join(getOutputDir('public'), fileName) + 'pdf');
+    await fs.promises.writeFile(target, file);
+  } finally {
+    await printer.close();
+  }
 }
 
 const buildSite = gulp.series(
@@ -205,13 +260,13 @@ const buildSite = gulp.series(
 		buildImages,
 		copyPublicFonts));
 
-// gulp.task('watch', ['build'], () => {
-// 	gulp.watch('./views/**/*.scss', ['sass']);
-// 	gulp.watch('./imgs/**/*', ['images']);
-// 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
-// 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
-// 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
-// });
+export function watch() {
+	gulp.watch('./views/**/*.scss', buildCss);
+	gulp.watch('./imgs/**/*', buildImages);
+	// gulp.watch(appConfig.projectsLocation, buildProjectImages);
+	gulp.watch('./views/**/*.client.{js,jsx}', buildJs);
+	gulp.watch(appConfig.resumeLocation, buildResumePdf);
+}
 
 export function include(options) {
   production = options.production || production;

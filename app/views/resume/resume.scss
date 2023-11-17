@@ -3,9 +3,30 @@ div.resume {
 
 	a#pdf-version {
 		float: right;
+    clear: both;
+    margin-bottom: 1em;
 
 		img {
 			height: 2em;
 		}
 	}
+
+  section {
+    page-break-inside: avoid;
+  }
+
+  section#skills {
+    > ul, > ol {
+      column-count: 2;
+    }
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+
+    :last-child {
+      text-align: right;
+    }
+  }
 }
