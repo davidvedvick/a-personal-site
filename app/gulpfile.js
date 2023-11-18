@@ -7,8 +7,12 @@ import appConfig from './app-config.cjs';
 import gulp from 'gulp';
 import sourcemaps from 'gulp-sourcemaps';
 
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import { dirname } from 'path'
+
+import {marked} from "marked";
+import Printer from "pagedjs-cli";
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
@@ -23,7 +27,6 @@ const parallel = require('concurrent-transform');
 const os = require('os');
 const path = require('path');
 const envify = require('envify');
-const { mdToPdf } = require('md-to-pdf');
 const Jimp = require("jimp");
 const {promisify} = require("util");
 const fs = require("fs");
@@ -50,12 +53,14 @@ function npmSassResolver(url, file, done) {
 	}
 }
 
-const sass = require('gulp-sass')(require('sass'));
+const sass = require('sass');
 
-const deSassify = () => sass(
+const gulpSass = require('gulp-sass')(sass);
+
+const deSassify = () => gulpSass(
 	{
 		importer: npmSassResolver
-	}).on('error', sass.logError);
+	}).on('error', gulpSass.logError);
 
 let production = false;
 let outputDir = __dirname;
@@ -182,19 +187,83 @@ async function buildResumePdf() {
 	const resumeLocation = appConfig.resumeLocation;
 	const fileName = path.basename(resumeLocation, "md");
 
-	return await mdToPdf(
-		{path: resumeLocation},
-		{
-			dest: path.join(getOutputDir('public'), fileName) + "pdf",
-			pdf_options: {
-				format: 'Letter',
-			},
-			launch_options: {
-				args: (process.env.CHROMIUM_FLAGS ?? "").split(" "),
-				timeout: 60_000,
-			},
-		},
-	);
+  const sassPath = getInputDir('views/layout.scss');
+
+  const { css } = await sass.compileAsync(
+    sassPath,
+    {
+      loadPaths: [ path.resolve(path.dirname(sassPath)) ],
+      importers: [{
+        findFileUrl(url) {
+          if(npmSassAliases[url]) {
+            return new URL(pathToFileURL(npmSassAliases[url]));
+          }
+
+          // look for modules installed through npm
+          try {
+            const resolvedPath = require.resolve(url);
+            npmSassAliases[url] = resolvedPath; // cache this request
+            return new URL(pathToFileURL(resolvedPath));
+          } catch(e) {
+            // if your module could not be found, just return the original url
+            npmSassAliases[url] = url;
+            return new URL(url);
+          }
+        }
+      }]
+    });
+
+  const html = `
+<html lang="en">
+<!--<link href="public/css/layout.css" type="text/css" rel="stylesheet" />-->
+<style>
+${css}
+</style>
+<body>
+    <div class="resume">
+        ${marked((await fs.promises.readFile(resumeLocation)).toString())}
+    </div>
+</body>
+</html>
+`;
+
+  const intermediateOutputDir = getOutputDir('public/pdf');
+
+  await fs.promises.mkdir(intermediateOutputDir)
+
+  try {
+
+    const intermediateFileName = path.join(intermediateOutputDir, 'resume.html');
+    await fs.promises.writeFile(intermediateFileName, html);
+
+    const printer = new Printer({
+      // styles: ['public/css/layout.css'],
+      allowLocal: true,
+      allowRemote: true,
+      headless: true,
+    });
+
+    try {
+      await printer.setup();
+
+      // const debugHtml = await printer.html(intermediateFileName, true);
+      // const intermediateDebugHtmlName = path.join(intermediateOutputDir, 'paged-resume.html');
+      // await fs.promises.writeFile(intermediateDebugHtmlName, debugHtml);
+
+      const file = await printer.pdf(
+        intermediateFileName,
+        {
+          outlineTags: ["h1", "h2", "h3"],
+        });
+
+      const target = path.resolve(path.join(getOutputDir('public'), fileName) + 'pdf');
+      await fs.promises.writeFile(target, file);
+    } finally {
+      await printer.close();
+    }
+  } finally {
+    await fs.promises.rm(intermediateOutputDir, { recursive: true, force: true });
+  }
 }
 
 const buildSite = gulp.series(
@@ -205,13 +274,12 @@ const buildSite = gulp.series(
 		buildImages,
 		copyPublicFonts));
 
-// gulp.task('watch', ['build'], () => {
-// 	gulp.watch('./views/**/*.scss', ['sass']);
-// 	gulp.watch('./imgs/**/*', ['images']);
-// 	gulp.watch(appConfig.projectLocation + '/**/imgs/*', ['project-images']);
-// 	gulp.watch('./views/**/*.client.{js,jsx}', ['client-js']);
-// 	gulp.watch(appConfig.resumeLocation, ['build-resume-pdf']);
-// });
+export function watch() {
+	gulp.watch('./views/**/*.scss', buildCss);
+	gulp.watch('./imgs/**/*', buildImages);
+	gulp.watch('./views/**/*.client.{js,jsx}', buildJs);
+	gulp.watch([appConfig.resumeLocation, './views/**/*.scss'], buildResumePdf);
+}
 
 export function include(options) {
   production = options.production || production;

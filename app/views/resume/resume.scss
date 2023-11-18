@@ -3,9 +3,48 @@ div.resume {
 
 	a#pdf-version {
 		float: right;
+    clear: both;
+    margin-bottom: 1em;
 
 		img {
 			height: 2em;
 		}
 	}
+
+  section {
+    break-inside: avoid;
+
+    li {
+      break-inside: avoid;
+    }
+  }
+
+  section#skills {
+    > ul, > ol {
+      column-count: 2;
+    }
+  }
+
+  div.headline {
+    display: flex;
+    justify-content: space-between;
+
+    :last-child {
+      text-align: right;
+    }
+  }
+
+  @media print {
+    height: 100% !important;
+    overflow: visible;;
+    display: block;
+    background-color: #fff;
+    font-size: 7pt;
+    max-width: 8.5in;
+  }
+}
+
+@page {
+  margin: .75in;
+  size: letter;
 }

@@ -18,6 +18,7 @@ import projectLoader from './request-handlers/project-loader.js';
 import index from './views/index/index.js';
 import projectList from './views/project/project-list.js';
 import resume from './views/resume/resume.js';
+import {watch} from "./gulpfile.js";
 
 
 const environmentOpts = {
@@ -77,5 +78,7 @@ app.get('/resume', async (req, res) => {
 notesHandler(app, appConfig.notes, environmentOpts);
 
 app.listen(3000);
+
+watch();
 
 console.log('Server started: http://localhost:3000/');
