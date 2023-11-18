@@ -1,7 +1,3 @@
-// lib imports
-//@forward "slick-carousel/slick/slick.scss";
-//@forward "slick-carousel/slick/slick-theme.scss";
-
 @font-face {
     font-family: 'Open Sans';
     src: local('Open Sans'), url('../fonts/OpenSans-Regular-webfont.woff') format('woff');
@@ -9,16 +5,23 @@
     font-style: normal;
 }
 
+// lib imports
+@import "slick-carousel/slick/slick.scss";
+@import "slick-carousel/slick/slick-theme.scss";
+
 body {
 	color: #000;
-	margin: 0;
 	background-color: #FFF;
 	font-family: 'Open Sans', sans-serif;
-	padding: 5px;
 	font-size: 11pt;
 	margin-left: auto;
 	margin-right: auto;
-	max-width: 90em;
+
+  @media screen {
+    max-width: 90em;
+    padding: 5px;
+    margin: 0;
+  }
 
 	footer {
 		div.social-links {
@@ -48,21 +51,23 @@ h1 {
 }
 
 div.content {
-	margin-left: 5px;
-	margin-right: 15px;
-	margin-bottom: 25px;
-	margin-top: 5px;
-	padding: 5px;
-	padding-top: 0;
-	background-size: 300px;
-	background-position: left center;
 	color: #000;
 	overflow: auto;
-	p {
-    @media screen {
+
+  @media screen {
+    margin-left: 5px;
+    margin-right: 15px;
+    margin-bottom: 25px;
+    margin-top: 5px;
+    padding: 5px;
+    padding-top: 0;
+    background-size: 300px;
+    background-position: left center;
+
+    p {
       font-size: medium;
     }
-	}
+  }
 
 	// Stylish way to add a Horizontal rule-like looking element
 	+ div.content {

@@ -13,15 +13,15 @@ div.resume {
 
   section {
     break-inside: avoid;
+
+    li {
+      break-inside: avoid;
+    }
   }
 
   section#skills {
     > ul, > ol {
       column-count: 2;
-
-      li {
-        break-inside: avoid;
-      }
     }
   }
 
@@ -40,5 +40,11 @@ div.resume {
     display: block;
     background-color: #fff;
     font-size: 7pt;
+    max-width: 8.5in;
   }
+}
+
+@page {
+  margin: .75in;
+  size: letter;
 }

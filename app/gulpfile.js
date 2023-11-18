@@ -7,7 +7,7 @@ import appConfig from './app-config.cjs';
 import gulp from 'gulp';
 import sourcemaps from 'gulp-sourcemaps';
 
-import { fileURLToPath } from 'url'
+import { fileURLToPath, pathToFileURL } from 'url'
 import { dirname } from 'path'
 
 import {marked} from "marked";
@@ -193,25 +193,24 @@ async function buildResumePdf() {
     sassPath,
     {
       loadPaths: [ path.resolve(path.dirname(sassPath)) ],
-      // importer: npmSassResolver
-     /* functions: {
-        'url($url)': async function(url) {
-          const unresolvedUrl = url[0].assertString('url').text;
-          const dataPrefix = 'data:font/woff;base64,';
+      importers: [{
+        findFileUrl(url) {
+          if(npmSassAliases[url]) {
+            return new URL(pathToFileURL(npmSassAliases[url]));
+          }
+
+          // look for modules installed through npm
           try {
-            const response = await fetch(unresolvedUrl);
-            const blob = await response.blob();
-            const buffer = await blob.arrayBuffer();
-            const base64 = buffer.toString('base64');
-            return new sass.SassString(dataPrefix + base64);
-          } catch (e) {
-            const localPath = path.join(__dirname, unresolvedUrl);
-            const buffer = await fs.promises.readFile(localPath);
-            const base64 = buffer.toString('base64');
-            return new sass.SassString(dataPrefix + base64);
+            const resolvedPath = require.resolve(url);
+            npmSassAliases[url] = resolvedPath; // cache this request
+            return new URL(pathToFileURL(resolvedPath));
+          } catch(e) {
+            // if your module could not be found, just return the original url
+            npmSassAliases[url] = url;
+            return new URL(url);
           }
         }
-      }*/
+      }]
     });
 
   const html = `
@@ -278,9 +277,8 @@ const buildSite = gulp.series(
 export function watch() {
 	gulp.watch('./views/**/*.scss', buildCss);
 	gulp.watch('./imgs/**/*', buildImages);
-	// gulp.watch(appConfig.projectsLocation, buildProjectImages);
 	gulp.watch('./views/**/*.client.{js,jsx}', buildJs);
-	gulp.watch(appConfig.resumeLocation, buildResumePdf);
+	gulp.watch([appConfig.resumeLocation, './views/**/*.scss'], buildResumePdf);
 }
 
 export function include(options) {
