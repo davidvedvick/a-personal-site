@@ -215,7 +215,6 @@ async function buildResumePdf() {
 
   const html = `
 <html lang="en">
-<!--<link href="public/css/layout.css" type="text/css" rel="stylesheet" />-->
 <style>
 ${css}
 </style>
@@ -237,10 +236,10 @@ ${css}
     await fs.promises.writeFile(intermediateFileName, html);
 
     const printer = new Printer({
-      // styles: ['public/css/layout.css'],
       allowLocal: true,
       allowRemote: true,
       headless: true,
+      browserArgs: ['--no-sandbox']
     });
 
     try {
