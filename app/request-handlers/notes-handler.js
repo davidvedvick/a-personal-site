@@ -62,8 +62,6 @@ export default function (localApp, notesConfig, environmentOpts) {
   async function parseNote(file) {
     parseNote.noteCache = parseNote.noteCache || {};
 
-    parseNote.cacheNote = (note) => parseNote.noteCache[file] = note;
-
     const latestCommit = await getFileTag(file);
 
     const cachedNote = parseNote.noteCache[file];
@@ -72,6 +70,8 @@ export default function (localApp, notesConfig, environmentOpts) {
     if (!await isFileAccessible(file)) {
       return null;
     }
+
+    parseNote.cacheNote = parseNote.cacheNote || ((note) => parseNote.noteCache[file] = note);
 
     const fileName = path.basename(file, '.md');
 
@@ -160,7 +160,7 @@ export default function (localApp, notesConfig, environmentOpts) {
     try {
       const cacheTag = await getNotesRepoTag();
       if (getMatchTag(req) === cacheTag) {
-        res.status(304).send();
+        res.sendStatus(304);
         return;
       }
 
@@ -202,7 +202,7 @@ export default function (localApp, notesConfig, environmentOpts) {
     try {
       const cacheTag = await getFileTag(filePath);
       if (getMatchTag(req) === cacheTag) {
-        res.status(304).send();
+        res.sendStatus(304);
         return;
       }
 
@@ -248,7 +248,7 @@ export default function (localApp, notesConfig, environmentOpts) {
     try {
       const cacheTag = await getNotesRepoTag();
       if (getMatchTag(req) === cacheTag) {
-        res.status(304).send();
+        res.sendStatus(304);
         return;
       }
 
