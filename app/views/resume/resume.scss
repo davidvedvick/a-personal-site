@@ -18,6 +18,18 @@ div.resume {
     }
   }
 
+  section.unlisted {
+    @media print {
+      display: none;
+    }
+  }
+
+  #more-info {
+    @media screen {
+      display: none;
+    }
+  }
+
   section#skills {
     > ul, > ol {
       column-count: 2;
