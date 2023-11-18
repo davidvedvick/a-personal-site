@@ -1,9 +1,8 @@
 div.resume {
 	@extend div, .content;
 
-	a#pdf-version {
-		float: right;
-    clear: both;
+	div#pdf-version-container {
+    text-align: right;
     margin-bottom: 1em;
 
 		img {
