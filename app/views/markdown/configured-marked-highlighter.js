@@ -1,4 +1,4 @@
-import { markedHighlight } from "marked-highlight";
+import {markedHighlight} from "marked-highlight";
 import highlightJs from "highlight.js";
 
 export const configuredMarkedHighlighter = markedHighlight({

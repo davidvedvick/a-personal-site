@@ -1,5 +1,4 @@
 import {Marked} from 'marked';
-import sanitizeHtml from 'sanitize-html';
 import pkg from 'react-hyperscript-helpers';
 import {configuredMarkedHighlighter} from "../../../markdown/configured-marked-highlighter.js";
 import {sanitize} from "../../../markdown/configured-sanitizer.js";
@@ -12,7 +11,7 @@ export default hh((props) =>
     '.features',
     {
       dangerouslySetInnerHTML: {
-        __html: marked.parse(sanitize(props.features || ''))
+        __html: sanitize(marked.parse(props.features || ''))
       }
     }
   )
