@@ -1,3 +1,5 @@
+@use "highlight.js/styles/default.css";
+
 @font-face {
     font-family: 'Open Sans';
     src: local('Open Sans'), url('../fonts/OpenSans-Regular-webfont.woff') format('woff');
@@ -8,6 +10,10 @@
 // lib imports
 @import "slick-carousel/slick/slick.scss";
 @import "slick-carousel/slick/slick-theme.scss";
+
+.hljs {
+  background: #fff;
+}
 
 body {
 	color: #000;
