@@ -3,7 +3,7 @@ import Note from './note/note.js';
 import pkg from 'react-hyperscript-helpers';
 const { div, hh } = pkg;
 
-class NotesList extends React.Component {
+export class NotesList extends React.Component {
 	constructor (props) {
 		super(props);
 
@@ -51,7 +51,3 @@ class NotesList extends React.Component {
 		return div(noteNodes);
 	}
 }
-
-export { NotesList };
-
-export default hh((props) => new NotesList(props));

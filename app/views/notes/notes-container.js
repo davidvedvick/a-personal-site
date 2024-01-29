@@ -1,15 +1,15 @@
-import ReactDomServer from 'react-dom/server.node.js';
 import LayoutFactory from '../layout.js';
 import { NotesList } from './notes-list.js';
 import React from "react";
 import pkg from 'react-hyperscript-helpers';
+import {renderToString} from "react-dom/server";
 const { div, script, hh } = pkg;
 
 const NotesContainer = hh((props) => {
-	const html = ReactDomServer.renderToString(React.createElement(NotesList, { notes: props.notes }));
+	// const html = renderToString(React.createElement(NotesList, { notes: props.notes }));
 
 	return LayoutFactory([
-		div('#notes-container', { dangerouslySetInnerHTML: {__html: html} }),
+		div({ id: 'notes-container' }, [ hh((props) => new NotesList({ notes: props.notes })) ]),
 		script({ type: 'text/javascript', src: '/js/notes.client.js', async: 'async' })
 	]);
 });

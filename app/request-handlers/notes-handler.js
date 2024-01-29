@@ -4,10 +4,10 @@ import glob from 'globby';
 import express from 'express';
 import {exec} from 'child_process';
 import readline from 'readline';
-import ReactDOMServer from "react-dom/server.node.js";
 import React from "react";
 import NoteContainer from '../views/notes/note-container.js';
 import NotesContainer from "../views/notes/notes-container.js";
+import { renderToStaticMarkup } from 'react-dom/server';
 
 const eTagKey = 'ETag'
 const ifNoneMatchKey = 'If-None-Match';
@@ -180,7 +180,7 @@ export default function (localApp, notesConfig, environmentOpts) {
       const component = NotesContainer;
 
       let markup = '<!DOCTYPE html>';
-      markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {notes: await promisedNotes}));
+      markup += renderToStaticMarkup(React.createElement(component, {notes: await promisedNotes}));
 
       cachedHtml.set(req.path, [cacheTag, markup]);
 
@@ -226,7 +226,7 @@ export default function (localApp, notesConfig, environmentOpts) {
 
       let markup = '<!DOCTYPE html>';
       const component = NoteContainer;
-      markup += ReactDOMServer.renderToStaticMarkup(React.createElement(component, {note: note}));
+      markup += renderToStaticMarkup(React.createElement(component, {note: note}));
 
       cachedHtml.set(req.path, [cacheTag, markup]);
 

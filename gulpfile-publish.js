@@ -4,7 +4,7 @@ const require = createRequire(import.meta.url);
 import gulp from 'gulp';
 import through2 from 'through2';
 import React from 'react';
-import ReactDomServer from 'react-dom/server.js';
+import ReactDomServer from 'react-dom/server';
 import appConfig from "./app/app-config.cjs";
 import htmlmin from 'gulp-htmlmin';
 import del from 'del';
