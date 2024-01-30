@@ -14,7 +14,6 @@ import projectLoader from './app/request-handlers/project-loader.js';
 import { rollup } from 'rollup';
 import rollupConfig from './rollup-config.js';
 import path from "path";
-import terser from "gulp-terser";
 import { include } from './app/gulpfile.js'
 import * as vm from "vm";
 
@@ -92,7 +91,6 @@ function bundleJs() {
 function buildServerJs() {
   return gulp.src('./app/app-release.js')
     .pipe(bundleJs())
-    .pipe(terser({ compress: { passes: 2, unsafe: true } }))
     .pipe(gulp.dest('./build'));
 }
 

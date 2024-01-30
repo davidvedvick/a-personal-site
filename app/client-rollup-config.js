@@ -8,31 +8,29 @@ import injectProcessEnv from 'rollup-plugin-inject-process-env';
 
 const babelOptions = {
   babelHelpers: 'bundled',
-  exclude: 'node_modules/**',
   presets: [
+    '@babel/preset-react',
     ['@babel/preset-env', {
       "targets": {
         "browsers": ["last 2 versions"]
       },
-      "modules": 'auto',
     }],
-    '@babel/preset-react'
   ],
 };
 
 export default {
   plugins: [
-    nodePolyfills(),
-    commonjs(),
     nodeResolve({
-      preferBuiltins: true,
       browser: true,
+      dedupe: ['react', 'react-dom'],
     }),
-    json(),
+    commonjs(),
     babel(babelOptions),
+    json(),
     injectProcessEnv({
       NODE_ENV: process.env.NODE_ENV,
     }),
+    nodePolyfills(),
     terser({ compress: { passes: 2, unsafe: true } })
   ]
 };

@@ -15,11 +15,9 @@ import Printer from "pagedjs-cli";
 import {rollup} from "rollup";
 import clientRollupConfig from "./client-rollup-config.js";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const browserify = require('browserify');
-const terser = require('gulp-terser');
 const cleanCss = require('gulp-clean-css');
 const del = require('del');
 const through2 = require('through2');
@@ -111,9 +109,9 @@ function buildJs() {
       extname: '.js'
     }));
 
-  pipe = production
-		? pipe
-		: pipe.pipe(sourcemaps.write(getOutputDir())); // writes .map file
+  if (!production) {
+    pipe = pipe.pipe(sourcemaps.write(getOutputDir())); // writes .map file
+  }
 
 	return pipe.pipe(gulp.dest(destDir));
 }
