@@ -9,23 +9,23 @@ const {div, a, em, p, hh} = pkg;
 
 const renderer = new Renderer();
 renderer.image = (href, title, text) => {
-    if (href.startsWith('./'))
-        href = '/notes/' + href.replace(/^\.\/+/, '');
+  if (href.startsWith('./'))
+    href = `/notes/${href.replace(/^\.\/+/, '')}`;
 
-    let returnTag = `<image src="${href}"`;
+  let returnTag = `<img src="${href}"`;
 
-    if (title)
-        returnTag += ` title="${title}"`;
+  if (title)
+    returnTag += ` title="${title}"`;
 
-    if (text)
-        returnTag += ` alt="${text}"`;
+  if (text)
+    returnTag += ` alt="${text}"`;
 
-    returnTag += '>';
+  returnTag += ' />';
 
-    return returnTag;
+  return returnTag;
 }
 
-const marked = new Marked({ renderer: renderer }, configuredMarkedHighlighter);
+const marked = new Marked({ renderer }, configuredMarkedHighlighter);
 
 const Note = hh((props) => {
     const note = props.note;
