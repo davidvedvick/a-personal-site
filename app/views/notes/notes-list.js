@@ -1,53 +1,36 @@
 import React from 'react';
 import Note from './note/note.js';
 import pkg from 'react-hyperscript-helpers';
+import {NotesViewModel} from "./notes-view-model.js";
+import {useInteractionState} from "../interactions/ObservableState.js";
+import {cancellationToken} from "../CancellationToken.js";
 const { div, hh } = pkg;
 
-export class NotesList extends React.Component {
-	constructor (props) {
-		super(props);
+export function StaticNotesList(props) {
+  const noteNodes = props.notes
+    .map((note) => Note({ note: note, key: note.hash }));
 
-		this.page = 1;
-		this.state = { notes: this.props.notes || [] };
+  return div('#notes', noteNodes);
+}
 
-		const loadingThreshold = () => {
-			const fifthLastNote = document.querySelector('div.note:nth-last-child(5)');
-			if (!fifthLastNote) return -1;
-			
-			const rect = fifthLastNote.getBoundingClientRect();
-			return rect.top + window.scrollY;
-		}
+export function DynamicNotesList(props) {
+  const viewModel = React.useMemo(
+    () => new NotesViewModel(document, props.notes ?? []),
+    [props.notes]);
 
-		const loadMoreNotesIfNecessary = async () => {
-			if (window.scrollY < loadingThreshold()) return;
+  const notes = useInteractionState(viewModel.notes);
 
-			window.removeEventListener('scroll', loadMoreNotesIfNecessary);
+  React.useEffect(() => {
+    const token = cancellationToken();
+    viewModel
+      .watchFromScrollState(token)
+      .catch((err) => console.error("An unrecoverable error occurred watching the scroll state.", err));
 
-			try {
-				const response = await fetch(`/notes/${++this.page}`);
-				const data = await response.json();
-				if (data.length > 0)
-					this.setState({notes: this.state.notes.concat(data)});
-			} catch (err) {
-				console.error(`There was an error getting the notes: ${err}.`)
-			} finally {
-				window.addEventListener('scroll', loadMoreNotesIfNecessary)
-			}
-		};
+    return () => token.cancel();
+  }, [viewModel]);
 
-		this.loadMoreNotesIfNecessary = loadMoreNotesIfNecessary;
-	}
+  const noteNodes = notes
+    .map((note) => Note({ note: note }));
 
-	componentDidMount () {
-		window.addEventListener('scroll', this.loadMoreNotesIfNecessary);
-		this.loadMoreNotesIfNecessary();
-	}
-
-	render () {
-		// notes objects should look like "{title, date, text}". don't include private ones
-		const noteNodes = (this.state.notes || [])
-			.map((note) => Note({ note: note, key: note.hash }));
-
-		return div(noteNodes);
-	}
+  return div('#notes', noteNodes);
 }

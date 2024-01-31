@@ -28,6 +28,12 @@ const promiseExec = (command) => new Promise((resolve, reject) => exec(command, 
   resolve(out);
 }));
 
+const noteCache = new Map();
+function cacheNote(file, note) {
+  noteCache.set(file, note);
+  return note;
+}
+
 export default function (localApp, notesConfig, environmentOpts) {
   environmentOpts = environmentOpts || {};
   notesConfig.path = notesConfig.path || 'content/notes';
@@ -60,18 +66,14 @@ export default function (localApp, notesConfig, environmentOpts) {
   }
 
   async function parseNote(file) {
-    parseNote.noteCache = parseNote.noteCache || {};
-
     const latestCommit = await getFileTag(file);
 
-    const cachedNote = parseNote.noteCache[file];
+    const cachedNote = noteCache.get(file);
     if (cachedNote && cachedNote.commit === latestCommit) return cachedNote;
 
     if (!await isFileAccessible(file)) {
       return null;
     }
-
-    parseNote.cacheNote = parseNote.cacheNote || ((note) => parseNote.noteCache[file] = note);
 
     const fileName = path.basename(file, '.md');
 
@@ -122,18 +124,18 @@ export default function (localApp, notesConfig, environmentOpts) {
       });
     });
 
-    if (newNote.created !== null) return parseNote.cacheNote(newNote);
+    if (newNote.created !== null) return cacheNote(file, newNote);
 
     if (!notesConfig.gitPath) {
       newNote.created = new Date(newNote.pathYear, newNote.pathMonth, newNote.pathDay);
-      return parseNote.cacheNote(newNote);
+      return cacheNote(file, newNote);
     }
 
     const outputDate = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
 
     newNote.created = new Date(outputDate);
 
-    return parseNote.cacheNote(newNote);
+    return cacheNote(file, newNote);
   }
 
   async function getNotes(page) {

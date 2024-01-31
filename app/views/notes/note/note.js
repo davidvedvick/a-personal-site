@@ -33,9 +33,12 @@ const Note = hh((props) => {
 
     const html = sanitize(marked.parse(note.text || ''));
 
-    return div('.note', [
+    return div({ className: 'note', id: note.hash }, [
         div('.note-text', {dangerouslySetInnerHTML: {__html: html}}),
-        p('.note-date', [em([`Note posted on ${moment(note.created).tz('America/Chicago').format('LLLL z')} - `, a({href: routeUrl}, 'link')])])
+        p('.note-date', [em([
+          `Note posted on ${moment(note.created).tz('America/Chicago').format('LLLL z')} - `,
+          a({href: routeUrl}, 'link')]
+        )])
     ]);
 });
 

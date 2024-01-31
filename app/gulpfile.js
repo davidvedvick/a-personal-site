@@ -96,7 +96,6 @@ function buildJs() {
           const {output} = await bundle.generate({format: 'iife'});
 
           file.contents = Buffer.from(output[0].code);
-          // file.path = file.path.replace(path.extname(file.path), '.client.js');
 
           next(null, file);
         } catch (e) {

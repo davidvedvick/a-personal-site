@@ -28,6 +28,7 @@
     "react-dom": "^18.2.0",
     "react-hyperscript-helpers": "^1.1.0",
     "require-glob": "^4.1.0",
+    "rxjs": "^7.8.1",
     "sanitize-html": "^2.11.0",
     "serve-favicon": "^2.2.0",
     "slick-carousel": "^1.5.5"
