@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "release": "gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && ./start-server.sh",
+    "release": "NODE_ENV=production gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && ./start-server.sh",
     "debug": "cd app && gulp && node app-debug.js",
     "build-resume": "npm install && gulp --gulpfile=gulpfile-publish.js buildResume",
     "build-portfolio": "npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",

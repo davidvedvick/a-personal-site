@@ -1,3 +1,5 @@
+process.env.NODE_ENV = "production";
+
 import { createRequire } from "module"
 const require = createRequire(import.meta.url);
 
@@ -16,8 +18,6 @@ import rollupConfig from './rollup-config.js';
 import path from "path";
 import { include } from './app/gulpfile.js'
 import * as vm from "vm";
-
-process.env.NODE_ENV = "production";
 
 // Register dynamic build tasks
 const appBuild = include({ production: true });
