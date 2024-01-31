@@ -2,6 +2,7 @@ import json from '@rollup/plugin-json';
 import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from "@rollup/plugin-node-resolve";
 import {getBabelOutputPlugin} from '@rollup/plugin-babel';
+import terser from '@rollup/plugin-terser';
 
 const babelOptions = {
   presets: [
@@ -24,9 +25,9 @@ export default {
     }),
     nodeResolve({
       preferBuiltins: true,
-      // include: "node_modules/**",
     }),
     json(),
-    getBabelOutputPlugin(babelOptions)
+    getBabelOutputPlugin(babelOptions),
+    terser({ compress: { passes: 2, unsafe: true } }),
   ]
 };

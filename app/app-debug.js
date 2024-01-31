@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import express from 'express';
-import bodyParser from 'body-parser';
 import favIcon from 'serve-favicon';
 import methodOverride from 'method-override';
 import { fileURLToPath } from 'url'
@@ -10,7 +9,6 @@ import errorHandler from 'errorhandler';
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 import React from "react";
-import ReactDOMServer from "react-dom/server.node.js";
 
 import notesHandler from './request-handlers/notes-handler.js';
 import appConfig from './app-config.cjs';
@@ -19,7 +17,8 @@ import index from './views/index/index.js';
 import projectList from './views/project/project-list.js';
 import resume from './views/resume/resume.js';
 import {watch} from "./gulpfile.js";
-
+import { renderToStaticMarkup } from 'react-dom/server';
+import bodyParser from "body-parser";
 
 const environmentOpts = {
     maxAge: 0
@@ -44,7 +43,7 @@ app.use(errorHandler());
 
 const docType = '<!DOCTYPE html>';
 function renderElement(element, options) {
-  const markup = ReactDOMServer.renderToStaticMarkup(React.createElement(element, options));
+  const markup = renderToStaticMarkup(React.createElement(element, options));
   return docType + markup;
 }
 

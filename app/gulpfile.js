@@ -12,12 +12,12 @@ import { dirname } from 'path'
 
 import {marked} from "marked";
 import Printer from "pagedjs-cli";
+import {rollup} from "rollup";
+import clientRollupConfig from "./client-rollup-config.js";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const browserify = require('browserify');
-const terser = require('gulp-terser');
 const cleanCss = require('gulp-clean-css');
 const del = require('del');
 const through2 = require('through2');
@@ -85,40 +85,32 @@ function buildJs() {
 
   let pipe = gulp.src(getInputDir('views/**/*.client.{js,jsx}'))
     .pipe(parallel(
-      through2.obj((file, enc, next) =>
-        browserify(file.path, {extensions: '.jsx', debug: !production})
-          .transform(envify)
-          .transform('babelify', {
-            presets: [
-              [
-                '@babel/preset-env', {
-                  "targets": {
-                    "browsers": ["last 2 versions"]
-                  }
-                }
-              ],
-              '@babel/preset-react',
-            ],
-            plugins: ['@babel/transform-runtime', '@babel/plugin-proposal-optional-chaining']
-          })
-          .bundle((err, res) => {
-            if (err) console.log(err);
-            // assumes file.contents is a Buffer
-            else file.contents = res;
+      through2.obj(async (file, enc, next) => {
+        try {
+          const bundle = await rollup(Object.assign(
+            clientRollupConfig,
+            {
+              input: file.path,
+            }));
 
-            next(null, file);
-          })),
+          const {output} = await bundle.generate({format: 'iife'});
+
+          file.contents = Buffer.from(output[0].code);
+
+          next(null, file);
+        } catch (e) {
+          next(e);
+        }
+      }),
       numberOfCpus))
     .pipe(rename({
       dirname: '',
       extname: '.js'
     }));
 
-  pipe = production
-		? pipe.pipe(parallel(terser({ compress: { passes: 2, unsafe: true } }), numberOfCpus))
-		: pipe
-			// .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
-			.pipe(sourcemaps.write(getOutputDir())); // writes .map file
+  if (!production) {
+    pipe = pipe.pipe(sourcemaps.write(getOutputDir())); // writes .map file
+  }
 
 	return pipe.pipe(gulp.dest(destDir));
 }

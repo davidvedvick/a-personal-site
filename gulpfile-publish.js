@@ -1,10 +1,12 @@
+process.env.NODE_ENV = "production";
+
 import { createRequire } from "module"
 const require = createRequire(import.meta.url);
 
 import gulp from 'gulp';
 import through2 from 'through2';
 import React from 'react';
-import ReactDomServer from 'react-dom/server.js';
+import ReactDomServer from 'react-dom/server';
 import appConfig from "./app/app-config.cjs";
 import htmlmin from 'gulp-htmlmin';
 import del from 'del';
@@ -14,11 +16,8 @@ import projectLoader from './app/request-handlers/project-loader.js';
 import { rollup } from 'rollup';
 import rollupConfig from './rollup-config.js';
 import path from "path";
-import terser from "gulp-terser";
 import { include } from './app/gulpfile.js'
 import * as vm from "vm";
-
-process.env.NODE_ENV = "production";
 
 // Register dynamic build tasks
 const appBuild = include({ production: true });
@@ -92,7 +91,6 @@ function bundleJs() {
 function buildServerJs() {
   return gulp.src('./app/app-release.js')
     .pipe(bundleJs())
-    .pipe(terser({ compress: { passes: 2, unsafe: true } }))
     .pipe(gulp.dest('./build'));
 }
 
