@@ -7,10 +7,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "release": "NODE_ENV=production gulp --gulpfile gulpfile-publish.js buildStatic && cp app-config.json build/app-config.json && cd build && ./start-server.sh",
-    "debug": "cd app && gulp && node app-debug.js",
-    "build-resume": "npm install && gulp --gulpfile=gulpfile-publish.js buildResume",
-    "build-portfolio": "npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",
-    "build-release": "npm install && gulp --gulpfile gulpfile-publish.js buildStatic"
+    "debug": "NODE_ENV=development cd app && gulp && node app-debug.js",
+    "build-resume": "NODE_ENV=production npm install && gulp --gulpfile=gulpfile-publish.js buildResume",
+    "build-portfolio": "NODE_ENV=production npm install && gulp --gulpfile=gulpfile-publish.js buildPortfolio",
+    "build-release": "NODE_ENV=production npm install && gulp --gulpfile gulpfile-publish.js buildStatic"
   },
   "dependencies": {
     "@babel/runtime": "^7.10.4",
