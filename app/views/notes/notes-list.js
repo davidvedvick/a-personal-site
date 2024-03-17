@@ -6,14 +6,14 @@ import {useInteractionState} from "../interactions/ObservableState.js";
 import {cancellationToken} from "../CancellationToken.js";
 const { div, hh } = pkg;
 
-export function StaticNotesList(props) {
+export function NotesList(props) {
   const noteNodes = props.notes
-    .map((note) => Note({ note: note, key: note.hash }));
+    .map((note) => Note({ note: note }));
 
   return div('#notes', noteNodes);
 }
 
-export function DynamicNotesList(props) {
+export function ContinuousNotesList(props) {
   const viewModel = React.useMemo(
     () => new NotesViewModel(document, props.notes ?? []),
     [props.notes]);
@@ -29,8 +29,5 @@ export function DynamicNotesList(props) {
     return () => token.cancel();
   }, [viewModel]);
 
-  const noteNodes = notes
-    .map((note) => Note({ note: note }));
-
-  return div('#notes', noteNodes);
+  return NotesList({ notes: notes });
 }
