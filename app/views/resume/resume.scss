@@ -11,7 +11,9 @@ div.resume {
 	}
 
   section {
-    break-inside: avoid;
+    section {
+      break-inside: avoid;
+    }
 
     li {
       break-inside: avoid;
@@ -22,6 +24,10 @@ div.resume {
     @media print {
       display: none;
     }
+  }
+
+  section.chunk {
+    break-inside: avoid;
   }
 
   #more-info {
@@ -50,7 +56,7 @@ div.resume {
     overflow: visible;;
     display: block;
     background-color: #fff;
-    font-size: 7pt;
+    font-size: 10pt;
     max-width: 8.5in;
   }
 }
