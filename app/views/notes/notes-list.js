@@ -4,7 +4,7 @@ import pkg from 'react-hyperscript-helpers';
 import {NotesViewModel} from "./notes-view-model.js";
 import {useInteractionState} from "../interactions/ObservableState.js";
 import {cancellationToken} from "../CancellationToken.js";
-const { div, hh } = pkg;
+const { div } = pkg;
 
 export function NotesList(props) {
   const noteNodes = props.notes
