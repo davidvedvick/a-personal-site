@@ -19,19 +19,30 @@ function getMatchTag(req) {
   return req.get(ifNoneMatchKey);
 }
 
-const commandRateLimiter = new PromisingRateLimiter(2);
+const commandRateLimiter = new PromisingRateLimiter(4);
+const maxCommandAttempts = 3;
 
-const promiseExec = (command) => commandRateLimiter.limit(() => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
-  if (err) {
-    reject(err);
+async function promiseExec(command) {
+  let remainingAttempts = maxCommandAttempts;
+  while (remainingAttempts-- > 0) {
+    try {
+      return await commandRateLimiter.limit(() => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
+        if (err) {
+          reject(err);
+        }
+
+        if (stderr) {
+          reject(stderr);
+        }
+
+        resolve(out);
+      })));
+    } catch (err) {
+      if (err.code !== 'EAGAIN') throw err;
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
   }
-
-  if (stderr) {
-    reject(stderr);
-  }
-
-  resolve(out);
-})));
+}
 
 const noteCache = new Map();
 function cacheNote(file, note) {
