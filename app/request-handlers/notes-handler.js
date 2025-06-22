@@ -19,7 +19,7 @@ function getMatchTag(req) {
   return req.get(ifNoneMatchKey);
 }
 
-const commandRateLimiter = new PromisingRateLimiter(2);
+const commandRateLimiter = new PromisingRateLimiter(4);
 const maxCommandAttempts = 3;
 
 async function promiseExec(command) {
