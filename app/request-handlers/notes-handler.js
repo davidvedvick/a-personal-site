@@ -9,6 +9,7 @@ import NoteContainer from '../views/notes/note-container.js';
 import NotesContainer from "../views/notes/notes-container.js";
 import { renderToStaticMarkup } from 'react-dom/server';
 import {NotesRssFeed} from "../views/notes/notes-rss-feed.js";
+import PromisingRateLimiter from "./promising-rate-limiter.js";
 
 const eTagKey = 'ETag'
 const ifNoneMatchKey = 'If-None-Match';
@@ -18,7 +19,9 @@ function getMatchTag(req) {
   return req.get(ifNoneMatchKey);
 }
 
-const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
+const commandRateLimiter = new PromisingRateLimiter(4);
+
+const promiseExec = (command) => commandRateLimiter.limit(() => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
   if (err) {
     reject(err);
   }
@@ -28,7 +31,7 @@ const promiseExec = (command) => new Promise((resolve, reject) => exec(command, 
   }
 
   resolve(out);
-}));
+})));
 
 const noteCache = new Map();
 function cacheNote(file, note) {
