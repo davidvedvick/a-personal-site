@@ -19,7 +19,7 @@ function getMatchTag(req) {
   return req.get(ifNoneMatchKey);
 }
 
-const commandRateLimiter = new PromisingRateLimiter(2);
+const commandRateLimiter = new PromisingRateLimiter(4);
 const maxCommandAttempts = 3;
 
 async function promiseExec(command) {
@@ -32,13 +32,14 @@ async function promiseExec(command) {
         }
 
         if (stderr) {
-          reject(stderr);
+          reject(new Error(stderr));
         }
 
         resolve(out);
       })));
     } catch (err) {
       if (attempts >= maxCommandAttempts || err.code !== 'EAGAIN') throw err;
+      if (!err.message || err.message.indexOf("Resource temporarily unavailable") === -1) throw err;
       await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
     }
   }
