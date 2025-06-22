@@ -38,9 +38,12 @@ async function promiseExec(command) {
         resolve(out);
       })));
     } catch (err) {
-      if (attempts >= maxCommandAttempts || err.code !== 'EAGAIN') throw err;
-      if (!err.message || err.message.indexOf("Resource temporarily unavailable") === -1) throw err;
-      await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+      if (attempts >= maxCommandAttempts) throw err;
+      if (err.code === 'EAGAIN' || err.message?.indexOf("Resource temporarily unavailable") > -1) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+        continue;
+      }
+      throw err;
     }
   }
 }
