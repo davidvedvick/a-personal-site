@@ -32,13 +32,14 @@ async function promiseExec(command) {
         }
 
         if (stderr) {
-          reject(stderr);
+          reject(new Error(stderr));
         }
 
         resolve(out);
       })));
     } catch (err) {
       if (attempts >= maxCommandAttempts || err.code !== 'EAGAIN') throw err;
+      if (!err.message || err.message.indexOf("Resource temporarily unavailable") === -1) throw err;
       await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
     }
   }
