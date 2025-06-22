@@ -19,12 +19,12 @@ function getMatchTag(req) {
   return req.get(ifNoneMatchKey);
 }
 
-const commandRateLimiter = new PromisingRateLimiter(4);
+const commandRateLimiter = new PromisingRateLimiter(2);
 const maxCommandAttempts = 3;
 
 async function promiseExec(command) {
-  let remainingAttempts = maxCommandAttempts;
-  while (remainingAttempts-- > 0) {
+  let attempts = 1;
+  while (attempts++ <= maxCommandAttempts) {
     try {
       return await commandRateLimiter.limit(() => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
         if (err) {
@@ -38,8 +38,8 @@ async function promiseExec(command) {
         resolve(out);
       })));
     } catch (err) {
-      if (err.code !== 'EAGAIN') throw err;
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (attempts >= maxCommandAttempts || err.code !== 'EAGAIN') throw err;
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
     }
   }
 }
