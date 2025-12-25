@@ -9,7 +9,7 @@ const NotesContainer = hh((props) => {
     { subheader: "Notes" },
     [
       div('#rss-container', [
-        a('#rss-link', { href: '/notes/rss.xml' }, [
+        a('#rss-link', { href: '/notes/atom.xml' }, [
           img({ src: '/imgs/rss.svg', alt: 'Get the Feed!' })
         ]),
       ]),
