@@ -10,6 +10,7 @@ import NotesContainer from "../views/notes/notes-container.js";
 import { renderToStaticMarkup } from 'react-dom/server';
 import {NotesRssFeed} from "../views/notes/notes-rss-feed.js";
 import PromisingRateLimiter from "./promising-rate-limiter.js";
+import {NotesAtomFeed} from "../views/notes/notes-atom-feed.js";
 
 const eTagKey = 'ETag'
 const ifNoneMatchKey = 'If-None-Match';
@@ -260,6 +261,42 @@ export default function (localApp, notesConfig, environmentOpts) {
 
       let markup = '<?xml version="1.0" encoding="UTF-8" ?>\n';
       markup += NotesRssFeed(rootUrl, await promisedNotes);
+
+      cachedHtml.set(req.path, [cacheTag, markup]);
+
+      res.send(markup);
+    } catch (exception) {
+      console.log(exception);
+      res.status(500).send('An error occurred');
+    }
+  });
+
+  localApp.get(`${rootNotesPath}/atom.xml`, async (req, res) => {
+    try {
+      const cacheTag = await getNotesRepoTag();
+      if (getMatchTag(req) === cacheTag) {
+        res.sendStatus(304);
+        return;
+      }
+
+      res.type('application/xml');
+      res.set(eTagKey, cacheTag);
+      res.set('Cache-Control', 'public, max-age=0');
+
+      const cachedPageTagPair = cachedHtml.get(req.path);
+      if (cachedPageTagPair) {
+        const [cachedTag, cachedPage] = cachedPageTagPair;
+        if (cacheTag === cachedTag) {
+          res.send(cachedPage);
+          return;
+        }
+      }
+
+      const promisedNotes = getAllNotes();
+      const rootUrl = req.protocol + '://' + req.get('host')
+
+      let markup = '<?xml version="1.0" encoding="UTF-8" ?>\n';
+      markup += NotesAtomFeed(rootUrl, await promisedNotes);
 
       cachedHtml.set(req.path, [cacheTag, markup]);
 
