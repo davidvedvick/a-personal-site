@@ -39,17 +39,19 @@ function NotesItem(rootUrl, note) {
 </entry>`;
 }
 
-export function NotesAtomFeed(rootUrl, notes) {
+export function NotesAtomFeed(rootUrl, notePath, feedPath, notes) {
   const sortedNotes = notes
     .filter(n => isFinite(n.created))
     .sort((a, b) => (a.created > b.created) - (a.created < b.created));
 
+  const notesUrl = rootUrl + notePath;
+
   return `
     <feed xmlns="http://www.w3.org/2005/Atom">
         <title>David Vedvick (Notes Feed)</title>
-        <id>${rootUrl}</id>
-         <link href="${rootUrl}" />
-         <link href="${rootUrl}/atom.xml" rel="self" />
+        <id>${notesUrl}</id>
+         <link href="${notesUrl}" />
+         <link href="${rootUrl}${feedPath}" rel="self" />
          <updated>${sortedNotes.at(-1).created.toISOString()}</updated>
          <author>
             <name>David Vedvick</name>
