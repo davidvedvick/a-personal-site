@@ -180,8 +180,8 @@ export default function (localApp, notesConfig, environmentOpts) {
 
     const parsedNotes = await Promise.all(filesToRead.map((f) => parseNote(f)));
     return parsedNotes
-      .filter(n => n != null)
-      .sort((a, b) => isFinite(a.created) && isFinite(b.created) ? (a.created > b.created) - (a.created < b.created) : NaN)
+      .filter(n => isFinite(n?.created))
+      .sort((a, b) => (a.created > b.created) - (a.created < b.created))
       .reverse();
   }
 
@@ -195,8 +195,8 @@ export default function (localApp, notesConfig, environmentOpts) {
 
     const parsedNotes = await Promise.all(filesToRead.map((f) => parseNote(f)));
     return parsedNotes
-      .filter(n => n != null)
-      .sort((a, b) => isFinite(a.created) && isFinite(b.created) ? (a.created > b.created) - (a.created < b.created) : NaN)
+      .filter(n => isFinite(n?.created))
+      .sort((a, b) => (a.created > b.created) - (a.created < b.created))
       .reverse();
   }
 
@@ -243,7 +243,7 @@ export default function (localApp, notesConfig, environmentOpts) {
         return;
       }
 
-      res.type('application/xml');
+      res.type('text/xml');
       res.set(eTagKey, cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
 
@@ -279,7 +279,7 @@ export default function (localApp, notesConfig, environmentOpts) {
         return;
       }
 
-      res.type('application/xml');
+      res.type('text/xml');
       res.set(eTagKey, cacheTag);
       res.set('Cache-Control', 'public, max-age=0');
 
@@ -296,7 +296,7 @@ export default function (localApp, notesConfig, environmentOpts) {
       const rootUrl = req.protocol + '://' + req.get('host')
 
       let markup = '<?xml version="1.0" encoding="UTF-8" ?>\n';
-      markup += NotesAtomFeed(rootUrl, await promisedNotes);
+      markup += NotesAtomFeed(rootUrl, rootNotesPath, req.path, await promisedNotes);
 
       cachedHtml.set(req.path, [cacheTag, markup]);
 
