@@ -7,7 +7,7 @@ import terser from '@rollup/plugin-terser';
 const babelOptions = {
   presets: [
     ['@babel/preset-env', {
-      "targets": "node 16",
+      "targets": "node 22",
       "modules": 'auto',
     }],
     '@babel/preset-react'
