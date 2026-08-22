@@ -15,7 +15,8 @@ import Printer from "pagedjs-cli";
 import {rollup} from "rollup";
 import clientRollupConfig from "./client-rollup-config.js";
 import through2 from 'through2';
-import { promisify } from 'util';
+import { Jimp } from 'jimp';
+import {globby} from "globby";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -27,8 +28,7 @@ const parallel = require('concurrent-transform');
 
 const os = require('os');
 const path = require('path');
-const Jimp = require("jimp");
-const fs = require("fs");
+const fs = require("fs/promises");
 
 const npmSassAliases = {};
 /**
@@ -64,13 +64,39 @@ const deSassify = () => gulpSass(
 let production = false;
 let outputDir = __dirname;
 
-const promiseMkDir = promisify(fs.mkdir);
+const promiseMkDir = fs.mkdir;
+const promiseExists = async (path) => {
+  try {
+    await fs.stat(path);
+    return true;
+  } catch (e) {
+    return e.code !== 'ENOENT';
+  }
+}
 
-const promiseCopyFile = promisify(fs.copyFile);
 const getOutputDir = (relativeDir) => path.join(outputDir, relativeDir || '');
 const getInputDir = (relativeDir) => path.join(__dirname, relativeDir || '');
-const nodeModuleDir = path.join(__dirname, '../node_modules');
 
+async function promiseCopiedFile(src, dest) {
+  const directory = path.dirname(dest);
+  if (!await promiseExists(directory)) {
+    console.log(`Making directory ${directory}.`);
+    await promiseMkDir(directory, { recursive: true });
+  }
+
+  await fs.copyFile(src, dest)
+}
+
+async function promiseCopiedDirectory(srcDir, destDir) {
+  const srcFiles = await globby(`${srcDir}/**/*`);
+  await Promise.all(srcFiles.map(f => {
+    const relativePath = path.relative(srcDir, f);
+    const destPath = path.join(destDir, relativePath);
+    return promiseCopiedFile(f, destPath);
+  }));
+}
+
+const nodeModuleDir = path.join(__dirname, '../node_modules');
 const numberOfCpus = os.cpus().length;
 
 // Dynamic build content
@@ -132,18 +158,29 @@ function transformSass() {
 const buildCss = gulp.parallel(collectSlickBlobs, transformSass);
 
 function buildPublicImages() {
-	return gulp.src(getInputDir('imgs/*')).pipe(gulp.dest(getOutputDir('public/imgs')));
+  const srcDir = getInputDir('imgs');
+  const destDir = getOutputDir('public/imgs');
+  return promiseCopiedDirectory(srcDir, destDir);
 }
 
 function copyPublicFonts() {
-	return gulp.src(getInputDir('fonts/*')).pipe(gulp.dest(getOutputDir('public/fonts')));
+  return promiseCopiedDirectory(getInputDir('fonts'), getOutputDir('public/fonts'));
 }
 
 async function buildProfileImage() {
   const sourceProfilePicture = appConfig.bio.authorPicture;
-  const image = await Jimp.read(sourceProfilePicture);
-  const resizedImage = image.resize(Jimp.AUTO, 500);
-  await resizedImage.write(path.join(getOutputDir('public/imgs'), 'profile-picture.jpg'));
+  const promisedImage = Jimp.read(sourceProfilePicture);
+
+  const destination = path.join(getOutputDir('public/imgs'), 'profile-picture.jpg');
+  const directory = path.dirname(destination);
+  if (!await promiseExists(directory)) {
+    console.log(`Making directory ${directory}.`);
+    await promiseMkDir(directory, { recursive: true });
+  }
+
+  const image = await promisedImage;
+  image.resize({ h: 500 });
+  await image.write(destination);
 }
 
 async function buildProjectImages() {
@@ -158,16 +195,19 @@ async function buildProjectImages() {
       if (!uri || uri.startsWith("http://") || uri.startsWith("https://")) return;
 
       const destination = path.join(destDir, path.relative(inputDir, uri));
-      if (path.extname(destination) === ".svg") {
-        const directory = path.dirname(destination);
+      const directory = path.dirname(destination);
+      if (!await promiseExists(directory)) {
         console.log(`Making directory ${directory}.`);
-        await promiseMkDir(directory, { recursive: true })
-        await promiseCopyFile(uri, destination)
+        await promiseMkDir(directory, { recursive: true });
+      }
+
+      if (path.extname(destination) === ".svg") {
+        await promiseCopiedFile(uri, destination)
         return;
       }
 
       const image = await Jimp.read(uri);
-      const resizedImage = image.resize(Jimp.AUTO, 300);
+      const resizedImage = image.resize({ h: 300 });
       await resizedImage.write(destination);
     }));
 }
@@ -211,7 +251,7 @@ ${css}
 </style>
 <body>
     <div class="resume">
-        ${marked((await fs.promises.readFile(resumeLocation)).toString())}
+        ${marked((await fs.readFile(resumeLocation)).toString())}
     </div>
 </body>
 </html>
@@ -219,12 +259,12 @@ ${css}
 
   const intermediateOutputDir = getOutputDir('public/pdf');
 
-  await fs.promises.mkdir(intermediateOutputDir)
+  await fs.mkdir(intermediateOutputDir)
 
   try {
 
     const intermediateFileName = path.join(intermediateOutputDir, 'resume.html');
-    await fs.promises.writeFile(intermediateFileName, html);
+    await fs.writeFile(intermediateFileName, html);
 
     const printer = new Printer({
       allowLocal: true,
@@ -238,7 +278,7 @@ ${css}
 
       // const debugHtml = await printer.html(intermediateFileName, true);
       // const intermediateDebugHtmlName = path.join(intermediateOutputDir, 'paged-resume.html');
-      // await fs.promises.writeFile(intermediateDebugHtmlName, debugHtml);
+      // await fs.writeFile(intermediateDebugHtmlName, debugHtml);
 
       const file = await printer.pdf(
         intermediateFileName,
@@ -247,12 +287,12 @@ ${css}
         });
 
       const target = path.resolve(path.join(getOutputDir('public'), fileName) + 'pdf');
-      await fs.promises.writeFile(target, file);
+      await fs.writeFile(target, file);
     } finally {
       await printer.close();
     }
   } finally {
-    await fs.promises.rm(intermediateOutputDir, { recursive: true, force: true });
+    await fs.rm(intermediateOutputDir, { recursive: true, force: true });
   }
 }
 

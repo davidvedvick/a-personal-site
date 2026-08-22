@@ -10,8 +10,7 @@ import ReactDomServer from 'react-dom/server';
 import appConfig from "./app/app-config.cjs";
 import htmlmin from 'gulp-htmlmin';
 import del from 'del';
-import { promisify } from 'util';
-import fs from 'fs';
+import fs from 'fs/promises';
 import projectLoader from './app/request-handlers/project-loader.js';
 import { rollup } from 'rollup';
 import rollupConfig from './rollup-config.js';
@@ -21,8 +20,6 @@ import * as vm from "vm";
 
 // Register dynamic build tasks
 const appBuild = include({ production: true });
-
-const promiseReadFile = (filePath) => promisify(fs.readFile)(filePath, 'utf8');
 
 const promiseStream = (gulpStream) => new Promise((resolve, reject) => gulpStream.on('end', resolve).on('error', reject));
 
@@ -62,8 +59,10 @@ return module.exports;
 
 const cleanBuild = () => del(['build', 'staging']);
 
-function copyDynamicBuild() {
-	return gulp.src(['./app/public/**/*']).pipe(gulp.dest('./build/public'));
+async function copyDynamicBuild() {
+  const baseDir = './app/public/';
+  const destinationDirectory = './build/public/';
+  await fs.cp(baseDir, destinationDirectory, { force: true, recursive: true });
 }
 
 function bundleJs() {
@@ -95,7 +94,7 @@ function buildServerJs() {
 }
 
 async function buildStaticResume() {
-	const rawMarkdown = await promiseReadFile(appConfig.resumeLocation);
+	const rawMarkdown = await fs.readFile(appConfig.resumeLocation);
 
 	await promiseStream(gulp
 		.src('./app/views/resume/resume.js')
@@ -106,7 +105,7 @@ async function buildStaticResume() {
 }
 
 async function buildStaticIndex() {
-	const rawMarkdown = await promiseReadFile(appConfig.bio.path);
+	const rawMarkdown = await fs.readFile(appConfig.bio.path);
 
 	await promiseStream(gulp
 		.src('./app/views/index/index.js')
@@ -117,7 +116,7 @@ async function buildStaticIndex() {
 }
 
 async function buildStaticProjects() {
-	const portfolios = await projectLoader();
+	const portfolios = await projectLoader('/projects');
 
 	await promiseStream(gulp
 		.src('./app/views/project/project-list.js')
