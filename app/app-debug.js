@@ -1,7 +1,6 @@
 import { promises as fs } from 'fs';
 import path from 'path';
 import express from 'express';
-import favIcon from 'serve-favicon';
 import methodOverride from 'method-override';
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
@@ -30,7 +29,6 @@ app.use('/', express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 // app.use(favIcon());
 // app.use(express.logger('dev'));
-app.use(bodyParser());
 app.use(methodOverride());
 
 app.set('views', __dirname + '/views');

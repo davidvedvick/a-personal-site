@@ -1,6 +1,6 @@
 import * as portfolio from 'codefolio';
 import path from 'path';
-import glob from 'globby';
+import {globby} from 'globby';
 import appConfig from "../app-config.cjs";
 
 export default async () => {
@@ -8,7 +8,7 @@ export default async () => {
 
   console.log("Searching for projects using `%s`...", pattern);
 
-  const projectReadmes = await glob(pattern);
+  const projectReadmes = await globby(pattern);
   console.log("Projects found:", projectReadmes);
 
   const promisedPortfolios = projectReadmes
@@ -25,7 +25,7 @@ export default async () => {
           example.url = path.join(portfolioDir, example.url);
         }
 
-        const additionalExamples = await glob(path.join(portfolioDir, "examples", "*.{png,svg}"));
+        const additionalExamples = await globby(path.join(portfolioDir, "examples", "*.{png,svg}"));
 
         portfolio.examples = portfolio.examples.concat(additionalExamples.map(p => {
           return {

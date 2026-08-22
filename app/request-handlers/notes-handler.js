@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import glob from 'globby';
+import {globby} from 'globby';
 import express from 'express';
 import {exec} from 'child_process';
 import readline from 'readline';
@@ -168,7 +168,7 @@ export default function (localApp, notesConfig, environmentOpts) {
   async function getNotes(page) {
     const pageSize = 10;
 
-    const files = await glob(path.join(notesConfig.path, '*.md'));
+    const files = await globby(path.join(notesConfig.path, '*.md'));
 
     const startIndex = (page - 1) * pageSize;
 
@@ -186,7 +186,7 @@ export default function (localApp, notesConfig, environmentOpts) {
   }
 
   async function getAllNotes() {
-    const files = await glob(path.join(notesConfig.path, '*.md'));
+    const files = await globby(path.join(notesConfig.path, '*.md'));
 
     // really hacky way to pull files back for now
     const filesToRead = files
