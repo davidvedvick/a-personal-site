@@ -1,6 +1,5 @@
 import {Marked, Renderer} from 'marked';
 import moment from 'moment-timezone';
-import path from 'path';
 import pkg from 'react-hyperscript-helpers';
 import {sanitize} from "../../markdown/configured-sanitizer.js";
 import {configuredMarkedHighlighter} from "../../markdown/configured-marked-highlighter.js";
@@ -29,7 +28,6 @@ const marked = new Marked({ renderer }, configuredMarkedHighlighter);
 
 const Note = hh((props) => {
     const note = props.note;
-    const routeUrl = path.join('/notes', note.pathYear, note.pathMonth, note.pathDay, note.pathTitle);
 
     const html = sanitize(marked.parse(note.text || ''));
 
@@ -37,7 +35,7 @@ const Note = hh((props) => {
         div('.note-text', {dangerouslySetInnerHTML: {__html: html}}),
         p('.note-date', [em([
           `Note posted on ${moment(note.created).tz('America/Chicago').format('LLLL z')} - `,
-          a({href: routeUrl}, 'link')]
+          a({href: note.path}, 'link')]
         )])
     ]);
 });

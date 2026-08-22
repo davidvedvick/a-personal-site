@@ -8,25 +8,46 @@ import React from "react";
 import NoteContainer from '../views/notes/note-container.js';
 import NotesContainer from "../views/notes/notes-container.js";
 import { renderToStaticMarkup } from 'react-dom/server';
+import {NotesRssFeed} from "../views/notes/notes-rss-feed.js";
+import PromisingRateLimiter from "./promising-rate-limiter.js";
+import {NotesAtomFeed} from "../views/notes/notes-atom-feed.js";
 
 const eTagKey = 'ETag'
 const ifNoneMatchKey = 'If-None-Match';
+const rootNotesPath = '/notes';
 
 function getMatchTag(req) {
   return req.get(ifNoneMatchKey);
 }
 
-const promiseExec = (command) => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
-  if (err) {
-    reject(err);
-  }
+const commandRateLimiter = new PromisingRateLimiter(2);
+const maxCommandAttempts = 10;
 
-  if (stderr) {
-    reject(stderr);
-  }
+async function promiseExec(command) {
+  let attempts = 1;
+  while (attempts++ <= maxCommandAttempts) {
+    try {
+      return await commandRateLimiter.limit(() => new Promise((resolve, reject) => exec(command, (err, out, stderr) => {
+        if (err) {
+          reject(err);
+        }
 
-  resolve(out);
-}));
+        if (stderr) {
+          reject(new Error(stderr));
+        }
+
+        resolve(out);
+      })));
+    } catch (err) {
+      if (attempts >= maxCommandAttempts) throw err;
+      if (err.code === 'EAGAIN' || err.message?.indexOf("Resource temporarily unavailable") > -1) {
+        await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+        continue;
+      }
+      throw err;
+    }
+  }
+}
 
 const noteCache = new Map();
 function cacheNote(file, note) {
@@ -78,12 +99,18 @@ export default function (localApp, notesConfig, environmentOpts) {
     const fileName = path.basename(file, '.md');
 
     const newNote = await new Promise((resolve, reject) => {
+      const pathYear = fileName.substring(0, 4);
+      const pathMonth = fileName.substring(4, 6);
+      const pathDay = fileName.substring(6, 8);
+      const pathTitle = fileName.substring(9);
+
       const newNote = {
         created: null,
-        pathYear: fileName.substring(0, 4),
-        pathMonth: fileName.substring(4, 6),
-        pathDay: fileName.substring(6, 8),
-        pathTitle: fileName.substring(9),
+        pathYear: pathYear,
+        pathMonth: pathMonth,
+        pathDay: pathDay,
+        pathTitle: pathTitle,
+        path: `${rootNotesPath}/${pathYear}/${pathMonth}/${pathDay}/${pathTitle}`,
         hash: fileName,
         text: null,
         commit: latestCommit
@@ -131,7 +158,7 @@ export default function (localApp, notesConfig, environmentOpts) {
       return cacheNote(file, newNote);
     }
 
-    const outputDate = await promiseExec('git -C "' + notesConfig.gitPath + '" log HEAD --format=%cD -- "' + file.replace(notesConfig.path + '/', '') + '" | tail -1');
+    const outputDate = await promiseExec(`git -C "${notesConfig.gitPath}" log HEAD --format=%cD -- "${file.replace(notesConfig.path + '/', '')}" | tail -1`);
 
     newNote.created = new Date(outputDate);
 
@@ -153,12 +180,27 @@ export default function (localApp, notesConfig, environmentOpts) {
 
     const parsedNotes = await Promise.all(filesToRead.map((f) => parseNote(f)));
     return parsedNotes
-      .filter(n => n != null)
-      .sort((a, b) => isFinite(a.created) && isFinite(b.created) ? (a.created > b.created) - (a.created < b.created) : NaN)
+      .filter(n => isFinite(n?.created))
+      .sort((a, b) => (a.created > b.created) - (a.created < b.created))
       .reverse();
   }
 
-  localApp.get('/notes', async (req, res) => {
+  async function getAllNotes() {
+    const files = await glob(path.join(notesConfig.path, '*.md'));
+
+    // really hacky way to pull files back for now
+    const filesToRead = files
+      .sort()
+      .reverse();
+
+    const parsedNotes = await Promise.all(filesToRead.map((f) => parseNote(f)));
+    return parsedNotes
+      .filter(n => isFinite(n?.created))
+      .sort((a, b) => (a.created > b.created) - (a.created < b.created))
+      .reverse();
+  }
+
+  localApp.get(rootNotesPath, async (req, res) => {
     try {
       const cacheTag = await getNotesRepoTag();
       if (getMatchTag(req) === cacheTag) {
@@ -193,7 +235,79 @@ export default function (localApp, notesConfig, environmentOpts) {
     }
   });
 
-  localApp.get(/^\/notes\/([0-9]{4})\/([0-9]{2})\/([0-9]{2})\/([\w\-]*)/, async (req, res) => {
+  localApp.get(`${rootNotesPath}/rss.xml`, async (req, res) => {
+    try {
+      const cacheTag = await getNotesRepoTag();
+      if (getMatchTag(req) === cacheTag) {
+        res.sendStatus(304);
+        return;
+      }
+
+      res.type('text/xml');
+      res.set(eTagKey, cacheTag);
+      res.set('Cache-Control', 'public, max-age=0');
+
+      const cachedPageTagPair = cachedHtml.get(req.path);
+      if (cachedPageTagPair) {
+        const [cachedTag, cachedPage] = cachedPageTagPair;
+        if (cacheTag === cachedTag) {
+          res.send(cachedPage);
+          return;
+        }
+      }
+
+      const promisedNotes = getAllNotes();
+      const rootUrl = req.protocol + '://' + req.get('host')
+
+      let markup = '<?xml version="1.0" encoding="UTF-8" ?>\n';
+      markup += NotesRssFeed(rootUrl, await promisedNotes);
+
+      cachedHtml.set(req.path, [cacheTag, markup]);
+
+      res.send(markup);
+    } catch (exception) {
+      console.log(exception);
+      res.status(500).send('An error occurred');
+    }
+  });
+
+  localApp.get(`${rootNotesPath}/atom.xml`, async (req, res) => {
+    try {
+      const cacheTag = await getNotesRepoTag();
+      if (getMatchTag(req) === cacheTag) {
+        res.sendStatus(304);
+        return;
+      }
+
+      res.type('text/xml');
+      res.set(eTagKey, cacheTag);
+      res.set('Cache-Control', 'public, max-age=0');
+
+      const cachedPageTagPair = cachedHtml.get(req.path);
+      if (cachedPageTagPair) {
+        const [cachedTag, cachedPage] = cachedPageTagPair;
+        if (cacheTag === cachedTag) {
+          res.send(cachedPage);
+          return;
+        }
+      }
+
+      const promisedNotes = getAllNotes();
+      const rootUrl = req.protocol + '://' + req.get('host')
+
+      let markup = '<?xml version="1.0" encoding="UTF-8" ?>\n';
+      markup += NotesAtomFeed(rootUrl, rootNotesPath, req.path, await promisedNotes);
+
+      cachedHtml.set(req.path, [cacheTag, markup]);
+
+      res.send(markup);
+    } catch (exception) {
+      console.log(exception);
+      res.status(500).send('An error occurred');
+    }
+  });
+
+  localApp.get(new RegExp(`^${rootNotesPath}/([0-9]{4})/([0-9]{2})/([0-9]{2})/([\\w\\-]*)`), async (req, res) => {
     const year = req.params[0];
     const month = req.params[1];
     const day = req.params[2];
@@ -239,7 +353,7 @@ export default function (localApp, notesConfig, environmentOpts) {
     }
   });
 
-  localApp.get(/^\/notes\/([0-9]+)/, async (req, res) => {
+  localApp.get(new RegExp(`^${rootNotesPath}/([0-9]+)`), async (req, res) => {
     const page = req.params[0];
 
     if (!page) {

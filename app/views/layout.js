@@ -6,7 +6,10 @@ import Header from './header.js';
 
 const Layout = (props) => {
 	const subheader = props.subheader || "It's been coded";
-	const header = 'David Vedvick (' + subheader + ')';
+	let header = `David Vedvick (${subheader})`;
+  const context = props.context;
+  if (context)
+    header += ` - ${context}`;
 
 	return html('.no-js', [
 			head([
