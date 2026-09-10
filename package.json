@@ -68,7 +68,7 @@
     "gulp-util": "^3.0.8",
     "jimp": "^1.6.1",
     "method-override": "^2.3.2",
-    "morgan": "^1.9.1",
+    "morgan": "^1.12.0",
     "node-jsx": "^0.13.3",
     "pagedjs-cli": "^0.4.3",
     "rollup": "4.62.5",
